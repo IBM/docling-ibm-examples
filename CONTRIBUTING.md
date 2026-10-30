@@ -1,84 +1,50 @@
-## Contributing In General
-Our project welcomes external contributions. If you have an itch, please feel
-free to scratch it.
+# Contributing
 
-To contribute code or documentation, please submit a **FIXME** [pull request](https://github.com/ibm/repo-template/pulls).
+Code contributions to this repository are made by its collaborators only. We do not accept pull requests from outside the team, and we close them without review.
 
-A good way to familiarize yourself with the codebase and contribution process is
-to look for and tackle low-hanging fruit in the **FIXME** [issue tracker](https://github.com/ibm/repo-template/issues).
-Before embarking on a more ambitious contribution, please quickly [get in touch](#communication) with us.
+Everyone is welcome to help in other ways:
 
-**Note: We appreciate your effort, and want to avoid a situation where a contribution
-requires extensive rework (by you or by us), sits in backlog for a long time, or
-cannot be accepted at all!**
+- **Report a problem with an example:** [open an issue](https://github.com/IBM/docling-ibm-examples/issues) with the example, the command you ran and the output.
+- **Suggest an example or a new language:** [open an issue](https://github.com/IBM/docling-ibm-examples/issues) that describes the scenario.
+- **Problems with the Docling for IBM watsonx service itself** (not with an example): contact [IBM Support](https://www.ibm.com/mysupport/).
+- **Security issues:** do not open a public issue; see [SECURITY.md](SECURITY.md).
 
-### Proposing new features
+## For collaborators
 
-If you would like to implement a new feature, please **FIXME** [raise an issue](https://github.com/ibm/repo-template/issues)
-before sending a pull request so the feature can be discussed. This is to avoid
-you wasting your valuable time working on a feature that the project developers
-are not interested in accepting into the code base.
+### How the repository is organised
 
-### Fixing bugs
+Each example lives in a numbered folder with a language-neutral `README.md`, and each implementation sits in a subfolder named after its language or tool (`python/`, `curl/`, `java/`, ...). See [Repository layout](README.md#repository-layout).
 
-If you would like to fix a bug, please **FIXME** [raise an issue](https://github.com/ibm/repo-template/issues) before sending a
-pull request so it can be tracked.
+When you add or change an example:
 
-### Merge approval
+- Keep it self-contained and runnable from its own folder.
+- Read credentials from the environment or a `.env` file, using the variable names in [`.env.example`](.env.example). Never commit credentials or real API keys.
+- Use public or fictional sample documents only.
+- For Python, declare dependencies in the folder's `pyproject.toml` so `uv run` works without extra steps.
+- Update the example `README.md`, and the tables in the top-level [README.md](README.md) if you add a folder.
+- Run the example end to end against a Docling for IBM watsonx instance before opening the pull request.
 
-The project maintainers use LGTM (Looks Good To Me) in comments on the code
-review to indicate acceptance. A change requires LGTMs from two of the
-maintainers of each component affected.
+### Pull requests
 
-For a list of the maintainers, see the [MAINTAINERS.md](MAINTAINERS.md) page.
+1. Create a branch for your change.
+2. Commit with a sign-off (see [Legal](#legal)).
+3. Open a pull request that says what the change does and how you tested it.
 
-## Legal
+A maintainer reviews every pull request. For the list of maintainers, see [MAINTAINERS.md](MAINTAINERS.md).
 
-Each source file must include a license header for the Apache
-Software License 2.0. Using the SPDX format is the simplest approach.
-e.g.
+### Legal
 
-```
-/*
-Copyright <holder> All Rights Reserved.
+This project is licensed under the [Apache License 2.0](LICENSE). New source files should start with an SPDX license header, for example:
 
-SPDX-License-Identifier: Apache-2.0
-*/
+```python
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 ```
 
-We have tried to make it as easy as possible to make contributions. This
-applies to how we handle the legal aspects of contribution. We use the
-same approach - the [Developer's Certificate of Origin 1.1 (DCO)](https://github.com/hyperledger/fabric/blob/master/docs/source/DCO1.1.txt) - that the Linux® Kernel [community](https://elinux.org/Developer_Certificate_Of_Origin)
-uses to manage code contributions.
-
-We simply ask that when submitting a patch for review, the developer
-must include a sign-off statement in the commit message.
-
-Here is an example Signed-off-by line, which indicates that the
-submitter accepts the DCO:
+We use the [Developer's Certificate of Origin 1.1 (DCO)](https://developercertificate.org/). Every commit must carry a sign-off line that certifies you wrote the change or have the right to submit it:
 
 ```
 Signed-off-by: John Doe <john.doe@example.com>
 ```
 
-You can include this automatically when you commit a change to your
-local git repository using the following command:
-
-```
-git commit -s
-```
-
-## Communication
-**FIXME** Please feel free to connect with us on our [Slack channel](link).
-
-## Setup
-**FIXME** Please add any special setup instructions for your project to help the developer
-become productive quickly.
-
-## Testing
-**FIXME** Please provide information that helps the developer test any changes they make
-before submitting.
-
-## Coding style guidelines
-**FIXME** Optional, but recommended: please share any specific style guidelines you might
-have for your project.
+`git commit -s` adds it for you. A check on each pull request verifies the sign-off.

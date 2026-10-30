@@ -1,78 +1,105 @@
-<!-- This should be the location of the title of the repository, normally the short name -->
-# repo-template
+# Docling for IBM watsonx: examples
 
-<!-- Build Status, is a great thing to have at the top of your repository, it shows that you take your CI/CD as first class citizens -->
-<!-- [![Build Status](https://travis-ci.org/jjasghar/ibm-cloud-cli.svg?branch=master)](https://travis-ci.org/jjasghar/ibm-cloud-cli) -->
+Runnable, end-to-end examples for **[Docling for IBM watsonx](https://www.ibm.com/products/docling)**, the managed service that turns PDFs, Office files, scans and web pages into clean, structured, AI-ready data.
 
-<!-- Not always needed, but a scope helps the user understand in a short sentance like below, why this repo exists -->
-## Scope
+Each folder is self-contained and has its own README. The matching walkthroughs are in the [Docling for IBM watsonx documentation](https://developer.dcls.saas.ibm.com/).
 
-The purpose of this project is to provide a template for new open source repositories.
+| Example | What it shows | Docs |
+|---|---|---|
+| [`01-quickstart/`](01-quickstart/) | Convert one document with the API (curl) and the Python SDK; get Markdown and DocLang | [Quick Start](https://developer.dcls.saas.ibm.com/quick-start) |
+| [`02-rag-notebook/`](02-rag-notebook/) | The smallest RAG application: convert with the service, chunk, embed and answer with watsonx.ai | [Tutorial: RAG in a notebook](https://developer.dcls.saas.ibm.com/tutorials/notebook-rag) |
+| [`03-vector-db-ingestion/`](03-vector-db-ingestion/) | One batch request from public URLs straight into an AstraDB vector collection | [Tutorial: Ingest a document library into a vector database](https://developer.dcls.saas.ibm.com/tutorials/vector-db-ingestion) |
+| [`04-bob-agent-skill/`](04-bob-agent-skill/) | An agent skill that gives IBM Bob (or any skill-aware assistant) document understanding | [Tutorial: Docling in IBM Bob](https://developer.dcls.saas.ibm.com/tutorials/bob-agent-skill) |
+| [`05-confluent-cloud/`](05-confluent-cloud/) | Stream document chunks into Confluent Cloud and clean them with Flink SQL, no scripts | [Tutorial: Streaming pipelines with Confluent Cloud](https://developer.dcls.saas.ibm.com/tutorials/confluent-cloud) |
 
-<!-- A more detailed Usage or detailed explaination of the repository here -->
-## Usage
+## Repository layout
 
-This repository contains some example best practices for open source repositories:
+```
+NN-example-name/
+  README.md        # the scenario, prerequisites and how to run it (language-neutral)
+  python/          # one folder per implementation
+  curl/
+  java/            # (future)
+  typescript/      # (future)
+```
 
-* [LICENSE](LICENSE)
-* [README.md](README.md)
-* [CONTRIBUTING.md](CONTRIBUTING.md)
-* [MAINTAINERS.md](MAINTAINERS.md)
-* [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
-<!-- A Changelog allows you to track major changes and things that happen, https://github.com/github-changelog-generator/github-changelog-generator can help automate the process -->
-* [CHANGELOG.md](CHANGELOG.md)
+Each example lives in a numbered folder, ordered from the first steps to complete
+integrations. Its README describes the scenario once, and every implementation sits in a
+subfolder named after its language or tool, so new languages can be added side by side.
+Files that are not code in a programming language (the Bob agent skill, SQL statements)
+sit directly in the example folder or in a folder named after what they are, such as `sql/`.
 
-> These are optional
+| Example | Implementations |
+|---|---|
+| 01 Quick start | `python/`, `curl/` |
+| 02 RAG in a notebook | `python/` |
+| 03 Vector database ingestion | `python/` |
+| 04 Docling in IBM Bob | agent skill (Markdown) |
+| 05 Confluent Cloud | Flink SQL, `python/` (optional sender) |
 
-<!-- The following are OPTIONAL, but strongly suggested to have in your repository. -->
-* [dco.yml](.github/dco.yml) - This enables DCO bot for you, please take a look https://github.com/probot/dco for more details.
-* [travis.yml](.travis.yml) - This is a example `.travis.yml`, please take a look https://docs.travis-ci.com/user/tutorial/ for more details.
+A new language goes in a folder next to `python/`, linked from the example README.
+Pull requests are accepted from the repository collaborators only; everyone is welcome
+to report problems and suggest examples in an issue. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-These may be copied into a new or existing project to make it easier for developers not on a project team to collaborate.
+## Prerequisites
 
-<!-- A notes section is useful for anything that isn't covered in the Usage or Scope. Like what we have below. -->
-## Notes
+1. **A Docling for IBM watsonx instance.** Sign up at [ibm.com/products/docling](https://www.ibm.com/products/docling); a free trial is available.
+2. **Your Service URL and API key.** In the Workbench, open **API examples** and copy both values.
+3. **[uv](https://docs.astral.sh/uv/)** (recommended) or any Python 3.10+ environment.
 
-**NOTE: While this boilerplate project uses the Apache 2.0 license, when
-establishing a new repo using this template, please use the
-license that was approved for your project.**
+Some examples need more: a watsonx.ai project, an AstraDB database, IBM Bob, or a Confluent Cloud account. Each README lists exactly what it needs.
 
-**NOTE: This repository has been configured with the [DCO bot](https://github.com/probot/dco).
-When you set up a new repository that uses the Apache license, you should
-use the DCO to manage contributions. The DCO bot will help enforce that.
-Please contact one of the IBM GH Org stewards.**
+## Configure your credentials once
 
-<!-- Questions can be useful but optional, this gives you a place to say, "This is how to contact this project maintainers or create PRs -->
-If you have any questions or issues you can create a new [issue here][issues].
+```bash
+git clone https://github.com/IBM/docling-ibm-examples.git
+cd docling-ibm-examples
+cp .env.example .env      # then edit .env
+```
 
-Pull requests are very welcome! Make sure your patches are well tested.
-Ideally create a topic branch for every separate change you make. For
-example:
+All examples read the same variables:
 
-1. Fork the repo
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Added some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+| Variable | Used for |
+|---|---|
+| `DOCLING_SERVICE_URL` | Your Docling for IBM watsonx instance |
+| `DOCLING_SERVICE_API_KEY` | Authenticates every request (`X-Api-Key` header) |
+| `WATSONX_URL`, `WATSONX_APIKEY`, `WATSONX_PROJECT_ID` | Embeddings and chat in the RAG examples |
+
+`.env` is git-ignored. Never commit credentials.
+
+## The Python SDK in one minute
+
+```bash
+pip install docling-client
+```
+
+```python
+import os
+from docling.service_client import DoclingServiceClient
+
+with DoclingServiceClient(
+    url=os.environ["DOCLING_SERVICE_URL"],
+    api_key=os.environ["DOCLING_SERVICE_API_KEY"],
+) as client:
+    result = client.convert(source="https://arxiv.org/pdf/2408.09869")
+    print(result.document.export_to_markdown())
+```
+
+`docling-client` is lightweight: it installs no models, because conversion runs on the service. It also provides the `docling convert-remote` command line.
+
+## Documentation
+
+- **Product page:** [ibm.com/products/docling](https://www.ibm.com/products/docling)
+- **Docling for IBM watsonx documentation:** [developer.dcls.saas.ibm.com](https://developer.dcls.saas.ibm.com/): guides, [API reference](https://developer.dcls.saas.ibm.com/api), [connectors](https://developer.dcls.saas.ibm.com/connectors) and the [tutorials](https://developer.dcls.saas.ibm.com/tutorials) that go with these examples
+- **Open-source Docling:** [github.com/docling-project/docling](https://github.com/docling-project/docling)
+- **DocLang Viewer:** [doclang.ai/viewer](https://doclang.ai/viewer/)
+
+## Support
+
+- Product questions and issues with the service: [IBM Support](https://www.ibm.com/mysupport/)
+- Problems with an example in this repository: [open an issue](https://github.com/IBM/docling-ibm-examples/issues)
+- Security issues: see [SECURITY.md](SECURITY.md)
 
 ## License
 
-All source files must include a Copyright and License header. The SPDX license header is 
-preferred because it can be easily scanned.
-
-If you would like to see the detailed LICENSE click [here](LICENSE).
-
-```text
-#
-# Copyright IBM Corp. {Year project was created} - {Current Year}
-# SPDX-License-Identifier: Apache-2.0
-#
-```
-## Authors
-
-Optionally, you may include a list of authors, though this is redundant with the built-in
-GitHub list of contributors.
-
-- Author: New OpenSource IBMer <new-opensource-ibmer@ibm.com>
-
-[issues]: https://github.com/IBM/repo-template/issues/new
+[Apache License 2.0](LICENSE)

@@ -1,17 +1,14 @@
 # Security Policy
 
-## Supported Versions
+## Supported versions
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
+Only the latest version on the `main` branch is supported. The examples are not released as versioned packages.
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+## Reporting a vulnerability
 
-## Reporting a Vulnerability
+Do not open a public issue for a security problem.
 
-To report a security issue, please email $VMTalias with a description of the issue, the steps you took to create the issue, affected versions, and if known, mitigations for the issue. Our vulnerability management team will acknowledge receiving your email within 3 working days. This project follows a 90 day disclosure timeline.
+- **Vulnerabilities in the Docling for IBM watsonx service,** or in another IBM product: report them to the [IBM Product Security Incident Response Team (PSIRT)](https://www.ibm.com/trust/security-psirt).
+- **Vulnerabilities in the code of this repository:** email the maintainers listed in [MAINTAINERS.md](MAINTAINERS.md).
+
+Include a description of the issue, the steps to reproduce it and, if known, a mitigation. We acknowledge reports within 3 working days.

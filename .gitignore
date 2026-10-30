@@ -1,0 +1,25 @@
+# Credentials
+.env
+.env.*
+!.env.example
+api-key-*.txt
+*.pem
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+dist/
+
+# Java
+target/
+.tools/
+
+# Outputs written by the examples
+output/
+converted/
+
+.DS_Store

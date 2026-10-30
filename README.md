@@ -2,15 +2,15 @@
 
 Runnable, end-to-end examples for **[Docling for IBM watsonx](https://www.ibm.com/products/docling)**, the managed service that turns PDFs, Office files, scans and web pages into clean, structured, AI-ready data.
 
-Each folder is self-contained and has its own README. The matching walkthroughs are in the Docling for IBM watsonx documentation (see [Documentation](#documentation)).
+Each folder is self-contained and has its own README. The matching walkthroughs are in the [Docling for IBM watsonx documentation](https://developer.dcls.saas.ibm.com/).
 
 | Example | What it shows | Docs |
 |---|---|---|
-| [`01-quickstart/`](01-quickstart/) | Convert one document with the API (curl) and the Python SDK; get Markdown and DocLang | Quick Start |
-| [`02-rag-notebook/`](02-rag-notebook/) | The smallest RAG application: convert with the service, chunk, embed and answer with watsonx.ai | Tutorial: RAG in a notebook |
-| [`03-vector-db-ingestion/`](03-vector-db-ingestion/) | One batch request from public URLs straight into an AstraDB vector collection | Tutorial: Ingest a document library into a vector database |
-| [`04-bob-agent-skill/`](04-bob-agent-skill/) | An agent skill that gives IBM Bob (or any skill-aware assistant) document understanding | Tutorial: Docling in IBM Bob |
-| [`05-confluent-cloud/`](05-confluent-cloud/) | Stream document chunks into Confluent Cloud and clean them with Flink SQL, no scripts | Tutorial: Streaming pipelines with Confluent Cloud |
+| [`01-quickstart/`](01-quickstart/) | Convert one document with the API (curl) and the Python SDK; get Markdown and DocLang | [Quick Start](https://developer.dcls.saas.ibm.com/quick-start) |
+| [`02-rag-notebook/`](02-rag-notebook/) | The smallest RAG application: convert with the service, chunk, embed and answer with watsonx.ai | [Tutorial: RAG in a notebook](https://developer.dcls.saas.ibm.com/tutorials/notebook-rag) |
+| [`03-vector-db-ingestion/`](03-vector-db-ingestion/) | One batch request from public URLs straight into an AstraDB vector collection | [Tutorial: Ingest a document library into a vector database](https://developer.dcls.saas.ibm.com/tutorials/vector-db-ingestion) |
+| [`04-bob-agent-skill/`](04-bob-agent-skill/) | An agent skill that gives IBM Bob (or any skill-aware assistant) document understanding | [Tutorial: Docling in IBM Bob](https://developer.dcls.saas.ibm.com/tutorials/bob-agent-skill) |
+| [`05-confluent-cloud/`](05-confluent-cloud/) | Stream document chunks into Confluent Cloud and clean them with Flink SQL, no scripts | [Tutorial: Streaming pipelines with Confluent Cloud](https://developer.dcls.saas.ibm.com/tutorials/confluent-cloud) |
 
 ## Repository layout
 
@@ -90,7 +90,7 @@ with DoclingServiceClient(
 ## Documentation
 
 - **Product page:** [ibm.com/products/docling](https://www.ibm.com/products/docling)
-- **Docling for IBM watsonx documentation:** guides, API reference, connectors and the tutorials that go with these examples
+- **Docling for IBM watsonx documentation:** [developer.dcls.saas.ibm.com](https://developer.dcls.saas.ibm.com/): guides, [API reference](https://developer.dcls.saas.ibm.com/api), [connectors](https://developer.dcls.saas.ibm.com/connectors) and the [tutorials](https://developer.dcls.saas.ibm.com/tutorials) that go with these examples
 - **Open-source Docling:** [github.com/docling-project/docling](https://github.com/docling-project/docling)
 - **DocLang Viewer:** [doclang.ai/viewer](https://doclang.ai/viewer/)
 

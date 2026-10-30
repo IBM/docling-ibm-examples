@@ -107,4 +107,5 @@ batch job.
 ## Links
 
 - [Docling for IBM watsonx](https://www.ibm.com/products/docling)
+- [Tutorial: Streaming pipelines with Confluent Cloud](https://developer.dcls.saas.ibm.com/tutorials/confluent-cloud), in the Docling for IBM watsonx documentation
 - [Confluent Cloud for Apache Flink](https://docs.confluent.io/cloud/current/flink/overview.html)

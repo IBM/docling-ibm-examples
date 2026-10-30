@@ -1,0 +1,18 @@
+[project]
+name = "docling-watsonx-rag-notebook"
+version = "0.1.0"
+description = "RAG over your documents with Docling for IBM watsonx and watsonx.ai, no infrastructure"
+requires-python = ">=3.10"
+dependencies = [
+    "docling-client",
+    "docling-core[chunking]",
+    "ibm-watsonx-ai",
+    "numpy",
+    "python-dotenv",
+]
+
+[dependency-groups]
+notebook = ["jupyterlab", "ipykernel", "ipywidgets"]
+
+[tool.uv]
+package = false

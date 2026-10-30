@@ -1,0 +1,13 @@
+[project]
+name = "docling-watsonx-vector-db-ingestion"
+version = "0.1.0"
+description = "Convert, chunk and index a document library into AstraDB with one Docling for IBM watsonx batch request"
+requires-python = ">=3.10"
+dependencies = [
+    "astrapy>=2",
+    "docling-client",
+    "python-dotenv",
+]
+
+[tool.uv]
+package = false

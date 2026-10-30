@@ -1,0 +1,15 @@
+[project]
+name = "docling-watsonx-quickstart"
+version = "0.1.0"
+description = "Convert a first document with Docling for IBM watsonx"
+requires-python = ">=3.10"
+dependencies = [
+    "docling-client",
+    "python-dotenv",
+]
+
+[dependency-groups]
+dev = ["dclq"]
+
+[tool.uv]
+package = false

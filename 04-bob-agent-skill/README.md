@@ -14,8 +14,8 @@ skill in `.bob/skills/`.
 | [`form.md`](form.md) | The eight fields of the form and which document contains each |
 | [`prompts.md`](prompts.md) | The prompts to send to Bob, in order |
 
-This folder accompanies the **Docling in IBM Bob** tutorial of the
-[Docling for IBM watsonx documentation](https://www.ibm.com/products/docling).
+This folder accompanies the [Docling in IBM Bob](https://developer.dcls.saas.ibm.com/tutorials/bob-agent-skill) tutorial of the
+[Docling for IBM watsonx documentation](https://developer.dcls.saas.ibm.com/).
 
 ## Prerequisites
 
@@ -27,8 +27,8 @@ This folder accompanies the **Docling in IBM Bob** tutorial of the
 ## Setup
 
 ```bash
-git clone https://github.com/IBM/docling-watsonx-examples
-cd docling-watsonx-examples/04-bob-agent-skill
+git clone https://github.com/IBM/docling-ibm-examples
+cd docling-ibm-examples/04-bob-agent-skill
 
 uv venv
 source .venv/bin/activate

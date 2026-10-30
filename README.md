@@ -37,8 +37,9 @@ sit directly in the example folder or in a folder named after what they are, suc
 | 04 Docling in IBM Bob | agent skill (Markdown) |
 | 05 Confluent Cloud | Flink SQL, `python/` (optional sender) |
 
-Contributions in other languages are welcome: add a folder next to `python/` and link it
-from the example README. See [CONTRIBUTING.md](CONTRIBUTING.md).
+A new language goes in a folder next to `python/`, linked from the example README.
+Pull requests are accepted from the repository collaborators only; everyone is welcome
+to report problems and suggest examples in an issue. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Prerequisites
 

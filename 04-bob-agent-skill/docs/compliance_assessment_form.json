@@ -1,0 +1,11 @@
+{
+  "_comment": "Compliance assessment form. Fill every field from the three documents in docs/. All organisations, people and figures in the sample documents are fictional.",
+  "entity_name": null,
+  "reporting_period": null,
+  "total_risk_exposure_usd": null,
+  "highest_risk_category": null,
+  "regulator_reference_number": null,
+  "key_obligations": [],
+  "material_findings": [],
+  "sign_off_date": null
+}

@@ -1,6 +1,6 @@
 # Example 01 — every name it creates, all derived from NS.
 #
-# Sourced by ./setup.sh and ./pipeline.sh, after the repo's .env (which is
+# Sourced by ./setup.sh and ./pipeline.sh, after 05-confluent-cloud/.env (which is
 # where NS comes from) and before examples/01-docling-outside/.env (which is
 # where this example's setup writes the artifact id back). Committed, unlike
 # the other two, because none of it is a secret and all of it is worth reading

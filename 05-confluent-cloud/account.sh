@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Your Confluent Cloud account, once — before any example can run.
 #
+#   ./account.sh init       fill in .env: asks for each value and says where to get it
 #   ./account.sh check      what can this key see? (reads only — creates nothing)
 #   ./account.sh plan       what terraform/account would do (creates nothing)
 #   ./account.sh apply      make what .env does not name, mint the API keys —
@@ -21,7 +22,23 @@
 set -euo pipefail
 . "$(cd "$(dirname "$0")" && pwd)/common/lib.sh"
 
-usage() { sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//'; exit "${1:-0}"; }
+usage() { sed -n '2,21p' "$0" | sed 's/^# \{0,1\}//'; exit "${1:-0}"; }
+
+# --- init -----------------------------------------------------------------
+
+cmd_init() {
+  need python3
+  "$REPO_ROOT/common/init_env.py"
+  local answer
+  read -r -p "Check the Cloud API key now with ./account.sh check? [Y/n] " answer || answer="n"
+  case "$answer" in
+    [nN]*) ;;
+    *) cmd_check ;;
+  esac
+  say ""
+  dim "Next, run: ./account.sh plan"
+  dim "It shows what would be created. Then ./account.sh apply creates it, and that is billed."
+}
 
 # --- check ----------------------------------------------------------------
 
@@ -222,6 +239,7 @@ cmd_topics() {
 }
 
 case "${1:-}" in
+  init)      cmd_init ;;
   check)     cmd_check ;;
   plan)      shift; cmd_plan "$@" ;;
   apply)     shift; cmd_apply "$@" ;;

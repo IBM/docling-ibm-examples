@@ -24,7 +24,7 @@ when you release it:
 
 ## Run it
 
-From the repo root, once: set `GLOBAL_KEY="yes"` in `.env` (lightning queries
+From `05-confluent-cloud/`, once: set `GLOBAL_KEY="yes"` in `.env` (lightning queries
 need a *global* API key), then `./account.sh apply` and `./account.sh check`.
 
 The invoice PDFs are not in this repository, and the dashboard's previews read

@@ -1,6 +1,6 @@
 # Example 05 — every name it creates, all derived from NS.
 #
-# Sourced by ./setup.sh and ./pipeline.sh, after the repo's .env (which is
+# Sourced by ./setup.sh and ./pipeline.sh, after 05-confluent-cloud/.env (which is
 # where NS comes from) and before examples/05-xbrl/.env.
 #
 # Read env.sh in example 02 first: this is the same shape — a topic of inputs and

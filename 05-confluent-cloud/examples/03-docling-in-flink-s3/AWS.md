@@ -25,7 +25,7 @@ instead, or check what the script did.
                                      Docling ◀── presigned GET URL, valid 10 min
 ```
 
-Everything is named after `NS` (from the repo's `.env`), so two people sharing
+Everything is named after `NS` (from `05-confluent-cloud/.env`), so two people sharing
 an AWS account don't collide. `scripts/aws.sh info` prints the names before
 anything is created.
 
@@ -35,7 +35,7 @@ anything is created.
   and IAM users: `aws sts get-caller-identity` should answer. The script runs as
   you (your default credentials, or `AWS_PROFILE`). None of your own
   credentials are written anywhere.
-- The repo's `.env` filled in (`./account.sh check` passes). The script reads
+- `05-confluent-cloud/.env` filled in (`./account.sh check` passes). The script reads
   `NS` and uses `CC_REGION` as its default AWS region.
 
 ## The short way
@@ -59,7 +59,7 @@ example's `.env` (gitignored), which is where `./setup.sh` reads it from:
 | `AWS_READER_KEY_ID`, `AWS_READER_SECRET` | the reader's access key |
 
 The names are deliberately not the standard `AWS_ACCESS_KEY_ID` /
-`AWS_REGION`. The repo's scripts export everything in `.env`, and a standard
+`AWS_REGION`. This example's scripts export everything in `.env`, and a standard
 name would quietly switch your own aws CLI to the reader's key.
 
 ## The long way: by hand

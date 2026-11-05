@@ -45,15 +45,26 @@ step does to five sample chunks.
 
 ## Quick start
 
-First create a `.env` to hold your credentials and configuration:
+First, from the repository root, go to this folder and create a `.env` to hold
+your credentials and configuration. `init` asks for each value and says where
+to get it and whether it is optional:
 ```
-cp .env.example .env
+cd 05-confluent-cloud
+./account.sh init
 ```
+
+If you prefer to edit the file yourself, run `cp .env.example .env` instead.
+
+This example reads `05-confluent-cloud/.env`, not the `.env` at the repository
+root that the other examples use. Every command below starts from
+`05-confluent-cloud/`.
 
 You need:
 
-- [Terraform](https://developer.hashicorp.com/terraform/install) 1.5 or later
-  and [uv](https://docs.astral.sh/uv/);
+- [Terraform](https://developer.hashicorp.com/terraform/install) 1.5 or later.
+  On macOS, run `brew tap hashicorp/tap && brew install hashicorp/tap/terraform`.
+  For other systems, follow the link;
+- [uv](https://docs.astral.sh/uv/);
 - a [JDK](https://openjdk.org) to build Java UDFs;
 - a [Docling for IBM watsonx](https://www.ibm.com/products/docling) account and an API key;
 - a [Confluent Cloud](https://www.confluent.cloud) account and an API key, as follows:

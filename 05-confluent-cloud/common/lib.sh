@@ -47,9 +47,14 @@ need() {
   # `local` on the loop variable, always. Without it this assigns to a global
   # named `cmd`, and a caller that happened to have one of its own loses it —
   # see require_vars below, where exactly that cost an afternoon.
-  local cmd
+  local cmd hint
   for cmd in "$@"; do
-    command -v "$cmd" >/dev/null 2>&1 || die "$cmd is not installed"
+    command -v "$cmd" >/dev/null 2>&1 && continue
+    hint=""
+    if [ "$cmd" = terraform ]; then
+      hint=". On macOS: brew tap hashicorp/tap && brew install hashicorp/tap/terraform. Elsewhere: https://developer.hashicorp.com/terraform/install"
+    fi
+    die "$cmd is not installed$hint"
   done
 }
 
@@ -63,7 +68,7 @@ need() {
 #   <example>/.env      what the example's setup wrote back    (generated)
 #   .env.local          your private overrides, last so they win
 load_env() {
-  [ -f "$REPO_ROOT/.env" ] || die "no .env — copy .env.example to .env and fill it in (./account.sh check tells you what is missing)"
+  [ -f "$REPO_ROOT/.env" ] || die "no .env — run ./account.sh init, or copy .env.example to .env and fill it in"
   set -a
   # shellcheck disable=SC1091
   . "$REPO_ROOT/.env"

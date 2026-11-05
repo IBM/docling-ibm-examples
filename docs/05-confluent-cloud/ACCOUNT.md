@@ -4,7 +4,9 @@
 [`05-confluent-cloud`](../../05-confluent-cloud/). You run it once, before any
 example, and every example then reads what it wrote to `.env`.
 
-Run every command on this page from the `05-confluent-cloud/` folder.
+Run every command on this page from the `05-confluent-cloud/` folder. These
+examples read `05-confluent-cloud/.env`, not the `.env` at the repository root
+that the other examples use.
 
 ## Get started
 
@@ -15,16 +17,32 @@ Run every command on this page from the `05-confluent-cloud/` folder.
 | Python 3 | `init` | [python.org](https://www.python.org/downloads/) |
 | [Terraform](https://developer.hashicorp.com/terraform/install) 1.5 or later | `plan`, `apply`, `destroy`, `tf` | On macOS: `brew tap hashicorp/tap && brew install hashicorp/tap/terraform` |
 | [jq](https://jqlang.org/download/) and curl | `check`, `plan`, `apply`, `destroy`, `tf` | Often already installed |
-| [uv](https://docs.astral.sh/uv/) | `check`, `topics` | See its install page |
+| [uv](https://docs.astral.sh/uv/) | `check`, `topics`, and the examples | See its install page |
+| A [JDK](https://openjdk.org) | Building the examples' Java UDFs | See its install page |
 
-**2. Create a Confluent Cloud API key.** In <https://confluent.cloud>, open the
-top-right menu, then **User settings** > **API keys** > **Add API key** >
-**My account** > **Cloud resource management**. Copy the secret, because it is
-shown only once.
+You also need a [Confluent Cloud](https://www.confluent.cloud) account and, for
+examples 02 to 05, a [Docling for IBM watsonx](https://www.ibm.com/products/docling)
+account.
 
-To create everything from scratch, the key's owner needs **OrganizationAdmin**,
-which whoever created the account has. See
-[Permissions](#permissions) if you don't have that role.
+**2. Create a Confluent Cloud API key.**
+
+1. In the [Confluent Cloud console](https://confluent.cloud), open
+   **Accounts & access**, pick your user, and check its role bindings for
+   **OrganizationAdmin**. Whoever created the account has it. Otherwise, ask an
+   admin of the organization, or see [Permissions](#permissions).
+2. Open the top-right menu, then **User settings** > **API keys** >
+   **Add API key**.
+3. For the account, pick **My account**, not a service account.
+4. For the scope, pick **Cloud resource management**.
+5. Name it, create it, and copy the key and the secret. The secret is shown only
+   once.
+
+With the [Confluent CLI](https://docs.confluent.io/confluent-cli/current/overview.html),
+logged in as yourself, you can create the same key with:
+
+```bash
+confluent api-key create --resource cloud --description "docling-ibm-examples"
+```
 
 **3. Fill in `.env`.** `init` asks only for what your chosen examples need, and
 says where to get each value:
@@ -33,6 +51,9 @@ says where to get each value:
 cd 05-confluent-cloud
 ./account.sh init
 ```
+
+To edit the file yourself instead, run `cp .env.example .env`. See
+[What goes in `.env`](#what-goes-in-env) for the values to set.
 
 **4. See what would be created.** This creates nothing:
 
@@ -53,7 +74,7 @@ The resources it creates are billed, as described under [Cost](#cost):
 ./account.sh check
 ```
 
-You can now [run an example](../../05-confluent-cloud/README.md#quick-start).
+You can now [run an example](../../05-confluent-cloud/README.md#run-an-example).
 When you finish, [clean up](../../05-confluent-cloud/README.md#cleaning-up) so
 that you stop paying for it.
 
@@ -186,8 +207,28 @@ A Cloud API key can do what its owner can do, and nothing more.
 | Use an existing environment, cluster, pool and owner | **EnvironmentAdmin** and **FlinkAdmin** on the environment |
 | Create the global key (`GLOBAL_KEY="yes"`) | **OrganizationAdmin** |
 
+`CC_PRINCIPAL_ID` is `u-…` for a user or `sa-…` for a service account, as shown
+under **Accounts & access**. Setting it means `apply` uses that owner rather than
+creating a service account, which is the step that takes OrganizationAdmin.
+
 Examples 04 and 05 also need Stream Governance enabled in the environment, for
 their Schema Registry.
+
+## What goes in `.env`
+
+| Value | Meaning |
+|---|---|
+| `CONFLUENT_CLOUD_API_KEY`, `CONFLUENT_CLOUD_API_SECRET` | The Cloud API key, which Terraform runs as |
+| `NS` | A short prefix of your own, such as your initials. Every topic, table, function and statement name starts with it, so yours don't collide with anyone else's |
+| `DOCLING_SERVICE_URL`, `DOCLING_API_KEY` | Examples 02 to 05 only |
+| `SEC_USER_AGENT` | Optional, example 05 only: who you are, for SEC EDGAR (`Your Name you@example.com`) |
+| `CC_CLOUD`, `CC_REGION` | Optional, default `aws` and `us-east-1`: where `apply` creates a cluster |
+| `CC_ENVIRONMENT_ID` | Optional: a Confluent environment other than `default` |
+| `CC_CLUSTER_ID`, `CC_COMPUTE_POOL_ID`, `CC_PRINCIPAL_ID` | Optional: use these existing resources instead of creating new ones. See [Sharing an account](../../05-confluent-cloud/README.md#sharing-an-account) |
+| `GLOBAL_KEY="yes"` | Example 04's lightning queries only |
+
+`./account.sh apply` writes everything else in `.env`.
+[`.env.example`](../../05-confluent-cloud/.env.example) explains each value.
 
 ## Files
 

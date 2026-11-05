@@ -56,79 +56,10 @@ Examples 01–03 end the same way: one Flink statement, the same files
 [Example 01](examples/01-docling-outside/#the-sample-document) shows what each
 step does to five sample chunks.
 
-## Quick start
+## Run an example
 
-First, from the repository root, go to this folder and create a `.env` to hold
-your credentials and configuration. `init` asks for each value and says where
-to get it and whether it is optional:
-```
-cd 05-confluent-cloud
-./account.sh init
-```
-
-If you prefer to edit the file yourself, run `cp .env.example .env` instead.
-
-This example reads `05-confluent-cloud/.env`, not the `.env` at the repository
-root that the other examples use. Every command below starts from
-`05-confluent-cloud/`.
-
-You need:
-
-- [Terraform](https://developer.hashicorp.com/terraform/install) 1.5 or later.
-  On macOS, run `brew tap hashicorp/tap && brew install hashicorp/tap/terraform`.
-  For other systems, follow the link;
-- [uv](https://docs.astral.sh/uv/);
-- a [JDK](https://openjdk.org) to build Java UDFs;
-- a [Docling for IBM watsonx](https://www.ibm.com/products/docling) account and an API key;
-- a [Confluent Cloud](https://www.confluent.cloud) account and an API key, as follows:
-
-
-1. In the [Confluent Cloud console](https://confluent.cloud), open
-   **Accounts & access**, pick your user, and check its role bindings for
-   **OrganizationAdmin**. Whoever created the account has it; otherwise ask an
-   admin of the organization.
-2. Open the menu at the top right → **User settings** → **API keys** → **Add API key**.
-3. For the account, pick **My account** — not a service account. A key can do
-   what its owner can, and nothing more.
-4. For the scope, pick **Cloud resource management**.
-5. Name it, create it, and copy the key and the secret into `.env` as
-   `CONFLUENT_CLOUD_API_KEY` and `CONFLUENT_CLOUD_API_SECRET`. The secret is
-   shown only once.
-
-With the [Confluent CLI](https://docs.confluent.io/confluent-cli/current/overview.html),
-logged in as yourself, the same key is:
-
-```bash
-confluent api-key create --resource cloud --description "docling-ibm-examples"
-```
-
-Copy the key and the secret into `.env` as `CONFLUENT_CLOUD_API_KEY` and `CONFLUENT_CLOUD_API_SECRET`.
-Also set `NS` to your initials, for example. It will be used as a prefix of your objects (like topics), for you to identify them and to avoid conflicts.
-
-<details>
-<summary><b>Without OrganizationAdmin</b></summary>
-A key whose owner has only **EnvironmentAdmin**
-and **FlinkAdmin** on the environment works too, if you also set
-`CC_PRINCIPAL_ID` in `.env` to that owner (`u-…` for a user, `sa-…` for a
-service account, as shown under Accounts & access). `apply` then uses it to own
-the keys, instead of creating a service account, which takes OrganizationAdmin.
-It can still create the cluster and the compute pool. What it cannot mint is
-`GLOBAL_KEY`, for example 04's lightning queries.
-</details>
-
----
-
-**1. Set up the account.** Now that you have configured your `.env`, let Terraform make
-the rest — a Kafka cluster, a Flink compute pool, a service account and its API
-keys, all in the account's `default` environment — and write them into `.env`:
-
-```bash
-./account.sh plan         # what it would create; creates nothing
-./account.sh apply        # shows the plan, asks, creates, writes .env
-./account.sh check        # confirms the keys work
-```
-
-**2. Run an example.**
+Once you have [set up your account](../docs/05-confluent-cloud/ACCOUNT.md), go
+to the example you want from `05-confluent-cloud/`:
 
 ```bash
 cd examples/01-docling-outside
@@ -138,25 +69,6 @@ cd examples/01-docling-outside
 ```
 
 Then follow that example's README to send documents through it.
-
-### Contents of `.env`
-
-| | |
-|---|---|
-| `CONFLUENT_CLOUD_API_KEY` / `_SECRET` | the Cloud API key. Terraform runs as it |
-| `NS` | a short prefix of your own, e.g. your initials. Every topic, table, function and statement name starts with it, so yours don't collide with that of anyone else |
-| `DOCLING_SERVICE_URL` / `DOCLING_API_KEY` | examples 02–05 only |
-| `SEC_USER_AGENT` | optional, example 05 only: who you are, for SEC EDGAR (`Your Name you@example.com`) |
-| `CC_CLOUD` / `CC_REGION` | optional, default `aws` / `us-east-1`: where `apply` creates a cluster |
-| `CC_ENVIRONMENT_ID` | optional: a Confluent environment other than `default`. Terraform never creates one |
-| `CC_CLUSTER_ID`, `CC_COMPUTE_POOL_ID`, `CC_PRINCIPAL_ID` | optional: use these existing resources instead of creating new ones (see below) |
-| `GLOBAL_KEY="yes"` | example 04's lightning queries only |
-
-Examples 04 and 05 also need Stream Governance to be enabled in the Confluent
-environment, for their Schema Registry.
-
-Everything else in `.env` is written by `./account.sh apply`.
-[`.env.example`](.env.example) explains each value.
 
 ## Sharing an account
 

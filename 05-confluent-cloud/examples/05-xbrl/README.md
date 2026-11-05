@@ -18,7 +18,7 @@ shared enrichment. And it keeps only the figures: the converted document of a
 
 ## Run it
 
-After the [account setup](../../README.md#quick-start), set
+After the [account setup](../../../docs/05-confluent-cloud/ACCOUNT.md), set
 `DOCLING_SERVICE_URL` and `DOCLING_API_KEY` in `.env`. The environment needs
 Stream Governance on, for its Schema Registry, and you need a JDK to build the
 Java UDF. SEC EDGAR asks every client to identify itself (its

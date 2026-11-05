@@ -16,7 +16,7 @@ does, through a link that expires after 10 minutes.
 
 ## Run it
 
-After the [account setup](../../README.md#quick-start), set
+After the [account setup](../../../docs/05-confluent-cloud/ACCOUNT.md), set
 `DOCLING_SERVICE_URL` and `DOCLING_API_KEY` in `.env`. You also need the AWS
 CLI, signed in to an account where you can create a bucket, a queue and an
 IAM user. Then, here:

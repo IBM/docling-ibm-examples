@@ -16,7 +16,7 @@ There are two Flink statements, split at the chunk topic:
 
 ## Run it
 
-After completing the [account setup](../../README.md#quick-start), set
+After completing the [account setup](../../../docs/05-confluent-cloud/ACCOUNT.md), set
 `DOCLING_SERVICE_URL` and `DOCLING_API_KEY` in `.env`. Then, here:
 
 ```bash

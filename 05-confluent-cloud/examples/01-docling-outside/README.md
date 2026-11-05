@@ -15,7 +15,7 @@ as it is here.
 
 ## Run it
 
-After the [account setup](../../README.md#quick-start):
+After the [account setup](../../../docs/05-confluent-cloud/ACCOUNT.md):
 
 ```bash
 ./setup.sh info           # every name this example will use

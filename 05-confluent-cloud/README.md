@@ -4,6 +4,19 @@
 [Docling](https://github.com/docling-project/docling) and [Confluent Cloud](https://confluent.io) for
 Apache Flink.**
 
+> [!IMPORTANT]
+> **Start here: [set up your Confluent Cloud account](../docs/05-confluent-cloud/ACCOUNT.md).**
+> You do this once, before any example. The guide covers the tools and keys you
+> need, every command, what is billed, and how to fix common errors.
+>
+> ```bash
+> cd 05-confluent-cloud
+> ./account.sh init     # asks for each value and says where to get it
+> ./account.sh plan     # shows what would be created; creates nothing
+> ./account.sh apply    # asks first, then creates it, and that is billed
+> ./account.sh check    # confirms the keys work
+> ```
+
 Five complete examples. Each is a different way to get documents into a
 stream: three turn them into clean, searchable chunks and share one
 enrichment; the fourth extracts invoice fields and drives a live dashboard;
@@ -74,7 +87,7 @@ You need:
    **Accounts & access**, pick your user, and check its role bindings for
    **OrganizationAdmin**. Whoever created the account has it; otherwise ask an
    admin of the organization.
-2. Open the menu at the top right → **API keys** → **Add API key**.
+2. Open the menu at the top right → **User settings** → **API keys** → **Add API key**.
 3. For the account, pick **My account** — not a service account. A key can do
    what its owner can, and nothing more.
 4. For the scope, pick **Cloud resource management**.
@@ -200,6 +213,7 @@ common/flink/                           the enrichment statements
 common/udf/                             Python UDFs: normalize, PII guard, chunking
 common/udf-java/                        Java UDFs: the calls to Docling, S3 presigning
 examples/<n>/                           env.sh, flink/, terraform/, setup.sh, pipeline.sh, README
+../docs/05-confluent-cloud/ACCOUNT.md   setting up your account: every account.sh command
 ../docs/05-confluent-cloud/LIMITS.md    what Confluent Cloud Flink will and won't run — read this
 ```
 

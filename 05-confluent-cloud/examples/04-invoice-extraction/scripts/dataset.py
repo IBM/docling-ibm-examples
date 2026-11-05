@@ -203,8 +203,8 @@ def card(records: list[dict[str, Any]], target: dict[str, Any], runs: list[dict[
 
 > **Fictional.** Every company, person, address, VAT id and IBAN here is
 > invented; every page says so along its edge. Generated for the Docling ×
-> Confluent Cloud demo (example 04, `examples/04-invoice-extraction` in
-> `docling-project/docling-confluent-cloud`), and usable on its own to evaluate
+> Confluent Cloud demo (`05-confluent-cloud/examples/04-invoice-extraction` in
+> `IBM/docling-ibm-examples`), and usable on its own to evaluate
 > structured extraction from invoices.
 
 **{len(records)} supplier invoices** of a fictional Munich company, Lumen

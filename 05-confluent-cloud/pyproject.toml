@@ -7,7 +7,7 @@
 #   uv run common/drain_topic.py --topic dol.ex01.chunks.enriched
 #   uv run --project ../.. scripts/produce_chunks.py --sample   (from an example)
 [project]
-name = "docling-confluent-cloud"
+name = "docling-ibm-examples-confluent-cloud"
 version = "0.2.0"
 description = "Docling and Confluent Cloud for Apache Flink, one complete example at a time"
 readme = "README.md"

@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 740" width="1200" height="740" role="img" aria-labelledby="t d">
-  <title id="t">docling-confluent-cloud — five ways into a stream</title>
+  <title id="t">Docling and Confluent Cloud — five ways into a stream</title>
   <desc id="d">Five examples. 01: Docling for IBM watsonx, outside Confluent Cloud, streams chunks in. 02: a topic of URLs, converted by Docling called from Flink. 03: uploads to a private S3 bucket, converted the same way. All three feed the same shared enrichment (normalize, PII guard, dedup, quality gate) into enriched, quarantine and rejected topics. 04: invoices on a simulated clock, fields extracted by Docling, converted to EUR and aggregated into a live dashboard with lightning queries. 05: SEC filings as they are published, each report converted by Docling called from Flink, the financial figures extracted and turned into events.</desc>
   <!-- drawn by docs/05-confluent-cloud/diagrams/draw.py — edit that, not this -->
   <defs>

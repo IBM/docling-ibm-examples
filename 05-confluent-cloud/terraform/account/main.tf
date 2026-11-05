@@ -179,7 +179,7 @@ locals {
 resource "confluent_service_account" "this" {
   count        = local.make_principal ? 1 : 0
   display_name = local.name
-  description  = "docling-confluent-cloud: owns the API keys, runs the statements"
+  description  = "docling-ibm-examples: owns the API keys, runs the statements"
 }
 
 resource "confluent_role_binding" "environment_admin" {
@@ -215,7 +215,7 @@ locals {
 # A *Flink region* key. Submits statements, and nothing else does.
 resource "confluent_api_key" "flink" {
   display_name = "${local.ns}-flink"
-  description  = "docling-confluent-cloud"
+  description  = "docling-ibm-examples"
   owner {
     id          = local.owner.id
     api_version = local.owner.api_version
@@ -236,7 +236,7 @@ resource "confluent_api_key" "flink" {
 # connector; Flink reads and writes the topics as itself.
 resource "confluent_api_key" "kafka" {
   display_name = "${local.ns}-kafka"
-  description  = "docling-confluent-cloud"
+  description  = "docling-ibm-examples"
   owner {
     id          = local.owner.id
     api_version = local.owner.api_version
@@ -259,7 +259,7 @@ resource "confluent_api_key" "kafka" {
 resource "confluent_api_key" "schema_registry" {
   count        = local.has_schema_registry ? 1 : 0
   display_name = "${local.ns}-schema-registry"
-  description  = "docling-confluent-cloud"
+  description  = "docling-ibm-examples"
   owner {
     id          = local.owner.id
     api_version = local.owner.api_version
@@ -284,7 +284,7 @@ resource "confluent_api_key" "schema_registry" {
 resource "confluent_api_key" "global" {
   count        = local.global_key ? 1 : 0
   display_name = "${local.ns}-global-rtce"
-  description  = "docling-confluent-cloud: Real-Time Context Engine"
+  description  = "docling-ibm-examples: Real-Time Context Engine"
   owner {
     id          = local.owner.id
     api_version = local.owner.api_version

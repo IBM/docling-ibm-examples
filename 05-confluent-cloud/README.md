@@ -1,4 +1,4 @@
-# docling-confluent-cloud
+# 05 · Streaming pipelines with Confluent Cloud
 
 **From unstructured documents to live insight, with
 [Docling](https://github.com/docling-project/docling) and [Confluent Cloud](https://confluent.io) for
@@ -75,7 +75,7 @@ With the [Confluent CLI](https://docs.confluent.io/confluent-cli/current/overvie
 logged in as yourself, the same key is:
 
 ```bash
-confluent api-key create --resource cloud --description "docling-confluent-cloud"
+confluent api-key create --resource cloud --description "docling-ibm-examples"
 ```
 
 Copy the key and the secret into `.env` as `CONFLUENT_CLOUD_API_KEY` and `CONFLUENT_CLOUD_API_SECRET`.

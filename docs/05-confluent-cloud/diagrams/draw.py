@@ -311,7 +311,7 @@ def fan(g: Svg, x0, y0, x1, ys) -> None:
 
 
 def overview() -> Svg:
-    g = Svg(1200, 740, "docling-confluent-cloud — five ways into a stream",
+    g = Svg(1200, 740, "Docling and Confluent Cloud — five ways into a stream",
             "Five examples. 01: Docling for IBM watsonx, outside Confluent Cloud, streams chunks in. 02: a topic of URLs, "
             "converted by Docling called from Flink. 03: uploads to a private S3 bucket, converted the same "
             "way. All three feed the same shared enrichment (normalize, PII guard, dedup, quality gate) into "

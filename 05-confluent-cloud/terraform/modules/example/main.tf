@@ -172,7 +172,7 @@ resource "confluent_flink_artifact" "udf" {
   for_each = local.artifacts
 
   display_name     = "${each.value.name}-${substr(local.artifact_sources[each.key], 0, 8)}"
-  description      = "docling-confluent-cloud ${local.app}"
+  description      = "docling-ibm-examples ${local.app}"
   cloud            = upper(var.env.CC_CLOUD)
   region           = var.env.CC_REGION
   runtime_language = each.value.language

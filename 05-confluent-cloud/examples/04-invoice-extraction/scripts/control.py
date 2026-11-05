@@ -67,6 +67,20 @@ async def _json(request: Request) -> dict:
     return body if isinstance(body, dict) else {}
 
 
+DOC_ID = re.compile(r"[A-Za-z0-9_-]{1,64}")
+
+
+def _invoice_pdf(pdfs: pathlib.Path, doc_id: str) -> pathlib.Path | None:
+    """The invoice's PDF, or None when doc_id, which comes from a URL, is not an id or leaves ``pdfs``."""
+    if not DOC_ID.fullmatch(doc_id):
+        return None
+    root = os.path.realpath(pdfs)
+    path = os.path.realpath(os.path.join(root, f"{doc_id}.pdf"))
+    if not path.startswith(root + os.sep):
+        return None
+    return pathlib.Path(path)
+
+
 @functools.lru_cache(maxsize=256)
 def _render_page(path: pathlib.Path, page: int) -> bytes | None:
     if not path.is_file() or page < 1:
@@ -395,12 +409,13 @@ def serve(clock: Clock, env: dict[str, str], port: int) -> None:
     async def api_trace(doc_id: str, source: str = "auto"):
         """One invoice, stage by stage — from lightning queries when the engine
         answers, from the dashboard's own consumer otherwise."""
-        out = {**board.trace(doc_id), "pages": _page_count(pdfs / f"{doc_id}.pdf")}
+        pdf = _invoice_pdf(pdfs, doc_id)
+        out = {**board.trace(doc_id), "pages": _page_count(pdf) if pdf else 0}
         client = lq()
         if source == "consumer" or client is None or not client.global_key:
             return out
         # The id goes into SQL, so it is held to the shape ids have here.
-        if not re.fullmatch(r"[A-Za-z0-9_-]{1,64}", doc_id):
+        if not DOC_ID.fullmatch(doc_id):
             raise HTTPException(400, "not a document id")
         lookups = {"extraction": env.get("EXTRACTIONS_TOPIC"), "invoice": env.get("INVOICES_TOPIC"),
                    "spend": env.get("SPEND_TOPIC")}
@@ -428,7 +443,8 @@ def serve(clock: Clock, env: dict[str, str], port: int) -> None:
     # while a PNG shows everywhere. Rendered once per page and kept.
     @app.get("/preview/{doc_id}/{page}.png")
     def preview(doc_id: str, page: int):
-        png = _render_page(pdfs / f"{doc_id}.pdf", page)
+        pdf = _invoice_pdf(pdfs, doc_id)
+        png = _render_page(pdf, page) if pdf else None
         if png is None:
             raise HTTPException(404, "no such invoice page — run scripts/generate.py?")
         return Response(png, media_type="image/png", headers={"Cache-Control": "max-age=3600"})

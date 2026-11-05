@@ -1,0 +1,61 @@
+{
+  "doc_id": "0001286043_000128604326000058",
+  "company_name": "KITE REALTY GROUP TRUST",
+  "cik": "0001286043",
+  "cik_short": "1286043",
+  "form": "10-Q",
+  "accession_number": "0001286043-26-000058",
+  "accession_number_raw": "000128604326000058",
+  "filing_date": "2026-10-30",
+  "updated": "2026-10-30T17:26:48-04:00",
+  "size": "11 MB",
+  "filing_details_url": "https://www.sec.gov/Archives/edgar/data/1286043/000128604326000058/",
+  "filing_index_url": "https://www.sec.gov/Archives/edgar/data/1286043/000128604326000058/0001286043-26-000058-index.htm",
+  "filing_index_json_url": "https://www.sec.gov/Archives/edgar/data/1286043/000128604326000058/index.json",
+  "xbrl_zip_url": "https://www.sec.gov/Archives/edgar/data/1286043/000128604326000058/0001286043-26-000058-xbrl.zip",
+  "ixbrl_file": "krg-20260930.htm",
+  "ixbrl_url": "https://www.sec.gov/Archives/edgar/data/1286043/000128604326000058/krg-20260930.htm",
+  "ixbrl_size": 2186177,
+  "xbrl_instance_file": "krg-20260930_htm.xml",
+  "xbrl_instance_url": "https://www.sec.gov/Archives/edgar/data/1286043/000128604326000058/krg-20260930_htm.xml",
+  "xbrl_instance_size": 1567555,
+  "taxonomy_files": [
+    {
+      "name": "krg-20260930.xsd",
+      "type": "schema",
+      "url": "https://www.sec.gov/Archives/edgar/data/1286043/000128604326000058/krg-20260930.xsd",
+      "size": 86048
+    },
+    {
+      "name": "krg-20260930_cal.xml",
+      "type": "calculation",
+      "url": "https://www.sec.gov/Archives/edgar/data/1286043/000128604326000058/krg-20260930_cal.xml",
+      "size": 94936
+    },
+    {
+      "name": "krg-20260930_def.xml",
+      "type": "definition",
+      "url": "https://www.sec.gov/Archives/edgar/data/1286043/000128604326000058/krg-20260930_def.xml",
+      "size": 561696
+    },
+    {
+      "name": "krg-20260930_lab.xml",
+      "type": "label",
+      "url": "https://www.sec.gov/Archives/edgar/data/1286043/000128604326000058/krg-20260930_lab.xml",
+      "size": 830007
+    },
+    {
+      "name": "krg-20260930_pre.xml",
+      "type": "presentation",
+      "url": "https://www.sec.gov/Archives/edgar/data/1286043/000128604326000058/krg-20260930_pre.xml",
+      "size": 765897
+    }
+  ],
+  "taxonomy_urls": [
+    "https://www.sec.gov/Archives/edgar/data/1286043/000128604326000058/krg-20260930.xsd",
+    "https://www.sec.gov/Archives/edgar/data/1286043/000128604326000058/krg-20260930_cal.xml",
+    "https://www.sec.gov/Archives/edgar/data/1286043/000128604326000058/krg-20260930_def.xml",
+    "https://www.sec.gov/Archives/edgar/data/1286043/000128604326000058/krg-20260930_lab.xml",
+    "https://www.sec.gov/Archives/edgar/data/1286043/000128604326000058/krg-20260930_pre.xml"
+  ]
+}

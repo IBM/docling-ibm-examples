@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  The Java UDF artifact: the one piece of this repo that reaches outside
+  Confluent Cloud.
+
+  It is Java and not Python for a reason that is not a preference. A Confluent
+  Cloud Python UDF has no TLS in its runtime at all — urllib reports
+  "unknown url type: https", because the interpreter is built without ssl —
+  and binding a Python function to a CONNECTION is accepted by CREATE FUNCTION
+  and then fails at runtime. External connectivity is a Java-only feature. See
+  docs/05-confluent-cloud/LIMITS.md, which records how that was established.
+
+  Shaded, because a UDF artifact is one JAR and the runtime unpacks nothing
+  else. `flink-table-api-java` and log4j are `provided` — the runtime has them,
+  and bundling them is how you get NoSuchMethodError at the first call.
+
+  Jackson is pinned to 2.22.2 deliberately: Confluent's own UDF example bundles
+  exactly this version — which is the version on the runtime classpath. "The
+  runtime version takes precedence", so matching it is the difference between a
+  working UDF and a dependency conflict that only shows up in production.
+
+  No HTTP client library: both functions speak the JDK's own java.net.http, so
+  that every timeout can be capped by the function's deadline (see
+  DoclingConvert). docling-java was used by the first, synchronous
+  DoclingConvert; its polling loop owns its timeouts, which an async UDF with
+  a hard ~60 s limit cannot afford.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>ai.docling.confluent</groupId>
+  <artifactId>docling-flink-udf</artifactId>
+  <version>0.1.0</version>
+  <packaging>jar</packaging>
+  <name>Docling Flink UDF</name>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- Confluent Cloud's UDF runtime is JDK 21; 17 keeps the bytecode
+         portable, and `release` (not source/target) is what actually checks
+         the API surface against that version. -->
+    <maven.compiler.release>17</maven.compiler.release>
+    <flink.version>1.20.0</flink.version>
+    <jackson.version>2.22.2</jackson.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.flink</groupId>
+      <artifactId>flink-table-api-java</artifactId>
+      <version>${flink.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>5.11.4</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>docling-flink-udf</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.5.2</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.6.2</version>
+        <configuration>
+          <createDependencyReducedPom>false</createDependencyReducedPom>
+          <artifactSet>
+            <includes>
+              <include>*:*</include>
+            </includes>
+          </artifactSet>
+          <filters>
+            <filter>
+              <artifact>*</artifact>
+              <excludes>
+                <!-- Signed jars stop verifying once their contents move into
+                     another archive, and the JVM then refuses to load them. -->
+                <exclude>META-INF/*.SF</exclude>
+                <exclude>META-INF/*.DSA</exclude>
+                <exclude>META-INF/*.RSA</exclude>
+                <!-- A shaded jar has one module path, and several of these
+                     dependencies ship their own module-info. -->
+                <exclude>module-info.class</exclude>
+                <exclude>META-INF/versions/*/module-info.class</exclude>
+              </excludes>
+            </filter>
+          </filters>
+          <transformers>
+            <!-- Keeps every META-INF/services entry of the shaded dependencies. -->
+            <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+          </transformers>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals><goal>shade</goal></goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

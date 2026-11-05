@@ -1,0 +1,61 @@
+{
+  "doc_id": "0001424864_000106299326005608",
+  "company_name": "Rise Gold Corp.",
+  "cik": "0001424864",
+  "cik_short": "1424864",
+  "form": "10-K",
+  "accession_number": "0001062993-26-005608",
+  "accession_number_raw": "000106299326005608",
+  "filing_date": "2026-10-29",
+  "updated": "2026-10-29T17:08:07-04:00",
+  "size": "10 MB",
+  "filing_details_url": "https://www.sec.gov/Archives/edgar/data/1424864/000106299326005608/",
+  "filing_index_url": "https://www.sec.gov/Archives/edgar/data/1424864/000106299326005608/0001062993-26-005608-index.htm",
+  "filing_index_json_url": "https://www.sec.gov/Archives/edgar/data/1424864/000106299326005608/index.json",
+  "xbrl_zip_url": "https://www.sec.gov/Archives/edgar/data/1424864/000106299326005608/0001062993-26-005608-xbrl.zip",
+  "ixbrl_file": "form10k.htm",
+  "ixbrl_url": "https://www.sec.gov/Archives/edgar/data/1424864/000106299326005608/form10k.htm",
+  "ixbrl_size": 1723101,
+  "xbrl_instance_file": "form10k_htm.xml",
+  "xbrl_instance_url": "https://www.sec.gov/Archives/edgar/data/1424864/000106299326005608/form10k_htm.xml",
+  "xbrl_instance_size": 1094156,
+  "taxonomy_files": [
+    {
+      "name": "ryes-20260731.xsd",
+      "type": "schema",
+      "url": "https://www.sec.gov/Archives/edgar/data/1424864/000106299326005608/ryes-20260731.xsd",
+      "size": 91811
+    },
+    {
+      "name": "ryes-20260731_cal.xml",
+      "type": "calculation",
+      "url": "https://www.sec.gov/Archives/edgar/data/1424864/000106299326005608/ryes-20260731_cal.xml",
+      "size": 42533
+    },
+    {
+      "name": "ryes-20260731_def.xml",
+      "type": "definition",
+      "url": "https://www.sec.gov/Archives/edgar/data/1424864/000106299326005608/ryes-20260731_def.xml",
+      "size": 237696
+    },
+    {
+      "name": "ryes-20260731_lab.xml",
+      "type": "label",
+      "url": "https://www.sec.gov/Archives/edgar/data/1424864/000106299326005608/ryes-20260731_lab.xml",
+      "size": 963047
+    },
+    {
+      "name": "ryes-20260731_pre.xml",
+      "type": "presentation",
+      "url": "https://www.sec.gov/Archives/edgar/data/1424864/000106299326005608/ryes-20260731_pre.xml",
+      "size": 393500
+    }
+  ],
+  "taxonomy_urls": [
+    "https://www.sec.gov/Archives/edgar/data/1424864/000106299326005608/ryes-20260731.xsd",
+    "https://www.sec.gov/Archives/edgar/data/1424864/000106299326005608/ryes-20260731_cal.xml",
+    "https://www.sec.gov/Archives/edgar/data/1424864/000106299326005608/ryes-20260731_def.xml",
+    "https://www.sec.gov/Archives/edgar/data/1424864/000106299326005608/ryes-20260731_lab.xml",
+    "https://www.sec.gov/Archives/edgar/data/1424864/000106299326005608/ryes-20260731_pre.xml"
+  ]
+}

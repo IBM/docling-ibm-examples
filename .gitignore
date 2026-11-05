@@ -19,8 +19,45 @@ uv.lock
 target/
 .tools/
 
+# Terraform. The state holds every secret the keys and connections were made
+# with, so it stays on this machine. The lock files pin the providers and are
+# committed.
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+
 # Outputs written by the examples
 output/
 converted/
+/05-confluent-cloud/examples/04-invoice-extraction/udf/src/invoice_udf/_truth.py
+/05-confluent-cloud/examples/04-invoice-extraction/data/extractions/
+/05-confluent-cloud/examples/04-invoice-extraction/data/dataset/
+
+# Binary media and documents, in example 05 and the top-level docs. The invoice
+# PDFs are in a public Hugging Face bucket: see the README in
+# 05-confluent-cloud/examples/04-invoice-extraction.
+/05-confluent-cloud/**/*.pdf
+/05-confluent-cloud/**/*.jpg
+/05-confluent-cloud/**/*.jpeg
+/05-confluent-cloud/**/*.png
+/05-confluent-cloud/**/*.gif
+/05-confluent-cloud/**/*.webp
+/05-confluent-cloud/**/*.mp4
+/05-confluent-cloud/**/*.wav
+/05-confluent-cloud/**/*.mp3
+/docs/**/*.pdf
+/docs/**/*.jpg
+/docs/**/*.jpeg
+/docs/**/*.png
+/docs/**/*.gif
+/docs/**/*.webp
+/docs/**/*.mp4
+/docs/**/*.wav
+/docs/**/*.mp3
+# The exceptions: the READMEs link to these.
+!/docs/05-confluent-cloud/images/ex04-flow.gif
+!/docs/05-confluent-cloud/images/ex04-dashboard.jpg
+!/05-confluent-cloud/examples/04-invoice-extraction/video/ex04-docling-confluent.mp4
 
 .DS_Store

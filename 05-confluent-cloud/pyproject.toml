@@ -1,0 +1,57 @@
+# The laptop side: the scripts under common/ and examples/*/scripts/, and
+# nothing else. The pipelines themselves have no Python dependencies at all —
+# they are SQL, and what Python there is lives in common/udf/, which has its own
+# project because Confluent Cloud's UDF runtime pins its dependency set.
+#
+#   uv run common/topics.py list
+#   uv run common/drain_topic.py --topic dol.ex01.chunks.enriched
+#   uv run --project ../.. scripts/produce_chunks.py --sample   (from an example)
+[project]
+name = "docling-confluent-cloud"
+version = "0.2.0"
+description = "Docling and Confluent Cloud for Apache Flink, one complete example at a time"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "confluent-kafka>=2.15,<3",
+]
+
+# Per example, and only on demand. Example 03: `--group aws` for
+# scripts/backfill.py, which lists the bucket and fills the queue. Example 04:
+# `--group invoices` to generate the invoice PDFs, `--group control` for its
+# control app and dashboard, `--group extract` to run the extraction from the
+# laptop (scripts/extract.py).
+[dependency-groups]
+aws = [
+    "boto3>=1.40",
+]
+control = [
+    "fastapi>=0.142.2",
+    "pypdfium2>=5.13.0",
+    "uvicorn>=0.54.0",
+]
+# The Docling Service Client with the extraction API: docling-project/docling#4218,
+# from its branch until it is released. huggingface_hub for the private bucket
+# the PDFs are fetched from.
+extract = [
+    "docling-slim[service-client] @ git+https://github.com/docling-project/docling@cau/extraction-api-service-models",
+    "huggingface-hub>=1.0",
+]
+dev = [
+    "ruff>=0.14",
+]
+invoices = [
+    "pillow>=12.3.0",
+    "pypdfium2>=5.13.0",
+    "reportlab>=5.0.1",
+]
+
+[tool.ruff]
+line-length = 120
+src = ["common", "examples"]
+
+[tool.ruff.lint]
+# E402 selected on purpose: several scripts must extend sys.path before
+# importing, and the `# noqa: E402` on those lines should mean something rather
+# than being decoration.
+extend-select = ["E402", "I"]

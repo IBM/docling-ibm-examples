@@ -1,0 +1,61 @@
+{
+  "doc_id": "0001273685_000127368526000078",
+  "company_name": "ADAMAS TRUST, INC.",
+  "cik": "0001273685",
+  "cik_short": "1273685",
+  "form": "10-Q",
+  "accession_number": "0001273685-26-000078",
+  "accession_number_raw": "000127368526000078",
+  "filing_date": "2026-10-30",
+  "updated": "2026-10-30T17:24:50-04:00",
+  "size": "30 MB",
+  "filing_details_url": "https://www.sec.gov/Archives/edgar/data/1273685/000127368526000078/",
+  "filing_index_url": "https://www.sec.gov/Archives/edgar/data/1273685/000127368526000078/0001273685-26-000078-index.htm",
+  "filing_index_json_url": "https://www.sec.gov/Archives/edgar/data/1273685/000127368526000078/index.json",
+  "xbrl_zip_url": "https://www.sec.gov/Archives/edgar/data/1273685/000127368526000078/0001273685-26-000078-xbrl.zip",
+  "ixbrl_file": "adam-20260930.htm",
+  "ixbrl_url": "https://www.sec.gov/Archives/edgar/data/1273685/000127368526000078/adam-20260930.htm",
+  "ixbrl_size": 6513782,
+  "xbrl_instance_file": "adam-20260930_htm.xml",
+  "xbrl_instance_url": "https://www.sec.gov/Archives/edgar/data/1273685/000127368526000078/adam-20260930_htm.xml",
+  "xbrl_instance_size": 7011332,
+  "taxonomy_files": [
+    {
+      "name": "adam-20260930.xsd",
+      "type": "schema",
+      "url": "https://www.sec.gov/Archives/edgar/data/1273685/000127368526000078/adam-20260930.xsd",
+      "size": 156930
+    },
+    {
+      "name": "adam-20260930_cal.xml",
+      "type": "calculation",
+      "url": "https://www.sec.gov/Archives/edgar/data/1273685/000127368526000078/adam-20260930_cal.xml",
+      "size": 170740
+    },
+    {
+      "name": "adam-20260930_def.xml",
+      "type": "definition",
+      "url": "https://www.sec.gov/Archives/edgar/data/1273685/000127368526000078/adam-20260930_def.xml",
+      "size": 1072986
+    },
+    {
+      "name": "adam-20260930_lab.xml",
+      "type": "label",
+      "url": "https://www.sec.gov/Archives/edgar/data/1273685/000127368526000078/adam-20260930_lab.xml",
+      "size": 1410133
+    },
+    {
+      "name": "adam-20260930_pre.xml",
+      "type": "presentation",
+      "url": "https://www.sec.gov/Archives/edgar/data/1273685/000127368526000078/adam-20260930_pre.xml",
+      "size": 1339983
+    }
+  ],
+  "taxonomy_urls": [
+    "https://www.sec.gov/Archives/edgar/data/1273685/000127368526000078/adam-20260930.xsd",
+    "https://www.sec.gov/Archives/edgar/data/1273685/000127368526000078/adam-20260930_cal.xml",
+    "https://www.sec.gov/Archives/edgar/data/1273685/000127368526000078/adam-20260930_def.xml",
+    "https://www.sec.gov/Archives/edgar/data/1273685/000127368526000078/adam-20260930_lab.xml",
+    "https://www.sec.gov/Archives/edgar/data/1273685/000127368526000078/adam-20260930_pre.xml"
+  ]
+}

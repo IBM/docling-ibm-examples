@@ -1,0 +1,202 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" width="1200" height="560" role="img" aria-labelledby="t d">
+  <title id="t">Example 04 — invoice extraction on a simulated clock</title>
+  <desc id="d">A control app releases simulated days of supplier invoices and ECB FX rates. One Flink statement extracts vendor, total and line items from each invoice — with Docling for real, or synthetically from the ground truth, chosen per release — merges the pages, converts to EUR at the day&#x27;s rate, and keeps daily, monthly and per-vendor spend reports. A live dashboard reads them; the Real-Time Context Engine serves lightning queries.</desc>
+  <!-- drawn by docs/05-confluent-cloud/diagrams/draw.py — edit that, not this -->
+  <defs>
+    <style>
+    text { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; fill: #1f1e1c; font-size: 13px; }
+    .bg { fill: #fbfaf8; stroke: #e6e4df; }
+    .title { font-size: 21px; font-weight: 700; letter-spacing: -0.2px; }
+    .lede { font-size: 14px; fill: #6b6964; }
+    .h { font-size: 15px; font-weight: 650; }
+    .m { font-size: 12.5px; fill: #6b6964; }
+    .s { font-size: 11.5px; fill: #6b6964; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }
+    .num { font-size: 12px; font-weight: 700; fill: #fff; }
+    .lbl { font-size: 11.5px; fill: #6b6964; font-style: italic;
+            paint-order: stroke; stroke: #fbfaf8; stroke-width: 5px; stroke-linejoin: round; }
+    .region-t { font-size: 12px; font-weight: 700; letter-spacing: 1.2px; }
+    .edge { fill: none; stroke: #6b6964; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .dash { stroke-dasharray: 6 5; }
+    .ah { fill: #6b6964; }
+    .card { stroke-width: 1.4; }
+    .region { stroke-width: 1.4; stroke-dasharray: 7 5; }
+    .ico { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .hl { fill-opacity: .75; }
+    .f-topic{fill:#e8f1fc;stroke:#2a78d6} .s-topic{stroke:#2a78d6} .c-topic{color:#2a78d6} .t-topic{fill:#0b3d75} .d-topic{fill:#2a78d6} .l-topic{fill:#e8f1fc} .f-flink{fill:#fff3e8;stroke:#eb6834} .s-flink{stroke:#eb6834} .c-flink{color:#eb6834} .t-flink{fill:#a8401a} .d-flink{fill:#eb6834} .l-flink{fill:#fff3e8} .f-docling{fill:#f1ecfe;stroke:#7a5af8} .s-docling{stroke:#7a5af8} .c-docling{color:#7a5af8} .t-docling{fill:#4a2fb8} .d-docling{fill:#7a5af8} .l-docling{fill:#f1ecfe} .f-ok{fill:#e8f6ee;stroke:#1f9d55} .s-ok{stroke:#1f9d55} .c-ok{color:#1f9d55} .t-ok{fill:#11653a} .d-ok{fill:#1f9d55} .l-ok{fill:#e8f6ee} .f-warn{fill:#fff5e0;stroke:#d69211} .s-warn{stroke:#d69211} .c-warn{color:#d69211} .t-warn{fill:#7a4e00} .d-warn{fill:#d69211} .l-warn{fill:#fff5e0} .f-bad{fill:#fdecea;stroke:#d1453b} .s-bad{stroke:#d1453b} .c-bad{color:#d1453b} .t-bad{fill:#8f1f17} .d-bad{fill:#d1453b} .l-bad{fill:#fdecea} .f-aws{fill:#fdf6ec;stroke:#b07a2a} .s-aws{stroke:#b07a2a} .c-aws{color:#b07a2a} .t-aws{fill:#6b4510} .d-aws{fill:#b07a2a} .l-aws{fill:#fdf6ec} .f-ext{fill:#ffffff;stroke:#9a9892} .s-ext{stroke:#9a9892} .c-ext{color:#9a9892} .t-ext{fill:#2f2e2b} .d-ext{fill:#9a9892} .l-ext{fill:#ffffff} .f-mute{fill:#f3f2ef;stroke:#c4c2bc} .s-mute{stroke:#c4c2bc} .c-mute{color:#c4c2bc} .t-mute{fill:#6b6964} .d-mute{fill:#c4c2bc} .l-mute{fill:#f3f2ef}
+    @media (prefers-color-scheme: dark) {
+      text { fill: #ecebe8; }
+      .bg { fill: #18181a; stroke: #333336; }
+      .lede, .m, .s { fill: #a3a19c; }
+      .lbl { fill: #a3a19c; stroke: #18181a; }
+      .edge { stroke: #a3a19c; }
+      .ah { fill: #a3a19c; }
+      .shadow { filter: none; }
+      .f-topic{fill:#13243a;stroke:#5a9be6} .s-topic{stroke:#5a9be6} .c-topic{color:#5a9be6} .t-topic{fill:#cfe3fb} .d-topic{fill:#5a9be6} .l-topic{fill:#13243a} .f-flink{fill:#2a1e14;stroke:#eb6834} .s-flink{stroke:#eb6834} .c-flink{color:#eb6834} .t-flink{fill:#f5a274} .d-flink{fill:#eb6834} .l-flink{fill:#2a1e14} .f-docling{fill:#211a38;stroke:#9b85fb} .s-docling{stroke:#9b85fb} .c-docling{color:#9b85fb} .t-docling{fill:#d9cffe} .d-docling{fill:#9b85fb} .l-docling{fill:#211a38} .f-ok{fill:#12261b;stroke:#3fbf77} .s-ok{stroke:#3fbf77} .c-ok{color:#3fbf77} .t-ok{fill:#bfead2} .d-ok{fill:#3fbf77} .l-ok{fill:#12261b} .f-warn{fill:#2b2312;stroke:#e0a83a} .s-warn{stroke:#e0a83a} .c-warn{color:#e0a83a} .t-warn{fill:#f6dca4} .d-warn{fill:#e0a83a} .l-warn{fill:#2b2312} .f-bad{fill:#2e1716;stroke:#e8736a} .s-bad{stroke:#e8736a} .c-bad{color:#e8736a} .t-bad{fill:#f6c4bf} .d-bad{fill:#e8736a} .l-bad{fill:#2e1716} .f-aws{fill:#2a2116;stroke:#d19a4a} .s-aws{stroke:#d19a4a} .c-aws{color:#d19a4a} .t-aws{fill:#f0d3a6} .d-aws{fill:#d19a4a} .l-aws{fill:#2a2116} .f-ext{fill:#232325;stroke:#8f8d88} .s-ext{stroke:#8f8d88} .c-ext{color:#8f8d88} .t-ext{fill:#ecebe8} .d-ext{fill:#8f8d88} .l-ext{fill:#232325} .f-mute{fill:#29292b;stroke:#55544f} .s-mute{stroke:#55544f} .c-mute{color:#55544f} .t-mute{fill:#a3a19c} .d-mute{fill:#55544f} .l-mute{fill:#29292b}
+    }
+    .flow { fill: none; stroke: #2a78d6; stroke-width: 6; stroke-linecap: round;
+            stroke-dasharray: 0 30; animation: flow .9s linear infinite; }
+    .march { animation: march 1.1s linear infinite; }
+    .tw { animation: tw 2.6s ease-in-out infinite; }
+    @keyframes flow { to { stroke-dashoffset: -30; } }
+    @keyframes march { to { stroke-dashoffset: -11; } }
+    @keyframes tw { 50% { opacity: .4; } }
+    @media (prefers-color-scheme: dark) { .flow { stroke: #7fb4f0; } }
+    @media (prefers-reduced-motion: reduce) {
+      .flow { display: none; }
+      .march, .tw { animation: none; }
+    }
+    </style>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="140%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="2.2" flood-color="#000" flood-opacity=".10"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse">
+      <path class="ah" d="M0,0.5 L10,5 L0,9.5 z"/>
+    </marker>
+    <symbol id="i-doc" viewBox="0 0 24 24"><g class="ico"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 12h6M9 15h6M9 18h4"/></g></symbol>
+    <symbol id="i-docs" viewBox="0 0 24 24"><g class="ico"><path d="M8 3h7l4 4v11H8z"/><path d="M15 3v4h4"/><path d="M5 7v14h11"/></g></symbol>
+    <symbol id="i-laptop" viewBox="0 0 24 24"><g class="ico"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19.5h20"/></g></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><g class="ico"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></g></symbol>
+    <symbol id="i-bucket" viewBox="0 0 24 24"><g class="ico"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6l2 13c.3 1.5 2.9 2.5 6 2.5s5.7-1 6-2.5L20 6"/></g></symbol>
+    <symbol id="i-queue" viewBox="0 0 24 24"><g class="ico"><rect x="3" y="4" width="18" height="4.5" rx="1"/><rect x="3" y="10" width="18" height="4.5" rx="1"/><rect x="3" y="16" width="18" height="4.5" rx="1"/></g></symbol>
+    <symbol id="i-plug" viewBox="0 0 24 24"><g class="ico"><path d="M9 2v5M15 2v5"/><path d="M6 7h12v4a6 6 0 0 1-12 0z"/><path d="M12 17v5"/></g></symbol>
+    <symbol id="i-stream" viewBox="0 0 24 24"><g class="ico"><path d="M3 7c3-3 6 3 9 0s6 3 9 0"/><path d="M3 12c3-3 6 3 9 0s6 3 9 0"/><path d="M3 17c3-3 6 3 9 0s6 3 9 0"/></g></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><g class="ico"><path d="M11 3l1.9 5.6L18.5 10.5l-5.6 1.9L11 18l-1.9-5.6L3.5 10.5l5.6-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></g></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><g class="ico"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.5"/></g></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><g class="ico"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></g></symbol>
+    <symbol id="i-xcircle" viewBox="0 0 24 24"><g class="ico"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></g></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><g class="ico"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></g></symbol>
+    <symbol id="i-receipt" viewBox="0 0 24 24"><g class="ico"><path d="M6 3h12v18l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5L6 21z"/><path d="M9 8h6M9 12h6M9 16h3"/></g></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><g class="ico"><path d="M4 20h16"/><path d="M7 17v-5M12 17V7M17 17v-8"/></g></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24"><g class="ico"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></g></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24"><g class="ico"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M14.5 8.5l2 2"/></g></symbol>
+    <symbol id="i-euro" viewBox="0 0 24 24"><g class="ico"><path d="M17.5 6.5a7 7 0 1 0 0 11"/><path d="M4 10h9M4 14h9"/></g></symbol>
+    <symbol id="i-cloud" viewBox="0 0 24 24"><g class="ico"><path d="M7 18.5a5 5 0 0 1-.7-9.9A6.5 6.5 0 0 1 18.4 9.6 4.5 4.5 0 0 1 17.5 18.5z"/></g></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><g class="ico"><path d="M12 15V4M7 9l5-5 5 5"/><path d="M4 15v5h16v-5"/></g></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><g class="ico"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></g></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><g class="ico"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></g></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24"><g class="ico"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></g></symbol>
+    <symbol id="i-gauge" viewBox="0 0 24 24"><g class="ico"><path d="M4 17a8 8 0 0 1 16 0"/><path d="M12 17l4-5"/></g></symbol>
+    <symbol id="i-archive" viewBox="0 0 24 24"><g class="ico"><rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v11h14V9"/><path d="M10 13h4"/></g></symbol>
+    <symbol id="i-scissors" viewBox="0 0 24 24"><g class="ico"><circle cx="6" cy="7" r="3"/><circle cx="6" cy="17" r="3"/><path d="M8.5 8.5L20 19M8.5 15.5L20 5"/></g></symbol>
+    <symbol id="i-merge" viewBox="0 0 24 24"><g class="ico"><path d="M6 4v4a6 6 0 0 0 6 6h0a6 6 0 0 1 6 6"/><path d="M18 4v4a6 6 0 0 1-6 6"/></g></symbol>
+    <symbol id="i-dashboard" viewBox="0 0 24 24"><g class="ico"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M7 17v-4M11 17v-6M15 17v-3"/></g></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><g class="ico"><path d="M4 7h16M10 11v6M14 11v6"/><path d="M6 7l1 13h10l1-13"/><path d="M9 7V4h6v3"/></g></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><g class="ico"><path d="M20 11a8 8 0 0 0-14.6-4.5M4 13a8 8 0 0 0 14.6 4.5"/><path d="M5 3v4h4M19 21v-4h-4"/></g></symbol>
+  </defs>
+  <rect class="bg" x="0.5" y="0.5" width="1199" height="559" rx="18"/>
+  <path class="flow" d="M246,190 C266,190 266,170 285,170"/>
+  <path class="flow" d="M246,270 C266,270 266,440 285,440"/>
+  <path class="flow" d="M438,171 H461"/>
+  <path class="flow" d="M582,258 V271"/>
+  <path class="flow" d="M582,336 V349"/>
+  <path class="flow" d="M582,414 V427"/>
+  <path class="flow" d="M438,441 H452 V352 H477"/>
+  <path class="flow" d="M684,227 H723"/>
+  <path class="flow" d="M684,305 H723"/>
+  <path class="flow" d="M684,383 H723"/>
+  <path class="flow" d="M684,461 H723"/>
+  <path class="flow" d="M898,227 C920,227 920,245 941,245"/>
+  <text x="36" y="48" class="title">04 — Invoices to a live spend dashboard</text>
+  <text x="36" y="74" class="lede">Release a day of invoices; seconds later the charts move. Fields, not chunks: vendor, total, line items.</text>
+  <rect class="card f-ext shadow" filter="url(#shadow)" x="36" y="130" width="210" height="190" rx="14"/>
+  <circle cx="70" cy="166" r="18" class="l-ext"/>
+  <use href="#i-clock" x="59.65" y="155.65" width="20.7" height="20.7" class="c-ext"/>
+  <text x="98" y="162" class="h">Control app</text>
+  <text x="98" y="180" class="s">a simulated clock</text>
+  <rect x="56" y="206" width="170" height="6" rx="3" class="l-topic"/>
+  <rect x="56" y="206" width="96" height="6" rx="3" class="d-topic"/>
+  <circle cx="152" cy="209" r="8" class="f-topic card"/>
+  <text x="56" y="236" class="s">Jan</text>
+  <text x="226" y="236" class="s" text-anchor="end">Jun</text>
+  <rect class="card f-mute" x="56" y="252" width="82" height="30" rx="15.0"/>
+  <text x="68" y="271.5" class="m t-mute">Synthetic</text>
+  <rect class="card f-docling" x="142" y="252" width="84" height="30" rx="15.0"/>
+  <use href="#i-spark" x="151" y="259.0" width="16" height="16" class="c-docling tw"/>
+  <text x="173" y="271.5" class="m t-docling">Real</text>
+  <text x="56" y="304" class="s">+1 day · +1 week · Play</text>
+  <rect class="region f-flink" x="270" y="104" width="650" height="432" rx="16" fill-opacity=".45"/>
+  <use href="#i-cloud" x="286" y="115" width="18" height="18" class="c-flink"/>
+  <text x="310" y="129" class="region-t t-flink">CONFLUENT CLOUD</text>
+  <path class="edge" d="M246,190 C266,190 266,170 285,170" marker-end="url(#arrow)"/>
+  <rect class="card f-topic shadow" filter="url(#shadow)" x="288" y="146" width="150" height="50" rx="25.0"/>
+  <use href="#i-stream" x="302" y="161.0" width="20" height="20" class="c-topic"/>
+  <text x="330" y="168.0" class="h t-topic">submissions</text>
+  <text x="330" y="185.0" class="s">invoice PDFs</text>
+  <path class="edge" d="M246,270 C266,270 266,440 285,440" marker-end="url(#arrow)"/>
+  <rect class="card f-topic shadow" filter="url(#shadow)" x="288" y="416" width="150" height="50" rx="25.0"/>
+  <use href="#i-stream" x="302" y="431.0" width="20" height="20" class="c-topic"/>
+  <text x="330" y="438.0" class="h t-topic">fx.rates</text>
+  <text x="330" y="455.0" class="s">ECB, per day</text>
+  <rect class="card f-flink shadow" filter="url(#shadow)" x="464" y="130" width="236" height="386" rx="14"/>
+  <use href="#i-stream" x="480" y="144" width="20" height="20" class="c-flink"/>
+  <text x="508" y="160" class="h t-flink">pipeline</text>
+  <text x="480" y="180" class="s">one Flink statement, five views</text>
+  <path class="edge" d="M438,171 H461" marker-end="url(#arrow)"/>
+  <rect class="card f-docling shadow" filter="url(#shadow)" x="480" y="196" width="204" height="62" rx="12"/>
+  <circle cx="514" cy="227.0" r="18" class="l-docling"/>
+  <use href="#i-spark" x="503.65" y="216.65" width="20.7" height="20.7" class="c-docling tw"/>
+  <text x="542" y="222.5" class="h t-docling">extract</text>
+  <text x="542" y="241.5" class="m">Docling or synthetic</text>
+  <rect class="card f-flink shadow" filter="url(#shadow)" x="480" y="274" width="204" height="62" rx="12"/>
+  <circle cx="514" cy="305.0" r="18" class="l-flink"/>
+  <use href="#i-merge" x="503.65" y="294.65" width="20.7" height="20.7" class="c-flink"/>
+  <text x="542" y="300.5" class="h t-flink">invoice()</text>
+  <text x="542" y="319.5" class="m">merge pages · ok/review</text>
+  <path class="edge" d="M582,258 V271" marker-end="url(#arrow)"/>
+  <rect class="card f-flink shadow" filter="url(#shadow)" x="480" y="352" width="204" height="62" rx="12"/>
+  <circle cx="514" cy="383.0" r="18" class="l-flink"/>
+  <use href="#i-euro" x="503.65" y="372.65" width="20.7" height="20.7" class="c-flink"/>
+  <text x="542" y="378.5" class="h t-flink">× FX rate</text>
+  <text x="542" y="397.5" class="m">→ EUR, that day</text>
+  <path class="edge" d="M582,336 V349" marker-end="url(#arrow)"/>
+  <rect class="card f-flink shadow" filter="url(#shadow)" x="480" y="430" width="204" height="62" rx="12"/>
+  <circle cx="514" cy="461.0" r="18" class="l-flink"/>
+  <use href="#i-chart" x="503.65" y="450.65" width="20.7" height="20.7" class="c-flink"/>
+  <text x="542" y="456.5" class="h t-flink">GROUP BY</text>
+  <text x="542" y="475.5" class="m">day · month · vendor</text>
+  <path class="edge" d="M582,414 V427" marker-end="url(#arrow)"/>
+  <path class="edge" d="M438,441 H452 V352 H477" marker-end="url(#arrow)"/>
+  <path class="edge" d="M684,227 H723" marker-end="url(#arrow)"/>
+  <rect class="card f-topic shadow" filter="url(#shadow)" x="726" y="202" width="172" height="50" rx="25.0"/>
+  <use href="#i-stream" x="740" y="217.0" width="20" height="20" class="c-topic"/>
+  <text x="768" y="224.0" class="h t-topic">extractions</text>
+  <text x="768" y="241.0" class="s">verbatim, append</text>
+  <path class="edge" d="M684,305 H723" marker-end="url(#arrow)"/>
+  <rect class="card f-topic shadow" filter="url(#shadow)" x="726" y="280" width="172" height="50" rx="25.0"/>
+  <use href="#i-stream" x="740" y="295.0" width="20" height="20" class="c-topic"/>
+  <text x="768" y="302.0" class="h t-topic">invoices</text>
+  <text x="768" y="319.0" class="s">ok or review</text>
+  <path class="edge" d="M684,383 H723" marker-end="url(#arrow)"/>
+  <rect class="card f-topic shadow" filter="url(#shadow)" x="726" y="358" width="172" height="50" rx="25.0"/>
+  <use href="#i-stream" x="740" y="373.0" width="20" height="20" class="c-topic"/>
+  <text x="768" y="380.0" class="h t-topic">spend</text>
+  <text x="768" y="397.0" class="s">per invoice, EUR</text>
+  <path class="edge" d="M684,461 H723" marker-end="url(#arrow)"/>
+  <rect class="card f-topic shadow" filter="url(#shadow)" x="726" y="436" width="172" height="50" rx="25.0"/>
+  <use href="#i-stream" x="740" y="451.0" width="20" height="20" class="c-topic"/>
+  <text x="768" y="458.0" class="h t-topic">spend.daily …</text>
+  <text x="768" y="475.0" class="s">monthly · vendors</text>
+  <rect class="card f-ok shadow" filter="url(#shadow)" x="944" y="130" width="220" height="230" rx="14"/>
+  <circle cx="978" cy="166" r="18" class="l-ok"/>
+  <use href="#i-dashboard" x="967.65" y="155.65" width="20.7" height="20.7" class="c-ok"/>
+  <text x="1006" y="162" class="h t-ok">Live dashboard</text>
+  <text x="1006" y="180" class="s">localhost:8004</text>
+  <rect x="966" y="292" width="18" height="38" rx="3" class="d-ok" opacity="0.45"/>
+  <rect x="992" y="278" width="18" height="52" rx="3" class="d-ok" opacity="0.53"/>
+  <rect x="1018" y="286" width="18" height="44" rx="3" class="d-ok" opacity="0.61"/>
+  <rect x="1044" y="260" width="18" height="70" rx="3" class="d-ok" opacity="0.69"/>
+  <rect x="1070" y="269" width="18" height="61" rx="3" class="d-ok" opacity="0.77"/>
+  <rect x="1096" y="234" width="18" height="96" rx="3" class="d-ok" opacity="0.85"/>
+  <rect x="1122" y="248" width="18" height="82" rx="3" class="d-ok" opacity="0.93"/>
+  <path class="edge" d="M960,332 H1146" opacity=".5"/>
+  <text x="966" y="350" class="s">spend by month, in EUR</text>
+  <rect class="card f-warn shadow" filter="url(#shadow)" x="944" y="384" width="220" height="90" rx="12"/>
+  <circle cx="978" cy="429.0" r="18" class="l-warn"/>
+  <use href="#i-bolt" x="967.65" y="418.65" width="20.7" height="20.7" class="c-warn"/>
+  <text x="1006" y="415.0" class="h t-warn">⚡ Lightning</text>
+  <text x="1006" y="434.0" class="m">Real-Time Context Engine</text>
+  <text x="1006" y="452.0" class="m">lookups in milliseconds</text>
+  <path class="edge" d="M898,227 C920,227 920,245 941,245" marker-end="url(#arrow)"/>
+  <path class="edge dash march" d="M898,461 C920,461 920,430 941,430" marker-end="url(#arrow)"/>
+</svg>

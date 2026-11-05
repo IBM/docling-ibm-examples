@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Example 05's Java UDF artifact: dc_metrics, which converts a filing with
+  Docling and reads its headline figures. It has its own artifact, as example
+  04 has its own (Python) one, because nothing else uses it.
+
+  Java for the reason common/udf-java gives (see its pom.xml and
+  docs/05-confluent-cloud/LIMITS.md): a Confluent Cloud Python UDF cannot make an HTTPS call.
+
+  Shaded, with `flink-table-api-java` `provided`, and Jackson pinned to the
+  version of the runtime's classpath: all as in common/udf-java/pom.xml.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>ai.docling.confluent</groupId>
+  <artifactId>docling-xbrl-udf</artifactId>
+  <version>0.1.0</version>
+  <packaging>jar</packaging>
+  <name>Docling XBRL UDF</name>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- Confluent Cloud's UDF runtime is JDK 21; 17 keeps the bytecode
+         portable, and `release` (not source/target) is what actually checks
+         the API surface against that version. -->
+    <maven.compiler.release>17</maven.compiler.release>
+    <flink.version>1.20.0</flink.version>
+    <jackson.version>2.22.2</jackson.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.flink</groupId>
+      <artifactId>flink-table-api-java</artifactId>
+      <version>${flink.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>5.11.4</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>docling-xbrl-udf</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.5.2</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.6.2</version>
+        <configuration>
+          <createDependencyReducedPom>false</createDependencyReducedPom>
+          <artifactSet>
+            <includes>
+              <include>*:*</include>
+            </includes>
+          </artifactSet>
+          <filters>
+            <filter>
+              <artifact>*</artifact>
+              <excludes>
+                <!-- Signed jars stop verifying once their contents move into
+                     another archive, and the JVM then refuses to load them. -->
+                <exclude>META-INF/*.SF</exclude>
+                <exclude>META-INF/*.DSA</exclude>
+                <exclude>META-INF/*.RSA</exclude>
+                <!-- A shaded jar has one module path, and several of these
+                     dependencies ship their own module-info. -->
+                <exclude>module-info.class</exclude>
+                <exclude>META-INF/versions/*/module-info.class</exclude>
+              </excludes>
+            </filter>
+          </filters>
+          <transformers>
+            <!-- Keeps every META-INF/services entry of the shaded dependencies. -->
+            <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+          </transformers>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals><goal>shade</goal></goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

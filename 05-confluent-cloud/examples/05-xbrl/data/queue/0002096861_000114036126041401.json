@@ -1,0 +1,61 @@
+{
+  "doc_id": "0002096861_000114036126041401",
+  "company_name": "Sinda Ltd.",
+  "cik": "0002096861",
+  "cik_short": "2096861",
+  "form": "10-Q",
+  "accession_number": "0001140361-26-041401",
+  "accession_number_raw": "000114036126041401",
+  "filing_date": "2026-11-02",
+  "updated": "2026-11-02T06:45:50-05:00",
+  "size": "3 MB",
+  "filing_details_url": "https://www.sec.gov/Archives/edgar/data/2096861/000114036126041401/",
+  "filing_index_url": "https://www.sec.gov/Archives/edgar/data/2096861/000114036126041401/0001140361-26-041401-index.htm",
+  "filing_index_json_url": "https://www.sec.gov/Archives/edgar/data/2096861/000114036126041401/index.json",
+  "xbrl_zip_url": "https://www.sec.gov/Archives/edgar/data/2096861/000114036126041401/0001140361-26-041401-xbrl.zip",
+  "ixbrl_file": "ef20080588_10q.htm",
+  "ixbrl_url": "https://www.sec.gov/Archives/edgar/data/2096861/000114036126041401/ef20080588_10q.htm",
+  "ixbrl_size": 625117,
+  "xbrl_instance_file": "ef20080588_10q_htm.xml",
+  "xbrl_instance_url": "https://www.sec.gov/Archives/edgar/data/2096861/000114036126041401/ef20080588_10q_htm.xml",
+  "xbrl_instance_size": 424921,
+  "taxonomy_files": [
+    {
+      "name": "sind-20260930.xsd",
+      "type": "schema",
+      "url": "https://www.sec.gov/Archives/edgar/data/2096861/000114036126041401/sind-20260930.xsd",
+      "size": 33166
+    },
+    {
+      "name": "sind-20260930_cal.xml",
+      "type": "calculation",
+      "url": "https://www.sec.gov/Archives/edgar/data/2096861/000114036126041401/sind-20260930_cal.xml",
+      "size": 35474
+    },
+    {
+      "name": "sind-20260930_def.xml",
+      "type": "definition",
+      "url": "https://www.sec.gov/Archives/edgar/data/2096861/000114036126041401/sind-20260930_def.xml",
+      "size": 170668
+    },
+    {
+      "name": "sind-20260930_lab.xml",
+      "type": "label",
+      "url": "https://www.sec.gov/Archives/edgar/data/2096861/000114036126041401/sind-20260930_lab.xml",
+      "size": 338920
+    },
+    {
+      "name": "sind-20260930_pre.xml",
+      "type": "presentation",
+      "url": "https://www.sec.gov/Archives/edgar/data/2096861/000114036126041401/sind-20260930_pre.xml",
+      "size": 203887
+    }
+  ],
+  "taxonomy_urls": [
+    "https://www.sec.gov/Archives/edgar/data/2096861/000114036126041401/sind-20260930.xsd",
+    "https://www.sec.gov/Archives/edgar/data/2096861/000114036126041401/sind-20260930_cal.xml",
+    "https://www.sec.gov/Archives/edgar/data/2096861/000114036126041401/sind-20260930_def.xml",
+    "https://www.sec.gov/Archives/edgar/data/2096861/000114036126041401/sind-20260930_lab.xml",
+    "https://www.sec.gov/Archives/edgar/data/2096861/000114036126041401/sind-20260930_pre.xml"
+  ]
+}

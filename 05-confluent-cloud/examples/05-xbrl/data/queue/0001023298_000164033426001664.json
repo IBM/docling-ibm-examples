@@ -1,0 +1,61 @@
+{
+  "doc_id": "0001023298_000164033426001664",
+  "company_name": "alpha-En Corp",
+  "cik": "0001023298",
+  "cik_short": "1023298",
+  "form": "10-K",
+  "accession_number": "0001640334-26-001664",
+  "accession_number_raw": "000164033426001664",
+  "filing_date": "2026-10-09",
+  "updated": "2026-10-09T17:07:15-04:00",
+  "size": "8 MB",
+  "filing_details_url": "https://www.sec.gov/Archives/edgar/data/1023298/000164033426001664/",
+  "filing_index_url": "https://www.sec.gov/Archives/edgar/data/1023298/000164033426001664/0001640334-26-001664-index.htm",
+  "filing_index_json_url": "https://www.sec.gov/Archives/edgar/data/1023298/000164033426001664/index.json",
+  "ixbrl_file": "alpe_10k.htm",
+  "ixbrl_url": "https://www.sec.gov/Archives/edgar/data/1023298/000164033426001664/alpe_10k.htm",
+  "ixbrl_size": 961590,
+  "xbrl_instance_file": "alpe_10k_htm.xml",
+  "xbrl_instance_url": "https://www.sec.gov/Archives/edgar/data/1023298/000164033426001664/alpe_10k_htm.xml",
+  "xbrl_instance_size": 541276,
+  "taxonomy_files": [
+    {
+      "name": "alpe-20251231.xsd",
+      "type": "schema",
+      "url": "https://www.sec.gov/Archives/edgar/data/1023298/000164033426001664/alpe-20251231.xsd",
+      "size": 38171
+    },
+    {
+      "name": "alpe-20251231_cal.xml",
+      "type": "calculation",
+      "url": "https://www.sec.gov/Archives/edgar/data/1023298/000164033426001664/alpe-20251231_cal.xml",
+      "size": 36247
+    },
+    {
+      "name": "alpe-20251231_def.xml",
+      "type": "definition",
+      "url": "https://www.sec.gov/Archives/edgar/data/1023298/000164033426001664/alpe-20251231_def.xml",
+      "size": 93683
+    },
+    {
+      "name": "alpe-20251231_lab.xml",
+      "type": "label",
+      "url": "https://www.sec.gov/Archives/edgar/data/1023298/000164033426001664/alpe-20251231_lab.xml",
+      "size": 211439
+    },
+    {
+      "name": "alpe-20251231_pre.xml",
+      "type": "presentation",
+      "url": "https://www.sec.gov/Archives/edgar/data/1023298/000164033426001664/alpe-20251231_pre.xml",
+      "size": 180638
+    }
+  ],
+  "taxonomy_urls": [
+    "https://www.sec.gov/Archives/edgar/data/1023298/000164033426001664/alpe-20251231.xsd",
+    "https://www.sec.gov/Archives/edgar/data/1023298/000164033426001664/alpe-20251231_cal.xml",
+    "https://www.sec.gov/Archives/edgar/data/1023298/000164033426001664/alpe-20251231_def.xml",
+    "https://www.sec.gov/Archives/edgar/data/1023298/000164033426001664/alpe-20251231_lab.xml",
+    "https://www.sec.gov/Archives/edgar/data/1023298/000164033426001664/alpe-20251231_pre.xml"
+  ],
+  "xbrl_zip_url": "https://www.sec.gov/Archives/edgar/data/1023298/000164033426001664/0001640334-26-001664-xbrl.zip"
+}

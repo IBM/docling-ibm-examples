@@ -1,0 +1,1163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lumen Spend Live</title>
+<style>
+  :root {
+    color-scheme: light;
+    --page: #f9f9f7; --surface: #fcfcfb; --surface-2: #f3f2ee; --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781;
+    --grid: #e1e0d9; --axis: #c3c2b7; --ring: rgba(11,11,11,0.10); --hover: rgba(11,11,11,0.05);
+    --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100; --s5: #e87ba4; --s6: #008300;
+    --accent: #2a78d6; --accent-hover: #256abf; --accent-soft: #b7d3f6;
+    --good-text: #006300; --critical: #d03b3b;
+    --demo-bg: #fff4d6; --demo-border: #fab219;
+    --code-kw: #256abf; --code-str: #a3520f; --code-id: #4a3aa7; --code-cm: #898781;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --page: #0d0d0d; --surface: #1a1a19; --surface-2: #232321; --ink: #ffffff; --ink-2: #c3c2b7; --muted: #898781;
+      --grid: #2c2c2a; --axis: #383835; --ring: rgba(255,255,255,0.10); --hover: rgba(255,255,255,0.07);
+      --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181; --s6: #008300;
+      --accent: #3987e5; --accent-hover: #5598e7; --accent-soft: #184f95;
+      --good-text: #0ca30c; --demo-bg: #33290f; --demo-border: #c98500;
+      --code-kw: #6da7ec; --code-str: #ec835a; --code-id: #9085e9; --code-cm: #898781;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19; --surface-2: #232321; --ink: #ffffff; --ink-2: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --axis: #383835; --ring: rgba(255,255,255,0.10); --hover: rgba(255,255,255,0.07);
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181; --s6: #008300;
+    --accent: #3987e5; --accent-hover: #5598e7; --accent-soft: #184f95;
+    --good-text: #0ca30c; --demo-bg: #33290f; --demo-border: #c98500;
+    --code-kw: #6da7ec; --code-str: #ec835a; --code-id: #9085e9; --code-cm: #898781;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--page); color: var(--ink);
+         font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .demo-banner { position: sticky; top: 0; z-index: 5; background: var(--demo-bg); border-bottom: 2px solid var(--demo-border);
+                 color: var(--ink); font-size: 13px; padding: 7px 16px; text-align: center; }
+  .demo-banner b { letter-spacing: .08em; margin-right: 8px; padding: 1px 7px; border: 1.5px solid var(--demo-border);
+                   border-radius: 5px; }
+  .demo-banner a { white-space: nowrap; margin-left: 6px; font-weight: 600; }
+  main { max-width: 1320px; margin: 0 auto; padding: 20px 16px 48px; }
+  header h1 { font-size: 20px; margin: 0; }
+  header p { margin: 2px 0 0; color: var(--ink-2); font-size: 13px; }
+  /* min-width: 0 — a grid item will not shrink below its content otherwise,
+     and one long vendor name would push the whole page sideways. */
+  .card { background: var(--surface); border: 1px solid var(--ring); border-radius: 10px; padding: 14px 16px;
+          min-width: 0; overflow-x: auto; }
+  .card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .card h2 { font-size: 13px; font-weight: 600; margin: 0 0 2px; }
+  .card .sub { color: var(--muted); font-size: 12px; margin: 0 0 10px; }
+
+  /* buttons — every one has hover, pressed and keyboard-focus states */
+  button, select { font: inherit; font-size: 13px; padding: 6px 11px; border-radius: 7px; border: 1px solid var(--ring);
+                   background: var(--surface); color: var(--ink); cursor: pointer;
+                   transition: background-color .12s, border-color .12s, transform .05s; }
+  button:hover:not(:disabled), select:hover { background: var(--hover); border-color: var(--axis); }
+  button:active:not(:disabled) { transform: translateY(1px); }
+  button:focus-visible, select:focus-visible, input:focus-visible, [tabindex]:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 2px; }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+  button.primary:hover:not(:disabled) { background: var(--accent-hover); border-color: var(--accent-hover); }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  button.chip { font-size: 11.5px; padding: 2px 8px; border-radius: 6px; color: var(--ink-2); white-space: nowrap; }
+  button.chip[aria-expanded="true"] { background: var(--surface-2); color: var(--ink); }
+
+  /* tabs */
+  .tabs { display: flex; gap: 4px; margin: 16px 0 12px; border-bottom: 1px solid var(--grid); }
+  .tabs button { border: 0; border-bottom: 2px solid transparent; border-radius: 0; background: none; padding: 8px 12px;
+                 color: var(--ink-2); font-weight: 500; }
+  .tabs button:hover:not(:disabled) { background: var(--hover); border-color: transparent; border-bottom-color: var(--axis); }
+  .tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+  [role="tabpanel"][hidden] { display: none; }
+
+  /* the simulator */
+  .sim { display: grid; grid-template-columns: 11rem 1fr; gap: 6px 20px; align-items: end; }
+  .clock { font-size: 26px; font-weight: 650; letter-spacing: -0.01em; align-self: center; }
+  .clock small { display: block; font-size: 12px; font-weight: 400; color: var(--muted); letter-spacing: 0; }
+  .track-wrap { padding: 0 8px; }
+  #hist { display: block; width: 100%; height: 54px; overflow: hidden; }
+  #hist rect { cursor: pointer; }
+  input[type=range] { -webkit-appearance: none; appearance: none; width: calc(100% + 16px); margin: 4px -8px 0;
+                      height: 18px; background: transparent; cursor: pointer; }
+  input[type=range]::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: var(--grid); }
+  input[type=range]::-moz-range-track { height: 4px; border-radius: 2px; background: var(--grid); }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; margin-top: -6px;
+    border-radius: 50%; background: var(--surface); border: 2px solid var(--accent); }
+  input[type=range]::-moz-range-thumb { width: 12px; height: 12px; border-radius: 50%; background: var(--surface);
+    border: 2px solid var(--accent); }
+  input[type=range]:hover::-webkit-slider-thumb { background: var(--accent-soft); }
+  .slider-labels { display: flex; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 11px; margin-top: 2px; }
+  .mode { display: inline-flex; gap: 0; align-items: center; }
+  .mode .hint { margin-right: 6px; }
+  .mode button { border-radius: 0; }
+  .mode button:first-of-type { border-radius: 6px 0 0 6px; }
+  .mode button:last-of-type { border-radius: 0 6px 6px 0; margin-left: -1px; }
+  .mode button[aria-checked="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .badge.real { border-color: var(--accent); color: var(--accent); }
+  .actions { grid-column: 1 / -1; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 8px; }
+  .actions .spacer { flex: 1; }
+  .hint { color: var(--muted); font-size: 12px; }
+  .status { grid-column: 1 / -1; color: var(--ink-2); font-size: 12.5px; display: flex; gap: 18px; flex-wrap: wrap;
+            border-top: 1px solid var(--grid); padding-top: 8px; margin-top: 4px; }
+  .status b { color: var(--ink); font-weight: 600; }
+
+  .tiles { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 12px; }
+  .tile .v { font-size: 26px; font-weight: 650; margin-top: 2px; }
+  .tile .l { color: var(--ink-2); font-size: 12.5px; }
+  .tile .d { color: var(--muted); font-size: 12px; }
+  .dot { display: none; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; background: var(--accent); }
+  .busy .dot { display: inline-block; animation: pulse 1s ease-in-out infinite; }
+  @keyframes pulse { 50% { opacity: .25; } }
+  @media (prefers-reduced-motion: reduce) { .busy .dot, .edge.flow { animation: none; } }
+
+  .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 12px; }
+  .w8 { grid-column: span 8; } .w7 { grid-column: span 7; } .w6 { grid-column: span 6; }
+  .w5 { grid-column: span 5; } .w4 { grid-column: span 4; }
+  svg { display: block; width: 100%; height: auto; overflow: visible; }
+  svg text { fill: var(--muted); font-size: 11px; }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--ink-2); margin: 0 0 8px; }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  th { text-align: left; color: var(--muted); font-weight: 500; padding: 4px 6px; border-bottom: 1px solid var(--grid); }
+  td { padding: 5px 6px; border-bottom: 1px solid var(--grid); vertical-align: top; }
+  td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td a, .link { color: var(--accent); text-decoration: none; }
+  td a:hover, .link:hover { text-decoration: underline; }
+  tr.pick { cursor: pointer; }
+  tr.pick:hover td { background: var(--hover); }
+  tr.pick[aria-selected="true"] td { background: var(--surface-2); }
+  .bar { height: 6px; border-radius: 3px; background: var(--s1); margin-top: 3px; }
+  .hbar { display: grid; grid-template-columns: 9.5em 1fr 6.5em; gap: 8px; align-items: center; font-size: 12.5px; padding: 3px 0; }
+  .hbar .fill { height: 12px; border-radius: 0 4px 4px 0; min-width: 2px; }
+  .hbar .n { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-2); }
+  .reason { display: inline-block; font-size: 11px; padding: 1px 6px; border-radius: 10px; border: 1px solid var(--critical);
+            color: var(--ink); margin: 1px 2px 1px 0; white-space: nowrap; }
+  .reason::before { content: "⚠ "; color: var(--critical); }
+  .badge { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 10px; border: 1px solid var(--ring);
+           color: var(--ink-2); white-space: nowrap; }
+  .badge.converted::before { content: "✓ "; color: var(--good-text); }
+  .badge.review::before { content: "⚠ "; color: var(--critical); }
+  .badge.inflight::before { content: "◌ "; color: var(--accent); }
+  .empty { color: var(--muted); font-size: 12.5px; padding: 16px 0; text-align: center; }
+  .err { color: var(--critical); font-size: 12px; }
+  #tip { position: fixed; pointer-events: none; background: var(--surface); color: var(--ink); border: 1px solid var(--ring);
+         border-radius: 7px; padding: 6px 9px; font-size: 12px; box-shadow: 0 4px 16px rgba(0,0,0,.12); display: none;
+         z-index: 10; max-width: 280px; }
+  details summary { cursor: pointer; color: var(--muted); font-size: 12px; margin-top: 8px; }
+  code { font: 12px ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+  /* SQL and JSON */
+  pre.code { margin: 8px 0 0; padding: 10px 12px; background: var(--surface-2); border: 1px solid var(--ring); border-radius: 8px;
+             font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: pre; overflow: auto; max-height: 460px; }
+  pre.code .kw { color: var(--code-kw); font-weight: 600; } pre.code .str { color: var(--code-str); }
+  pre.code .id { color: var(--code-id); } pre.code .cm { color: var(--code-cm); font-style: italic; }
+  .src { font-size: 11px; color: var(--muted); margin-top: 6px; }
+  .src b { color: var(--good-text); font-weight: 600; }
+  .sqlbox[hidden] { display: none; }
+  .sqlbox { margin-bottom: 10px; }
+
+  /* the pipeline diagram */
+  #diagram svg { min-width: 1000px; }
+  .node { cursor: pointer; }
+  .node rect { fill: var(--surface); stroke: var(--axis); stroke-width: 1.2; }
+  .node:hover rect { fill: var(--hover); stroke: var(--accent); }
+  .node.selected rect { stroke: var(--accent); stroke-width: 2.4; }
+  .node.view rect { fill: var(--surface-2); }
+  .frame { cursor: pointer; }
+  .frame rect { fill: none; stroke: var(--accent); stroke-width: 1.4; stroke-dasharray: 6 4; }
+  .frame.selected rect { stroke-width: 2.6; }
+  .frame text { font-size: 12px; fill: var(--ink-2); }
+  .frame text.t { font-weight: 600; fill: var(--ink); }
+  .frame text.ok { fill: var(--good-text); font-weight: 600; } .frame text.bad { fill: var(--critical); font-weight: 600; }
+  .edge-label { font-size: 10.5px; fill: var(--muted); paint-order: stroke; stroke: var(--surface); stroke-width: 4px; }
+  .edge.history { stroke-dasharray: 5 4; }
+  .node text { fill: var(--ink-2); font-size: 12px; }
+  .node text.t { fill: var(--ink); font-size: 13px; font-weight: 600; }
+  .node text.m { fill: var(--muted); font-size: 11px; }
+  .node text.ok { fill: var(--good-text); font-weight: 600; } .node text.bad { fill: var(--critical); font-weight: 600; }
+  .edge { fill: none; stroke: var(--axis); stroke-width: 1.6; }
+  .edge.flow { stroke: var(--accent); stroke-dasharray: 6 5; animation: flow .8s linear infinite; }
+  @keyframes flow { to { stroke-dashoffset: -11; } }
+  .detail h3 { margin: 0; font-size: 15px; }
+  .detail .kind { color: var(--muted); font-size: 12px; }
+  .detail p { margin: 6px 0; color: var(--ink-2); font-size: 13px; max-width: 80ch; }
+  .uses { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-top: 8px; }
+
+  .about-intro p { max-width: 90ch; color: var(--ink-2); margin: 4px 0; }
+  .about-stats { display: flex; gap: 24px; flex-wrap: wrap; margin-top: 10px; }
+  .about-stats div { font-size: 12px; color: var(--muted); }
+  .about-stats b { display: block; font-size: 20px; color: var(--ink); font-weight: 650; }
+  .timeline { display: flex; flex-wrap: wrap; gap: 6px 22px; list-style: none; margin: 12px 0 0; padding: 0;
+              color: var(--ink-2); font-size: 13px; }
+  .timeline b { color: var(--ink); margin-right: 5px; }
+  .dept-card { border-top: 4px solid var(--dept); }
+  .dept-card h2 { font-size: 15px; display: flex; justify-content: space-between; align-items: baseline; }
+  .dept-card .total { font-size: 13px; color: var(--ink-2); font-weight: 500; }
+  .dept-card .what { color: var(--ink-2); font-size: 13px; margin: 4px 0 10px; }
+  .dept-card h3 { font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 10px 0 4px; }
+  .strip span { white-space: nowrap; }
+  .strip .behind { color: var(--accent); font-weight: 600; }
+  .strip .behind::before { content: "◌ "; }
+  .updating { font-size: 12px; color: var(--ink); background: var(--surface-2); border-left: 3px solid var(--accent);
+              padding: 4px 8px; border-radius: 4px; margin: 0 0 8px; }
+  .lq-form { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
+  #lq-sql { width: 100%; font: 12.5px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; padding: 8px 10px;
+            border: 1px solid var(--ring); border-radius: 8px; background: var(--surface-2); color: var(--ink); resize: vertical; }
+  input[type=number] { font: inherit; font-size: 13px; padding: 5px 8px; border-radius: 7px; border: 1px solid var(--ring);
+                       background: var(--surface); color: var(--ink); }
+  .preset { text-align: left; }
+  .preset small { display: block; color: var(--muted); font-size: 11.5px; }
+  .ms { display: inline-block; font-weight: 650; color: var(--good-text); }
+  .pages { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+  .pages img { width: 100%; height: auto; border: 1px solid var(--ring); border-radius: 6px; background: #fff;
+               box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+  td code { white-space: nowrap; }
+  .stage h3 { font-size: 12.5px; margin: 16px 0 0; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .stage h3 .t { color: var(--muted); font-weight: 400; }
+
+  @media (max-width: 900px) {
+    .sim { grid-template-columns: 1fr; }
+    .tiles { grid-template-columns: repeat(2, 1fr); }
+    .w8, .w7, .w6, .w5, .w4 { grid-column: span 12; }
+  }
+</style>
+</head>
+<body>
+<div class="demo-banner" role="note"><b>DEMO</b> Lumen Analytics GmbH, its suppliers and every invoice on this page are
+  fictional, generated for a software demo. Each invoice is extracted the way it was released: synthetic (from its ground truth) or real (by Docling). Not real financial data.
+  <a href="#" id="about-link" class="link">About the data →</a></div>
+<main>
+  <header>
+    <h1>Lumen Analytics · spend, live</h1>
+    <p>Invoices submitted on a simulated clock → structured extraction in Confluent Cloud Flink → EUR at the ECB
+      rate → reports, read straight from the topics Flink writes. <span id="names"></span></p>
+  </header>
+
+  <!-- The simulator: a clock, the submissions it will release, and the controls -->
+  <section class="card" aria-label="Simulation" style="margin-top:16px">
+    <div class="sim">
+      <div class="clock" id="clock">—<small>simulated date</small></div>
+      <div class="track-wrap">
+        <svg id="hist" preserveAspectRatio="none" role="img" aria-label="Submissions per simulated day"></svg>
+        <input type="range" id="slider" min="0" max="0" value="0" aria-label="Pick the day to release through">
+        <div class="slider-labels"><span id="s-start"></span><span>invoices submitted per day — drag, or click a bar, to pick a day</span><span id="s-end"></span></div>
+      </div>
+      <div class="actions">
+        <button class="primary" id="go" disabled>Pick a later day on the slider</button>
+        <button id="day" title="Release the next simulated day: its FX rates, then its submissions">+1 day</button>
+        <button id="week" title="Release the next seven simulated days">+1 week</button>
+        <button id="play" title="Release one simulated day at a time, automatically">▶ Play</button>
+        <select id="speed" aria-label="Seconds per simulated day" title="How fast Play goes">
+          <option value="0.5">0.5 s / day</option><option value="1">1 s / day</option>
+          <option value="2" selected>2 s / day</option><option value="5">5 s / day</option>
+        </select>
+        <span class="mode" role="radiogroup" aria-label="How the invoices you release are extracted">
+          <span class="hint">extract as</span>
+          <button id="mode-synthetic" role="radio" aria-checked="true" title="Synthetic: answered from the ground truth, in Docling's format — free and instant">Synthetic</button>
+          <button id="mode-real" role="radio" aria-checked="false" title="Real: Docling's structured extraction on the PDF — billed, seconds per page; invoices go out a few seconds apart">Real</button>
+        </span>
+        <span class="spacer"></span>
+        <span class="hint">The clock only moves forward — Kafka cannot un-send a record.</span>
+      </div>
+      <div class="status">
+        <span>Submitted <b id="submitted">0</b> of <b id="total">0</b></span>
+        <span>Flink has processed through <b id="processed">—</b></span>
+        <span id="lag"></span>
+        <span id="live" class="err"></span>
+        <span class="err" id="errors"></span>
+      </div>
+    </div>
+  </section>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" id="tab-dash" aria-selected="true" aria-controls="panel-dash">Dashboard</button>
+    <button role="tab" id="tab-pipe" aria-selected="false" aria-controls="panel-pipe">Flink pipeline</button>
+    <button role="tab" id="tab-inputs" aria-selected="false" aria-controls="panel-inputs">Inputs</button>
+    <button role="tab" id="tab-lightning" aria-selected="false" aria-controls="panel-lightning">⚡ Lightning queries</button>
+    <button role="tab" id="tab-about" aria-selected="false" aria-controls="panel-about">About the data</button>
+  </div>
+
+  <!-- Dashboard ------------------------------------------------------------>
+  <div role="tabpanel" id="panel-dash" aria-labelledby="tab-dash">
+    <section class="tiles">
+      <div class="card tile"><div class="l">Spend, converted to EUR</div><div class="v" id="t-spend">€0</div>
+        <div class="d" id="t-spend-d">&nbsp;</div></div>
+      <div class="card tile"><div class="l">Invoices accepted</div><div class="v" id="t-ok">0</div>
+        <div class="d">extracted, checked, in EUR</div></div>
+      <div class="card tile" id="t-flight-card"><div class="l"><span class="dot"></span>Being processed now</div>
+        <div class="v" id="t-flight">0</div><div class="d" id="t-flight-d">&nbsp;</div></div>
+      <div class="card tile"><div class="l">Waiting for review</div><div class="v" id="t-review">0</div>
+        <div class="d">a person has to look</div></div>
+      <div class="card tile"><div class="l">Vendors</div><div class="v" id="t-vendors">0</div>
+        <div class="d">by name as extracted</div></div>
+    </section>
+
+    <section class="grid">
+      <div class="card w8">
+        <div class="card-head"><div><h2>Spend by invoice month and department</h2>
+          <p class="sub">spend.monthly — an updating GROUP BY: a late-submitted invoice revises its month</p></div>
+          <button class="chip" data-sql="MONTHLY_TOPIC">SQL</button></div>
+        <div class="sqlbox" hidden></div>
+        <div class="updating" data-report="MONTHLY_TOPIC" hidden></div>
+        <div class="legend" id="legend-m"></div>
+        <div id="monthly"></div>
+        <details><summary>Table</summary><div id="monthly-table"></div></details>
+      </div>
+      <div class="card w4">
+        <div class="card-head"><div><h2>By department</h2><p class="sub">all months, EUR — summed from spend.monthly</p></div>
+          <button class="chip" data-sql="MONTHLY_TOPIC">SQL</button></div>
+        <div class="sqlbox" hidden></div>
+        <div class="updating" data-report="MONTHLY_TOPIC" hidden></div>
+        <div id="dept"></div>
+        <h2 style="margin-top:14px">By category</h2>
+        <p class="sub">all months, EUR</p>
+        <div id="cat"></div>
+      </div>
+
+      <div class="card w8">
+        <div class="card-head"><div><h2>Daily spend, by submission day</h2>
+          <p class="sub">spend.daily — a 1-day tumbling window on the simulated clock. A day appears only when it is
+            final: when the first invoice of a later day moves the watermark past midnight.</p></div>
+          <button class="chip" data-sql="DAILY_TOPIC">SQL</button></div>
+        <div class="sqlbox" hidden></div>
+        <div class="legend" id="legend-d"></div>
+        <div id="daily"></div>
+      </div>
+      <div class="card w4">
+        <div class="card-head"><div><h2>Top vendors</h2><p class="sub">spend.vendors — by name as extracted</p></div>
+          <button class="chip" data-sql="VENDORS_TOPIC">SQL</button></div>
+        <div class="sqlbox" hidden></div>
+        <div class="updating" data-report="VENDORS_TOPIC" hidden></div>
+        <div id="vendors"></div>
+      </div>
+
+      <div class="card w6">
+        <div class="card-head"><div><h2>Review queue</h2>
+          <p class="sub">invoices, status = review — the extraction left something out, or the totals do not add up</p></div>
+          <button class="chip" data-sql="INVOICES_TOPIC">SQL</button></div>
+        <div class="sqlbox" hidden></div>
+        <div id="review"></div>
+      </div>
+      <div class="card w6">
+        <div class="card-head"><div><h2>Just converted</h2><p class="sub">spend — newest first; the join with the ECB rates</p></div>
+          <button class="chip" data-sql="SPEND_TOPIC">SQL</button></div>
+        <div class="sqlbox" hidden></div>
+        <div id="feed"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Pipeline --------------------------------------------------------------->
+  <div role="tabpanel" id="panel-pipe" aria-labelledby="tab-pipe" hidden>
+    <section class="card">
+      <h2>The Flink pipeline</h2>
+      <p class="sub">One long-running <b>statement</b> in Confluent Cloud for Apache Flink: it extracts each released
+        invoice — <i>synthetic</i> or <i>real</i>, by its mode — and carries the extraction on to invoices, EUR and the
+        three reports, writing every table at the same commit. Drawn from the SQL in <code>flink/</code>, the same graph
+        as the README. Live: each statement's phase from the Flink SQL API, record counts from the topics, ⚡ where the
+        Real-Time Context Engine serves the table. Click anything to see its SQL.</p>
+      <div id="diagram"><div class="empty">loading…</div></div>
+    </section>
+    <section class="card detail" id="detail" style="margin-top:12px"></section>
+  </div>
+
+  <!-- Inputs ------------------------------------------------------------------>
+  <div role="tabpanel" id="panel-inputs" aria-labelledby="tab-inputs" hidden>
+    <section class="grid">
+      <div class="card w5">
+        <h2>Submissions — the input topic</h2>
+        <p class="sub" id="sub-topic">newest first, as produced by the control app. Pick one to follow it through the pipeline.</p>
+        <div id="in-subs"></div>
+        <h2 style="margin-top:16px">FX rates — the other input</h2>
+        <p class="sub">newest first; one record per currency per calendar day</p>
+        <div id="in-fx"></div>
+        <h2 style="margin-top:16px">Next to be released</h2>
+        <p class="sub" id="next-day">what the next simulated day will add</p>
+        <div id="in-next"></div>
+      </div>
+      <div class="card w7" id="trace">
+        <div class="empty">Pick a submission on the left to follow one invoice from its Kafka message to its report row.</div>
+      </div>
+    </section>
+  </div>
+  <!-- About the data -------------------------------------------------------->
+  <div role="tabpanel" id="panel-about" aria-labelledby="tab-about" hidden>
+    <section class="card about-intro">
+      <h2>Lumen Analytics GmbH</h2>
+      <p>A fictional data company in Munich, growing from about 38 to 54 people in the first half of 2026.
+        The company, its suppliers and every invoice are invented; only the FX rates are real (ECB).</p>
+      <div class="about-stats" id="about-stats"></div>
+      <ul class="timeline">
+        <li><b>Jan</b> sales kickoff in Lisbon</li>
+        <li><b>Feb–Apr</b> hiring wave</li>
+        <li><b>Mar</b> trade fair in Amsterdam</li>
+        <li><b>Apr–May</b> financing round</li>
+        <li><b>Jun</b> summer party</li>
+      </ul>
+    </section>
+    <section class="grid" id="about-depts" style="margin-top:12px"></section>
+    <p class="hint" style="margin-top:10px">Department and category are chosen by whoever submits the invoice — the
+      extraction reads only the vendor, the amounts and the line items.</p>
+  </div>
+
+  <!-- Lightning queries ---------------------------------------------------->
+  <div role="tabpanel" id="panel-lightning" aria-labelledby="tab-lightning" hidden>
+    <section class="grid">
+      <div class="card w4">
+        <h2>Lightning queries</h2>
+        <p class="sub">Millisecond reads of a table's current contents, served by Confluent's Real-Time Context Engine —
+          the same endpoint an AI agent connects to over MCP. Flink computes; the engine serves. No aggregates, no
+          joins, at most 200 rows: anything heavier belongs in a Flink statement.</p>
+        <div id="lq-status" class="hint">checking…</div>
+        <h2 style="margin-top:14px">Try one</h2>
+        <div id="lq-presets" class="uses" style="flex-direction:column;align-items:stretch"></div>
+      </div>
+      <div class="card w8">
+        <div class="lq-form">
+          <label class="hint" for="lq-topic">Table</label>
+          <select id="lq-topic"></select>
+          <label class="hint" for="lq-rows" style="margin-left:12px">Max rows</label>
+          <input id="lq-rows" type="number" min="1" max="200" value="50" style="width:5em">
+        </div>
+        <textarea id="lq-sql" spellcheck="false" aria-label="Query" rows="5"></textarea>
+        <div class="actions" style="margin-top:6px">
+          <button class="primary" id="lq-run">Run lightning query</button>
+          <span id="lq-ms" class="hint"></span>
+        </div>
+        <div id="lq-result"></div>
+      </div>
+    </section>
+  </div>
+</main>
+<div id="tip" role="tooltip"></div>
+
+<script>
+const DEPTS = ["Engineering", "Marketing", "Sales", "Operations", "People", "Finance"];
+const color = d => `var(--s${DEPTS.indexOf(d) + 1 || 1})`;
+const $ = id => document.getElementById(id);
+const eur = (x, short) => {
+  if (short && Math.abs(x) >= 1000) return "€" + (x / 1000).toFixed(Math.abs(x) >= 100000 ? 0 : 1) + "k";
+  return "€" + Number(x || 0).toLocaleString("en-US", {minimumFractionDigits: short ? 0 : 2, maximumFractionDigits: short ? 0 : 2});
+};
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
+const fmtDay = iso => iso ? new Date(iso + "T00:00:00Z").toLocaleDateString("en-GB", {weekday: "short", day: "numeric", month: "short", timeZone: "UTC"}) : "—";
+const getJSON = async url => { const r = await fetch(url); if (!r.ok) throw new Error(r.status); return r.json(); };
+
+// --- tooltip -----------------------------------------------------------------
+// One floating element for every chart. Anything with data-tip shows it; the
+// value is HTML, escaped once more when it is put in the attribute.
+const tip = $("tip");
+document.addEventListener("mousemove", e => {
+  const t = e.target.closest && e.target.closest("[data-tip]");
+  if (!t) { tip.style.display = "none"; return; }
+  tip.innerHTML = t.getAttribute("data-tip");
+  tip.style.display = "block";
+  tip.style.left = Math.min(e.clientX + 14, window.innerWidth - tip.offsetWidth - 8) + "px";
+  tip.style.top = Math.min(e.clientY + 14, window.innerHeight - tip.offsetHeight - 8) + "px";
+});
+document.addEventListener("mouseleave", () => tip.style.display = "none");
+
+// --- syntax highlighting (SQL and JSON) --------------------------------------
+const KW = "SELECT|FROM|WHERE|AS|AND|OR|NOT|IS|NULL|DISTINCT|INSERT|INTO|CREATE|TABLE|VIEW|FUNCTION|IF|EXISTS|USING|JAR|LANGUAGE|PYTHON|JOIN|ON|GROUP|BY|ORDER|EXECUTE|STATEMENT|SET|BEGIN|END|WITH|DISTRIBUTED|HASH|BUCKETS|METADATA|WATERMARK|FOR|INTERVAL|SECOND|DAY|PRIMARY|KEY|ENFORCED|TUMBLE|DESCRIPTOR|COALESCE|ROUND|SUM|COUNT|MAX|ENCODE|DECODE|JSON_VALUE|JSON_OBJECT|VALUE|RETURNING|DOUBLE|CONCAT|SUBSTRING|DATE_FORMAT|BYTES|TIMESTAMP_LTZ";
+const SQL_RE = new RegExp(`(--[^\\n]*)|('(?:[^']|'')*')|(\`[^\`]*\`)|\\b(${KW})\\b`, "g");
+function sqlHtml(sql) {
+  let out = "", last = 0;
+  for (const m of sql.matchAll(SQL_RE)) {
+    out += esc(sql.slice(last, m.index));
+    out += `<span class="${m[1] ? "cm" : m[2] ? "str" : m[3] ? "id" : "kw"}">${esc(m[0])}</span>`;
+    last = m.index + m[0].length;
+  }
+  return out + esc(sql.slice(last));
+}
+function jsonHtml(obj) {
+  return esc(JSON.stringify(obj, null, 2) ?? "null").replace(/(&quot;(?:[^&]|&(?!quot;))*?&quot;)(\s*:)?/g,
+    (m, s, colon) => colon ? `<span class="id">${s}</span>${colon}` : `<span class="str">${s}</span>`);
+}
+
+// --- tabs --------------------------------------------------------------------
+let activeTab = "dash";
+function selectTab(tab) {
+  document.querySelectorAll('[role="tab"]').forEach(t => {
+    const on = t === tab;
+    t.setAttribute("aria-selected", on);
+    $(t.getAttribute("aria-controls")).hidden = !on;
+  });
+  activeTab = tab.id.slice(4);
+  if (activeTab === "pipe") { if (pipe) { drawDiagram(); showDetail(selected); } else loadPipeline(); }
+  if (activeTab === "inputs") loadInputs();
+  if (activeTab === "lightning") loadLightning();
+  if (activeTab === "about") loadAbout();
+}
+document.querySelectorAll('[role="tab"]').forEach(tab => tab.addEventListener("click", () => selectTab(tab)));
+
+// --- the simulator: histogram, slider, button ----------------------------------
+let days = [], counts = [], state = null, target = null;
+const releasedIdx = () => state && state.clock.released_through ? days.indexOf(state.clock.released_through) : -1;
+async function loadCalendar() {
+  const cal = await getJSON("/api/calendar");
+  days = cal.days.map(d => d.day); counts = cal.days.map(d => d.count);
+  $("slider").max = days.length - 1;
+  $("s-start").textContent = fmtDay(days[0]); $("s-end").textContent = fmtDay(days[days.length - 1]);
+}
+// One bar per simulated day, laid out on the same axis as the slider below it:
+// released days in the accent colour, the picked-but-not-released ones lighter,
+// the future in grey. Every day has a full-height hit area, so a day with no
+// submissions can still be hovered and picked.
+function drawHist() {
+  if (!days.length) return;
+  const W = 1000, H = 54, bw = W / days.length, max = Math.max(...counts, 1);
+  const rel = releasedIdx(), tgt = target ?? rel;
+  let bars = "";
+  days.forEach((d, i) => {
+    const h = counts[i] ? Math.max(3, (H - 2) * counts[i] / max) : 0;
+    const fill = i <= rel ? "var(--accent)" : i <= tgt ? "var(--accent-soft)" : "var(--axis)";
+    const tipText = esc(`<b>${fmtDay(d)}</b><br>${counts[i]} submission${counts[i] === 1 ? "" : "s"}${i <= rel ? " · released" : ""}`);
+    bars += `<rect x="${i * bw}" y="0" width="${bw}" height="${H}" fill="transparent" data-i="${i}" data-tip="${tipText}"/>`;
+    if (h) bars += `<rect x="${i * bw + bw * 0.12}" y="${H - h}" width="${bw * 0.76}" height="${h}" rx="1" fill="${fill}" data-i="${i}" data-tip="${tipText}"/>`;
+  });
+  const hist = $("hist");
+  hist.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  hist.innerHTML = bars;
+}
+$("hist").addEventListener("click", e => {
+  const i = e.target.getAttribute && e.target.getAttribute("data-i");
+  if (i != null) { target = +i; $("slider").value = target; updateGo(); drawHist(); }
+});
+$("slider").addEventListener("input", () => { target = +$("slider").value; updateGo(); drawHist(); });
+function updateGo() {
+  const rel = releasedIdx(), go = $("go");
+  if (target == null || target <= rel) {
+    go.disabled = true;
+    go.textContent = rel >= days.length - 1 ? "All released — the simulation is at its end" : "Pick a later day on the slider";
+    go.removeAttribute("title");
+    return;
+  }
+  const n = counts.slice(rel + 1, target + 1).reduce((a, b) => a + b, 0);
+  go.disabled = false;
+  go.textContent = `Release ${n} invoice${n === 1 ? "" : "s"} · through ${fmtDay(days[target])}`;
+  go.title = `Publishes the FX rates and every submission from ${fmtDay(days[rel + 1])} to ${fmtDay(days[target])} to Kafka, with their simulated timestamps`;
+}
+async function post(path, body) {
+  const r = await fetch(path, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body || {})});
+  if (r.ok) { $("errors").textContent = ""; render(await r.json()); return; }
+  let msg = `HTTP ${r.status}`;
+  try { msg = (await r.json()).detail || msg; } catch (e) { /* not JSON */ }
+  $("errors").textContent = msg;
+}
+// Synthetic or real: the server holds the choice, so every open page shows the
+// same one, and Release / +1 day / Play use it.
+["synthetic", "real"].forEach(m => { $("mode-" + m).onclick = () => post("/api/mode", {mode: m}); });
+$("go").onclick = async () => { const t = days[target]; target = null; await post("/api/advance", {to: t}); };
+$("day").onclick = () => { target = null; post("/api/advance", {days: 1}); };
+$("week").onclick = () => { target = null; post("/api/advance", {days: 7}); };
+$("play").onclick = () => state && state.playing ? post("/api/pause") : (target = null, post("/api/play", {interval: +$("speed").value}));
+$("speed").onchange = () => state && state.playing && post("/api/play", {interval: +$("speed").value});
+
+// --- charts ------------------------------------------------------------------
+function legend(el, present) {
+  el.innerHTML = DEPTS.filter(d => present.has(d)).map(d => `<span><i style="background:${color(d)}"></i>${d}</span>`).join("");
+}
+// The axis top: the smallest 4 × (a round step × 10^k) that holds v, so every tick is a round number.
+function niceMax(v) {
+  if (v <= 0) return 4;
+  const raw = v / 4, p = Math.pow(10, Math.floor(Math.log10(raw)));
+  return [1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10].map(m => m * p).find(s => s >= raw) * 4;
+}
+function stacked(el, series, labelOf, {height = 220} = {}) {
+  if (!series.length) { el.innerHTML = `<div class="empty">Nothing yet — release a few days.</div>`; return new Set(); }
+  const W = 760, H = height, L = 44, B = 22, T = 6;
+  const totals = series.map(([, v]) => Object.values(v).reduce((a, b) => a + b, 0));
+  const max = niceMax(Math.max(...totals));
+  const step = (W - L) / series.length, bw = Math.min(46, step * 0.7);
+  const y = v => T + (H - T - B) * (1 - v / max);
+  let svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="stacked column chart">`;
+  for (let i = 0; i <= 4; i++) {
+    const v = max * i / 4, yy = y(v);
+    svg += `<line x1="${L}" x2="${W}" y1="${yy}" y2="${yy}" stroke="var(--${i ? "grid" : "axis"})" stroke-width="1"/>`;
+    svg += `<text x="${L - 6}" y="${yy + 4}" text-anchor="end">${eur(v, true)}</text>`;
+  }
+  const present = new Set(), every = Math.ceil(series.length / 14);
+  series.forEach(([k, v], i) => {
+    const x = L + i * step + (step - bw) / 2, segs = DEPTS.filter(d => v[d] > 0);
+    const colTip = esc(`<b>${esc(labelOf(k))}</b><br>${segs.map(d => `${esc(d)}: ${eur(v[d])}`).join("<br>")}<br><b>Total ${eur(totals[i])}</b>`);
+    // The column's hit area is its whole slot, so hovering anywhere above or between segments shows the breakdown.
+    svg += `<rect x="${L + i * step}" y="${T}" width="${step}" height="${H - T - B}" fill="transparent" data-tip="${colTip}"/>`;
+    let acc = 0;
+    segs.forEach((d, j) => {
+      present.add(d);
+      const y0 = y(acc), y1 = y(acc + v[d]); acc += v[d];
+      const h = Math.max(0, y0 - y1 - (j ? 2 : 0)), top = j === segs.length - 1, r = top ? Math.min(4, h, bw / 2) : 0;
+      const yBot = y1 + h;
+      const path = r ? `M${x},${yBot} V${y1 + r} Q${x},${y1} ${x + r},${y1} H${x + bw - r} Q${x + bw},${y1} ${x + bw},${y1 + r} V${yBot} Z`
+                     : `M${x},${yBot} V${y1} H${x + bw} V${yBot} Z`;
+      svg += `<path d="${path}" fill="${color(d)}" data-tip="${colTip}"/>`;
+    });
+    if (i % every === 0) svg += `<text x="${L + i * step + step / 2}" y="${H - 6}" text-anchor="middle">${esc(labelOf(k, true))}</text>`;
+  });
+  el.innerHTML = svg + "</svg>";
+  return present;
+}
+function hbars(el, entries, colorOf) {
+  if (!entries.length) { el.innerHTML = `<div class="empty">—</div>`; return; }
+  const max = Math.max(...entries.map(e => e[1]));
+  el.innerHTML = entries.map(([k, v]) => `<div class="hbar" data-tip="${esc(`<b>${esc(k)}</b><br>${eur(v)}`)}">
+      <span>${esc(k)}</span><div><div class="fill" style="width:${(v / max * 100).toFixed(1)}%;background:${colorOf(k)}"></div></div>
+      <span class="n">${eur(v, true)}</span></div>`).join("");
+}
+const monthName = (m, short) => { if (!m || m === "unknown") return m; const d = new Date(m + "-01T00:00:00Z");
+  return d.toLocaleDateString("en-GB", {month: short ? "short" : "long", year: short ? "2-digit" : "numeric", timeZone: "UTC"}); };
+
+// --- the dashboard -------------------------------------------------------------
+let pipelineBusy = false;
+function render(s) {
+  state = s;
+  const c = s.clock;
+  $("clock").innerHTML = (c.released_through ? fmtDay(c.released_through) : "Not started") + "<small>simulated date — released through</small>";
+  if (target == null || target <= releasedIdx()) { target = null; $("slider").value = Math.max(0, releasedIdx()); }
+  updateGo(); drawHist();
+  $("play").textContent = s.playing ? "❚❚ Pause" : "▶ Play";
+  $("play").disabled = !c.next_day && !s.playing;
+  $("day").disabled = $("week").disabled = !c.next_day;
+  ["synthetic", "real"].forEach(m => $("mode-" + m).setAttribute("aria-checked", String(s.mode === m)));
+  $("mode-real").disabled = !!s.real_unavailable;
+  if (s.real_unavailable) $("mode-real").title = "Real mode is unavailable: " + s.real_unavailable;
+  $("submitted").textContent = c.submitted; $("total").textContent = c.total;
+  $("processed").textContent = s.processed_through || "—";
+
+  // Where every submitted invoice is, stage by stage, counted on each table.
+  // An invoice is done when it is in the charts — in both report tables — or
+  // in the review queue, which is as far as an invoice with a problem goes.
+  // Each table shows new rows only when Flink commits it, about once a
+  // minute, so a fresh invoice spends a minute or more at each step.
+  const k = s.counts, checked = k.ok + k.review, inReports = Math.min(k.in_monthly, k.in_vendors);
+  const steps = [
+    ["submitted", c.submitted], ["extracted", k.extracted], ["checked", checked],
+    ["in EUR", k.converted + k.review], ["in the charts", inReports + k.review],
+  ];
+  const waiting = {extracting: c.submitted - k.extracted, checking: k.extracted - checked,
+                   converting: k.ok - k.converted, "updating the charts": k.converted - inReports};
+  const flight = Math.max(0, c.submitted - k.review - inReports);
+  $("t-flight").textContent = flight;
+  $("t-flight-d").textContent = flight
+    ? Object.entries(waiting).filter(([, n]) => n > 0).map(([what, n]) => `${n} ${what}`).join(" · ")
+    : (c.submitted ? "caught up — everything is in the charts" : "nothing submitted yet");
+  $("t-flight-card").classList.toggle("busy", flight > 0);
+  $("t-flight-card").title = "Each Flink table makes new rows visible when it commits, about once a minute — so an invoice takes a minute or more per step, and a few minutes to reach the charts.";
+  $("lag").innerHTML = c.submitted ? `<span class="strip">${steps.map(([label, n], i) =>
+      `<span class="${i && n < steps[i - 1][1] ? "behind" : ""}">${esc(label)} <b>${n}</b></span>`).join(" › ")}</span>` : "";
+  // Report panels say when they do not include everything converted yet.
+  const behind = {MONTHLY_TOPIC: k.converted - k.in_monthly, VENDORS_TOPIC: k.converted - k.in_vendors};
+  document.querySelectorAll(".updating[data-report]").forEach(el => {
+    const n = behind[el.dataset.report] || 0;
+    el.hidden = n <= 0;
+    el.textContent = n > 0 ? `⟳ updating — ${n} converted invoice${n === 1 ? "" : "s"} not in this report yet; Flink commits about once a minute` : "";
+  });
+  $("errors").textContent = (s.errors || []).slice(-1).join("");
+  $("names").textContent = s.names && s.names.NS ? `Namespace: ${s.names.NS}.` : "";
+  pipelineBusy = flight > 0;
+
+  $("t-spend").textContent = eur(s.spend_total_eur, true);
+  $("t-spend-d").textContent = s.counts.converted ? `${s.counts.converted} invoices, EUR · USD · GBP · CHF in` : "";
+  $("t-ok").textContent = s.counts.ok;
+  $("t-review").textContent = s.counts.review;
+  $("t-vendors").textContent = s.vendors.length;
+
+  const months = Object.entries(s.monthly);
+  legend($("legend-m"), stacked($("monthly"), months, monthName));
+  $("monthly-table").innerHTML = months.length ? `<table><tr><th>Month</th>${DEPTS.map(d => `<th class="n">${d}</th>`).join("")}</tr>` +
+    months.map(([m, v]) => `<tr><td>${monthName(m)}</td>${DEPTS.map(d => `<td class="n">${v[d] ? eur(v[d], true) : ""}</td>`).join("")}</tr>`).join("") + "</table>" : "";
+  legend($("legend-d"), stacked($("daily"), Object.entries(s.daily), (d, short) => short ? d.slice(5) : fmtDay(d), {height: 240}));
+  hbars($("dept"), DEPTS.filter(d => s.by_department[d]).map(d => [d, s.by_department[d]]).sort((a, b) => b[1] - a[1]), color);
+  hbars($("cat"), Object.entries(s.by_category).sort((a, b) => b[1] - a[1]), () => "var(--s1)");
+
+  const vmax = Math.max(1, ...s.vendors.map(v => v.amount_eur));
+  $("vendors").innerHTML = s.vendors.length ? `<table><tr><th>Vendor</th><th class="n">EUR</th><th class="n">#</th></tr>` +
+    s.vendors.slice(0, 9).map(v => `<tr data-tip="${esc(`<b>${esc(v.vendor_name)}</b><br>${eur(v.amount_eur)} over ${v.invoices} invoice(s)<br>last invoice ${esc(v.last_invoice_date)}`)}">
+      <td>${esc(v.vendor_name)}<div class="bar" style="width:${(v.amount_eur / vmax * 100).toFixed(1)}%"></div></td>
+      <td class="n">${eur(v.amount_eur, true)}</td><td class="n">${v.invoices}</td></tr>`).join("") + "</table>" : `<div class="empty">—</div>`;
+
+  $("review").innerHTML = s.review.length ? `<table><tr><th>Invoice</th><th>Vendor</th><th>Why</th></tr>` +
+    s.review.map(r => `<tr><td><a href="#" data-trace="${esc(r.doc_id)}" title="Follow this invoice through the pipeline">${esc(r.doc_id)}</a>${r.mode === "real" ? ' <span class="badge real" title="extracted by Docling">real</span>' : ""}<br><span style="color:var(--muted)">${esc((r.submitted_at || "").slice(0, 10))} · ${esc(r.department)}</span></td>
+      <td>${esc(r.vendor_name || "—")}</td><td>${(r.review_reasons || []).map(x => `<span class="reason">${esc(x)}</span>`).join("")}</td></tr>`).join("") + "</table>"
+    : `<div class="empty">Nothing to review.</div>`;
+
+  $("feed").innerHTML = s.feed.length ? `<table><tr><th>Vendor</th><th>Department</th><th class="n">EUR</th></tr>` +
+    s.feed.map(f => `<tr data-tip="${esc(`<b>${esc(f.invoice_number)}</b> · ${esc(f.invoice_date)}<br>${esc(f.category)}<br>${Number(f.amount).toLocaleString("en-US", {minimumFractionDigits: 2})} ${esc(f.currency)}${f.currency !== "EUR" ? ` @ ${f.fx_rate} (ECB ${esc(f.fx_date)})` : ""}`)}">
+      <td><a href="#" data-trace="${esc(f.doc_id)}" title="Follow this invoice through the pipeline">${esc(f.vendor_name)}</a>${f.mode === "real" ? ' <span class="badge real" title="extracted by Docling">real</span>' : ""}<br><span style="color:var(--muted)">${esc(f.invoice_date)}</span></td>
+      <td>${esc(f.department)}<br><span style="color:var(--muted)">${esc(f.category)}</span></td>
+      <td class="n">${eur(f.amount_eur)}${f.currency !== "EUR" ? `<br><span style="color:var(--muted)">${Number(f.amount).toLocaleString("en-US", {maximumFractionDigits: 0})} ${esc(f.currency)}</span>` : ""}</td></tr>`).join("") + "</table>" : `<div class="empty">—</div>`;
+
+  if (activeTab === "pipe" && pipe) drawDiagram();
+}
+
+// --- SQL on each panel -----------------------------------------------------------
+let pipe = null;
+async function loadPipeline() {
+  try { pipe = await getJSON("/api/pipeline"); } catch (e) { return; }
+  if (activeTab === "pipe") { drawDiagram(); showDetail(selected); }
+  document.querySelectorAll(".sqlbox:not([hidden])").forEach(box => fillSql(box, box.dataset.var));
+}
+function sourceNote(o, name) {
+  return o && o.source === "live"
+    ? `<div class="src"><b>● live</b> — the statement Confluent Cloud is running as <code>${esc(name)}</code>, read from the Flink SQL API</div>`
+    : `<div class="src">from <code>flink/${esc(o ? o.file : "")}</code> — not deployed, or the Flink API did not answer</div>`;
+}
+function fillSql(box, varName) {
+  box.dataset.var = varName;
+  if (!pipe) { box.innerHTML = `<div class="src">loading…</div>`; return; }
+  const name = pipe.names[varName], o = pipe.objects[name];
+  const f = o && o.filled_by;
+  box.innerHTML = !o ? `<div class="src">no definition found for ${esc(name)}</div>`
+    : f ? `<pre class="code">${sqlHtml(f.sql)}</pre><div class="src">part of the statement <code>${esc(f.statement)}</code> — flink/${esc((pipe.objects[f.statement] || {}).file || "")}</div>`
+        : `<pre class="code">${sqlHtml(o.sql)}</pre>${sourceNote(o, name)}`;
+}
+document.querySelectorAll("button[data-sql]").forEach(btn => {
+  btn.setAttribute("aria-expanded", "false");
+  btn.title = "Show the Flink SQL that defines this panel's table";
+  btn.addEventListener("click", async () => {
+    const box = btn.closest(".card").querySelector(".sqlbox"), open = box.hidden;
+    box.hidden = !open; btn.setAttribute("aria-expanded", open); btn.textContent = open ? "Hide SQL" : "SQL";
+    if (open) { fillSql(box, btn.dataset.sql); if (!pipe) { await loadPipeline(); fillSql(box, btn.dataset.sql); } }
+  });
+});
+
+// --- the pipeline diagram ----------------------------------------------------------
+// Laid out from the graph the server derives from flink/ (scripts/diagram.py):
+// a node's column is the length of the longest path into it, so a new table
+// lands in the right place without anyone moving coordinates around.
+let selected = null;
+const SIM_TIME_KINDS = new Set(["table"]);
+// A layered layout, done properly enough that no arrow runs through a box:
+//
+//   1. columns: a node's column is the longest path into it; what a statement
+//      writes goes to the right of its frame;
+//   2. an arrow that skips columns gets a reserved slot in every column it
+//      passes (a "dummy"), so it runs between the boxes, not through them;
+//   3. within a column, nodes and slots are ordered by the average position of
+//      their neighbours, swept left and right a few times — fewer crossings;
+//   4. heights: each node moves toward its neighbours, keeping its order and
+//      the spacing.
+//
+// Statements are not columns: a statement is a frame around the views it
+// runs. A "history" edge (a bounded re-read of a table the statement itself
+// writes) points back, so it stays out of the layout and is routed separately,
+// through the gaps between columns and below everything.
+const forward = e => !(e[2] && e[2].style === "history");
+const L = {W: 168, H: 76, GX: 64, GY: 22, DH: 8, TOP: 40, BOTTOM: 50};
+function layout(graph) {
+  const placed = graph.nodes.filter(n => n.kind !== "stmt"), col = {};
+  placed.forEach(n => { col[n.id] = 0; });
+  const edges = graph.edges.filter(forward);
+  const settle = () => { for (let pass = 0; pass < placed.length; pass++)
+    edges.forEach(([a, b]) => { col[b] = Math.max(col[b], col[a] + 1); }); };
+  settle();
+  graph.nodes.filter(n => n.kind === "stmt").forEach(n => {
+    const inside = new Set(n.members), last = Math.max(...n.members.map(m => col[m] ?? 0));
+    edges.forEach(([a, b]) => { if (inside.has(a) && !inside.has(b)) col[b] = Math.max(col[b], last + 1); });
+  });
+  settle();
+
+  // 2. A slot for each column an arrow passes through.
+  const dummy = new Set(), routes = graph.edges.map((e, i) => {
+    if (!forward(e)) return null;
+    const [a, b] = e, chain = [a];
+    for (let c = col[a] + 1; c < col[b]; c++) { const id = `~${i}_${c}`; dummy.add(id); col[id] = c; chain.push(id); }
+    return chain.concat([b]);
+  });
+  const ncol = Math.max(...Object.values(col)) + 1, cols = Array.from({length: ncol}, () => []);
+  placed.forEach(n => cols[col[n.id]].push(n.id));
+  dummy.forEach(id => cols[col[id]].push(id));
+  const pred = {}, succ = {}, push = (m, k, v) => (m[k] = m[k] || []).push(v);
+  routes.forEach(r => r && r.forEach((u, k) => { if (k) { push(pred, u, r[k - 1]); push(succ, r[k - 1], u); } }));
+
+  // 3. Order within each column by the neighbours' mean position.
+  const idx = {};
+  cols.forEach(c => c.forEach((id, i) => { idx[id] = i; }));
+  const mean = (id, nb) => { const ns = nb[id] || []; return ns.length ? ns.reduce((t, v) => t + idx[v], 0) / ns.length : idx[id]; };
+  for (let it = 0; it < 16; it++) {
+    const down = it % 2 === 0;
+    for (let k = 0; k < ncol; k++) {
+      const c = down ? k : ncol - 1 - k, nb = down ? pred : succ;
+      cols[c] = cols[c].map(id => [mean(id, nb), idx[id], id]).sort((x, y) => x[0] - y[0] || x[1] - y[1]).map(t => t[2]);
+      cols[c].forEach((id, i) => { idx[id] = i; });
+    }
+  }
+
+  // 4. Heights: toward the neighbours, in order, never overlapping. Each pass
+  // packs a column once pushing down and once pushing up from where its nodes
+  // want to be, and takes the average — which keeps both the order and the gaps.
+  const h = id => dummy.has(id) ? L.DH : L.H, cy = {};
+  cols.forEach(c => { let y = 0; c.forEach(id => { cy[id] = y + h(id) / 2; y += h(id) + L.GY; }); });
+  const pack = (c, want) => {
+    const down = [], up = [];
+    let edge = -Infinity;
+    c.forEach((id, i) => { down[i] = Math.max(want[id] - h(id) / 2, edge); edge = down[i] + h(id) + L.GY; });
+    edge = Infinity;
+    for (let i = c.length - 1; i >= 0; i--) { const id = c[i]; up[i] = Math.min(want[id] - h(id) / 2, edge - h(id)); edge = up[i] - L.GY; }
+    c.forEach((id, i) => { cy[id] = (down[i] + up[i]) / 2 + h(id) / 2; });
+  };
+  for (let it = 0; it < 24; it++) {
+    for (let k = 0; k < ncol; k++) {
+      const c = it % 2 ? ncol - 1 - k : k, want = {};
+      cols[c].forEach(id => {
+        const ns = [...(pred[id] || []), ...(succ[id] || [])];
+        want[id] = ns.length ? ns.reduce((t, v) => t + cy[v], 0) / ns.length : cy[id];
+      });
+      pack(cols[c], want);
+    }
+  }
+  const top = Math.min(...Object.keys(cy).map(id => cy[id] - h(id) / 2));
+  Object.keys(cy).forEach(id => { cy[id] += L.TOP - top; });
+  const bottom = Math.max(...Object.keys(cy).map(id => cy[id] + h(id) / 2));
+  const height = bottom + L.BOTTOM, x = c => 6 + c * (L.W + L.GX);
+
+  const pos = {};
+  placed.forEach(n => { pos[n.id] = {x: x(col[n.id]), y: cy[n.id] - L.H / 2, w: L.W, h: L.H}; });
+  dummy.forEach(id => { pos[id] = {x: x(col[id]), y: cy[id], w: L.W, h: 0, dummy: true}; });
+  // A statement's frame: around its views, with room for its title on top.
+  graph.nodes.filter(n => n.kind === "stmt").forEach(n => {
+    const ps = n.members.map(m => pos[m]).filter(Boolean);
+    if (!ps.length) return;
+    const x0 = Math.min(...ps.map(q => q.x)) - 14, y0 = Math.min(...ps.map(q => q.y)) - 34;
+    const x1 = Math.max(...ps.map(q => q.x + q.w)) + 14, y1 = Math.max(...ps.map(q => q.y + q.h)) + 14;
+    pos[n.id] = {x: x0, y: Math.max(2, y0), w: x1 - x0, h: y1 - Math.max(2, y0)};
+  });
+  // Straight lanes: all of an arrow's slots at one height, so it leaves its
+  // source in a straight line and turns only into its target. The source's own
+  // height if that is free in every column the arrow crosses — no box, no frame
+  // title, no other arrow's lane there — else the nearest free height.
+  const frames = graph.nodes.filter(n => n.kind === "stmt" && pos[n.id]).map(n => pos[n.id]);
+  const used = {};
+  const blocked = c => {
+    const out = cols[c].filter(id => !dummy.has(id)).map(id => [pos[id].y - 8, pos[id].y + pos[id].h + 8]);
+    frames.forEach(f => { if (f.x <= x(c) && x(c) + L.W <= f.x + f.w) out.push([f.y - 6, f.y + 30]); });
+    return out.concat(used[c] || []);
+  };
+  routes.forEach(r => {
+    if (!r || r.length <= 2) return;
+    const slots = r.slice(1, -1), spans = slots.map(id => blocked(col[id]));
+    const free = y => spans.every(list => list.every(([a, b]) => y < a || y > b));
+    const src = pos[r[0]], y0 = src.y + src.h / 2, dst = pos[r[r.length - 1]], y1 = dst.y + dst.h / 2;
+    // The source's height (one turn, into the target), then the target's (one
+    // turn, out of the source), then the nearest free height to the source.
+    let y = free(y0) ? y0 : free(y1) && y1 < height - L.BOTTOM ? y1 : null;
+    for (let off = 6; off <= height && y === null; off += 6)
+      for (const cand of off ? [y0 - off, y0 + off] : [y0])
+        if (y === null && cand > 8 && cand < height - L.BOTTOM && free(cand)) y = cand;
+    if (y === null) return;  // nowhere straight: keep the stepped route
+    slots.forEach(id => { pos[id].y = y; (used[col[id]] = used[col[id]] || []).push([y - 8, y + 8]); });
+  });
+  return {pos, routes, width: x(ncol) - L.GX + 6, height, lane: bottom + L.BOTTOM / 2};
+}
+// An arrow along its slots: horizontal through each column it passes, a
+// smooth S-curve across each gap between columns.
+function routePath(chain, pos) {
+  const pts = [];
+  chain.forEach((id, k) => {
+    const p = pos[id];
+    if (p.dummy) { pts.push([p.x, p.y], [p.x + p.w, p.y]); return; }
+    pts.push(k === 0 ? [p.x + p.w, p.y + p.h / 2] : [p.x - 2, p.y + p.h / 2]);
+  });
+  let d = `M${pts[0][0]},${pts[0][1]}`;
+  for (let i = 1; i < pts.length; i++) {
+    const [x0, y0] = pts[i - 1], [x1, y1] = pts[i];
+    if (y0 === y1) { d += ` L${x1},${y1}`; continue; }
+    const mx = (x0 + x1) / 2;
+    d += ` C${mx},${y0} ${mx},${y1} ${x1},${y1}`;
+  }
+  const [lx0, ly0] = pts[pts.length - 2], [lx1, ly1] = pts[pts.length - 1];
+  return {d, label: [(lx0 + lx1) / 2, (ly0 + ly1) / 2 - 5]};
+}
+// The history arrow: out of the table's left side into the gap before it,
+// down below everything, along to the gap after the view, up, and in.
+function historyPath(s, t, lane) {
+  const r = 8, gs = s.x - L.GX / 2, gt = t.x + t.w + L.GX / 2, ys = s.y + s.h / 2, yt = t.y + t.h / 2;
+  const d = `M${s.x},${ys} L${gs + r},${ys} Q${gs},${ys} ${gs},${ys + r} L${gs},${lane - r} Q${gs},${lane} ${gs - r},${lane}`
+    + ` L${gt + r},${lane} Q${gt},${lane} ${gt},${lane - r} L${gt},${yt + r} Q${gt},${yt} ${gt - r},${yt} L${t.x + t.w + 2},${yt}`;
+  return {d, label: [(gs + gt) / 2, lane - 5]};
+}
+function drawDiagram() {
+  const g = pipe.graph, live = pipe.topics_live || {}, rtce = pipe.rtce || {}, {pos, routes, width, height, lane} = layout(g);
+  if (!selected) selected = (g.nodes.find(n => n.kind === "stmt") || g.nodes[0]).id;
+  let svg = `<svg viewBox="0 0 ${width} ${height}" role="group" aria-label="Flink pipeline diagram"><defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--axis)"/></marker></defs>`;
+  // The statements' frames first, underneath everything they contain.
+  g.nodes.filter(n => n.kind === "stmt" && pos[n.id]).forEach(n => {
+    const p = pos[n.id], o = pipe.objects[n.id] || {};
+    const status = o.stopped ? ["bad", "❚❚ STOPPED"] : o.phase === "RUNNING" ? ["ok", "● RUNNING"] : ["bad", "▲ " + (o.phase || "UNKNOWN")];
+    svg += `<g class="frame${n.id === selected ? " selected" : ""}" data-node="${esc(n.id)}" tabindex="0" role="button" aria-label="statement ${esc(n.label)}">`;
+    svg += `<rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}" rx="12"/>`;
+    svg += `<text class="t" x="${p.x + 12}" y="${p.y + 19}">statement · ${esc(n.label)}</text>`;
+    svg += `<text class="${status[0]}" x="${p.x + 12 + 9 * (12 + n.label.length)}" y="${p.y + 19}">${esc(status[1])}</text>`;
+    svg += `</g>`;
+  });
+  g.edges.forEach(([a, b, meta], i) => {
+    const m = meta || {};
+    if (!pos[a] || !pos[b]) return;
+    const flowing = a === "control" ? !!(state && state.playing) : (b !== "dashboard" && pipelineBusy);
+    const {d, label} = m.style === "history" ? historyPath(pos[a], pos[b], lane) : routePath(routes[i], pos);
+    const cls = "edge" + (flowing ? " flow" : "") + (m.style === "history" ? " history" : "");
+    svg += `<path class="${cls}" d="${d}" marker-end="url(#arr)"${b === "dashboard" ? ' stroke-dasharray="4 4"' : ""}/>`;
+    if (m.label) svg += `<text class="edge-label" x="${label[0]}" y="${label[1]}" text-anchor="middle">${esc(m.label)}</text>`;
+  });
+  g.nodes.forEach(n => {
+    if (n.kind === "stmt") return;
+    const p = pos[n.id], l = live[n.id] || {};
+    const lines = [];
+    if (n.kind === "app") lines.push(...n.flags);
+    if (n.kind === "table") lines.push((n.flags.includes("upsert") ? "upsert · " : "table · ") + (l.records ?? 0) + " records", l.last ? `newest ${l.last.slice(0, 10)}` : "empty");
+    if (n.kind === "view") {
+      const fns = n.udfs.map(u => u.replace(/^.*_ex04_/, "") + "()");
+      if (fns.length) lines.push(...fns);
+      if (n.ops.length) lines.push(n.ops.join(" · "));
+      if (!lines.length) lines.push("view");
+    }
+    const bolt = rtce[n.id] === "ACTIVE" ? " ⚡" : "";
+    svg += `<g class="node ${n.kind}${n.id === selected ? " selected" : ""}" data-node="${esc(n.id)}" tabindex="0" role="button" aria-label="${esc(n.label)}">`;
+    svg += `<rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}" rx="${n.kind === "table" ? 24 : n.kind === "app" ? 4 : 10}"${n.kind === "app" ? ' stroke-dasharray="4 3"' : ""}/>`;
+    let ty = p.y + 22;
+    svg += `<text class="t" x="${p.x + 12}" y="${ty}">${esc(n.label)}${bolt}</text>`;
+    lines.slice(0, 3).forEach(t => { ty += 16; svg += `<text class="${n.kind === "view" ? "" : "m"}" x="${p.x + 12}" y="${ty}">${esc(t)}</text>`; });
+    svg += `</g>`;
+  });
+  $("diagram").innerHTML = svg + "</svg>";
+  // Whichever redraw gets here first fills the detail panel; later ones leave the reader's choice alone.
+  if (!$("detail").innerHTML.trim()) showDetail(selected);
+}
+function pick(id) { selected = id; drawDiagram(); showDetail(id); }
+$("diagram").addEventListener("click", e => { const g = e.target.closest("[data-node]"); if (g) pick(g.dataset.node); });
+$("diagram").addEventListener("keydown", e => {
+  const g = e.target.closest && e.target.closest("[data-node]");
+  if (g && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); pick(g.dataset.node); }
+});
+$("detail").addEventListener("click", e => { const b = e.target.closest("[data-goto]"); if (b) pick(b.dataset.goto); });
+
+// A statement's leading comment, as written in flink/: prose paragraphs are
+// re-flowed; a paragraph drawn with box characters keeps its spacing, in mono.
+function commentHtml(text) {
+  return text.split(/\n\s*\n/).map(par => /[─│└┌┬┴▶]/.test(par)
+    ? `<pre class="code" style="max-height:none">${esc(par)}</pre>`
+    : `<p>${esc(par.replace(/\s*\n\s*/g, " "))}</p>`).join("");
+}
+function showDetail(id) {
+  if (!pipe || !id) return;
+  const el = $("detail"), g = pipe.graph, node = g.nodes.find(n => n.id === id), o = pipe.objects[id];
+  const reads = g.edges.filter(([, b]) => b === id).map(([a]) => a), feeds = g.edges.filter(([a]) => a === id).map(([, b]) => b);
+  const chips = (label, ids) => ids.length ? `<div class="uses"><span class="hint">${label}</span>${ids.map(i => `<button class="chip" data-goto="${esc(i)}">${esc((g.nodes.find(n => n.id === i) || {label: i}).label)}</button>`).join("")}</div>` : "";
+  if (!node) {  // a function
+    el.innerHTML = `<h3>${esc(id)}</h3><div class="kind">user-defined function (Python) · flink/${esc(o ? o.file : "")}</div>${o ? commentHtml(o.comment || "") : ""}<pre class="code">${sqlHtml(o ? o.sql : "")}</pre>`;
+    return;
+  }
+  if (node.kind === "app") {
+    el.innerHTML = `<h3>${esc(node.label)}</h3><div class="kind">${esc(node.file)} — outside Flink</div>
+      <p>${id === "control" ? "Releases the simulation a day at a time: that day's ECB rates first, then its submissions, each record framed with its registered schema and timestamped with its simulated time — so $rowtime in Flink is the simulation's clock." : "Reads every table with a Kafka consumer (Schema Registry framed JSON) and keeps the latest value per key; the per-invoice lookups go through lightning queries when the Real-Time Context Engine is on."}</p>
+      ${chips(id === "control" ? "writes" : "reads", id === "control" ? feeds : reads)}`;
+    return;
+  }
+  const lv = (pipe.topics_live || {})[id] || {}, bolt = (pipe.rtce || {})[id];
+  const fns = node.udfs || [];
+  const isStmt = node.kind === "stmt", isView = node.kind === "view";
+  const state_ = isStmt ? ` · ${o && o.stopped ? "❚❚ STOPPED" : o && o.phase === "RUNNING" ? "● RUNNING" : "▲ " + esc(o ? o.phase : "UNKNOWN")}` : "";
+  const what = isStmt ? "long-running statement" : isView ? "view — runs inside the statement" : (node.flags.includes("upsert") ? "upsert table" : "table");
+  el.innerHTML = `<h3>${esc(id)}${bolt === "ACTIVE" ? " ⚡" : ""}</h3>
+    <div class="kind">${what} · flink/${esc(node.file)}${state_}${isStmt || isView ? "" : ` · ${lv.records ?? 0} records`}${bolt ? ` · Real-Time Context Engine: ${esc(bolt)}` : ""}</div>
+    ${o && o.detail ? `<p class="err">${esc(o.detail)}</p>` : ""}
+    ${o ? commentHtml(o.comment || "") : ""}
+    ${isStmt ? chips("runs", node.members || [])
+      : isView ? chips("reads", reads) + chips("feeds", feeds)
+      : chips("written by", reads) + chips("read by", feeds)}
+    ${fns.length ? `<div class="uses"><span class="hint">calls</span>${fns.map(f => `<button class="chip" data-goto="${esc(f)}">${esc(f)}()</button>`).join("")}</div>` : ""}
+    <pre class="code">${sqlHtml(o ? o.sql : "")}</pre>${isStmt ? sourceNote(o, id) : `<div class="src">from <code>flink/${esc(node.file)}</code></div>`}`;
+}
+
+// --- inputs and one invoice's trace ---------------------------------------------------
+let traced = null, tracedStage = null, latestInputs = null;
+const stageBadge = s => `<span class="badge ${s === "converted" ? "converted" : s === "review" ? "review" : s === "in flight" ? "inflight" : ""}">${esc(s)}</span>`;
+// The Inputs tab renders what the event stream last pushed; it fetches only
+// when opened before the first push arrived.
+async function loadInputs() {
+  if (latestInputs) { renderInputs(latestInputs); return; }
+  try { renderInputs(await getJSON("/api/inputs")); } catch (e) { /* the stream will bring it */ }
+}
+function renderInputs(d) {
+  if (state && state.names) $("sub-topic").textContent = `${state.names.SUBMISSIONS_TOPIC} — newest first, as produced by the control app. Pick one to follow it through the pipeline.`;
+  $("in-subs").innerHTML = d.submissions.length ? `<table><tr><th>Key</th><th>Timestamp (simulated)</th><th>Value</th><th>Stage</th></tr>` +
+    d.submissions.map(s => `<tr class="pick" tabindex="0" data-trace="${esc(s.key)}" aria-selected="${s.key === traced}">
+      <td><code>${esc(s.key)}</code></td><td class="n">${esc(s.timestamp.replace("T", " ").replace("Z", ""))}</td>
+      <td>${esc(s.value.department)} · ${esc(s.value.category)}</td><td>${stageBadge(s.stage)}</td></tr>`).join("") + "</table>"
+    : `<div class="empty">Nothing submitted yet — release a day.</div>`;
+  $("in-fx").innerHTML = d.fx.length ? `<pre class="code">${d.fx.slice(0, 4).map(f => `<span class="cm">// key ${esc(f.key)} · timestamp ${esc(f.timestamp)}</span>\n${jsonHtml(f.value)}`).join("\n")}</pre>` : `<div class="empty">—</div>`;
+  $("next-day").textContent = d.next.day ? `${fmtDay(d.next.day)}: ${d.next.fx.length} FX records, then ${d.next.submissions.length} submission(s)` : "the simulation is at its end";
+  $("in-next").innerHTML = d.next.submissions.length ? `<pre class="code">${d.next.submissions.map(s => `<span class="cm">// key ${esc(s.doc_id)} · timestamp ${esc(s.submitted_at)}</span>\n${jsonHtml(s)}`).join("\n")}</pre>`
+    : (d.next.day ? `<div class="empty">No submissions that day — only FX rates.</div>` : "");
+}
+async function loadTrace(docId) {
+  let t; try { t = await getJSON("/api/trace/" + encodeURIComponent(docId)); } catch (e) { return; }
+  tracedStage = t.stage;
+  const s = t.submission, block = (num, title, sub, body) => `<div class="stage"><h3>${num} · ${title} <span class="t">${sub}</span></h3>${body}</div>`;
+  const pending = what => `<div class="empty">${what}</div>`;
+  const keepPages = $("trace").querySelector(".pages");
+  // The extraction table carries Docling's envelope as a JSON string, and the
+  // invoice table its lists; parsed here so they read as structure, not text.
+  const parse = v => { if (typeof v !== "string") return v; try { return JSON.parse(v); } catch (e) { return v; } };
+  const envelope = t.extraction ? parse(t.extraction.extraction ?? t.extraction) : null;
+  const invoice = t.invoice ? Object.fromEntries(Object.entries(t.invoice).map(([k, v]) =>
+    [k, ["review_reasons", "line_items", "warnings"].includes(k) ? parse(v) : v])) : null;
+  const via = stage => t.source === "lightning" && t.timings && t.timings[stage] != null
+    ? ` · <span class="ms">⚡ lightning query, ${t.timings[stage]} ms</span>` : " · from the dashboard's consumer";
+  const pdfSrc = `/invoices/${encodeURIComponent(docId)}.pdf`;
+  $("trace").innerHTML = `<div class="card-head"><div><h2>${esc(docId)}</h2><p class="sub">one invoice, stage by stage — each block is the record on that topic</p></div>${stageBadge(t.stage)}</div>` +
+    block(1, "The submission", esc(state ? state.names.SUBMISSIONS_TOPIC : "submissions"),
+      s ? `<pre class="code"><span class="cm">// key ${esc(s.key)} · timestamp ${esc(s.timestamp)}</span>\n${jsonHtml(s.value)}</pre>` : pending("not on the topic")) +
+    block(2, "The document it points to", `${t.pages || "?"} page${t.pages === 1 ? "" : "s"} · <a class="link" href="${pdfSrc}" target="_blank" rel="noopener">open the PDF ↗</a>`, `<div id="pdf-slot"></div>`) +
+    block(3, "What extraction answered", `extractions — Docling's ExtractionDocumentResult (fake in this iteration)${via("extraction")}`,
+      envelope ? `<pre class="code">${jsonHtml(envelope)}</pre>` : pending("not extracted yet")) +
+    block(4, "The invoice record", `invoices — pages merged, checked; status ${esc(invoice ? invoice.status : "—")}${via("invoice")}`,
+      invoice ? `<pre class="code">${jsonHtml(invoice)}</pre>` : pending("not there yet")) +
+    (invoice && invoice.status === "review" ? "" : block(5, "In EUR", `spend — joined with the ECB rate of the invoice date${via("spend")}`,
+      t.spend ? `<pre class="code">${jsonHtml(t.spend)}</pre>` : pending("not converted yet")));
+  // Keep the same page images across refreshes of one trace, so they do not flicker every few seconds.
+  const slot = $("pdf-slot");
+  if (keepPages && keepPages.dataset.doc === docId) slot.replaceWith(keepPages);
+  else slot.outerHTML = t.pages ? `<div class="pages" data-doc="${esc(docId)}">${Array.from({length: t.pages}, (_, i) =>
+      `<img loading="lazy" alt="${esc(docId)}, page ${i + 1} of ${t.pages}" src="/preview/${encodeURIComponent(docId)}/${i + 1}.png">`).join("")}</div>`
+    : `<div class="empty">The PDF is not on this machine — run scripts/generate.py.</div>`;
+}
+function trace(docId) {
+  traced = docId;
+  document.querySelectorAll("#in-subs tr.pick").forEach(r => r.setAttribute("aria-selected", r.dataset.trace === docId));
+  loadTrace(docId);
+}
+$("in-subs").addEventListener("click", e => { const r = e.target.closest("[data-trace]"); if (r) trace(r.dataset.trace); });
+$("in-subs").addEventListener("keydown", e => { if (e.key === "Enter") { const r = e.target.closest("[data-trace]"); if (r) trace(r.dataset.trace); } });
+// Invoice links in the review queue and the feed jump to the Inputs tab, traced.
+document.addEventListener("click", e => {
+  const a = e.target.closest("a[data-trace]");
+  if (!a) return;
+  e.preventDefault();
+  selectTab($("tab-inputs")); trace(a.dataset.trace);
+});
+
+// --- about the data -----------------------------------------------------------------
+// The narrative is written here, once per department; every number is the
+// server's, computed from data/manifest.jsonl (/api/company), so it follows
+// the data if it is regenerated.
+const DEPT_STORY = {
+  Engineering: "Laptops for new joiners, the cloud bill, developer tools, training.",
+  Marketing: "Design agency, online ads, the trade-fair stand.",
+  Finance: "Lawyers for the financing round, the tax advisor.",
+  People: "Recruiter fees, training, team-event catering.",
+  Operations: "Office supplies, cleaning, office laptops — many small invoices.",
+  Sales: "Mostly travel, plus coworking desks in Berlin.",
+};
+let aboutLoaded = false;
+async function loadAbout() {
+  if (aboutLoaded) return;
+  let c; try { c = await getJSON("/api/company"); } catch (e) { return; }
+  aboutLoaded = true;
+  $("about-stats").innerHTML = [
+    [c.invoices, "invoices"], [eur(c.eur, true), "total, in EUR"], [c.vendors, "suppliers"],
+    [`${fmtDay(c.first)} – ${fmtDay(c.last)}`, "submitted"],
+  ].map(([v, l]) => `<div><b>${esc(v)}</b>${esc(l)}</div>`).join("");
+  $("about-depts").innerHTML = c.departments.map(d => `<div class="card w4 dept-card" style="--dept:${color(d.name)}">
+      <h2><span>${esc(d.name)}</span><span class="total">${eur(d.eur, true)}</span></h2>
+      <p class="what">${esc(DEPT_STORY[d.name] || "")}</p>
+      <table>${d.vendors.slice(0, 3).map(v => `<tr><td>${esc(v.name)}</td><td class="n">${eur(v.eur, true)}</td></tr>`).join("")}</table>
+    </div>`).join("");
+}
+$("about-link").addEventListener("click", e => { e.preventDefault(); selectTab($("tab-about")); $("panel-about").scrollIntoView({behavior: "smooth"}); });
+
+// --- lightning queries ------------------------------------------------------------
+// Presets that show what the engine is for: lookups and small ordered scans of
+// the latest state Flink keeps — never aggregates, which Flink already did.
+const PRESETS = [
+  ["INVOICES_TOPIC", "The review queue", "invoices waiting for a person",
+   t => `SELECT doc_id, vendor_name, department, review_reasons, submitted_at FROM "${t}" WHERE status = 'review' LIMIT 20`],
+  ["INVOICES_TOPIC", "One invoice, by id", "a point lookup — what the Inputs tab does per stage",
+   t => `SELECT * FROM "${t}" WHERE doc_id = 'lumen-inv-0042'`],
+  ["SPEND_TOPIC", "Everything from one vendor", "every converted invoice from Nimbus, oldest first",
+   t => `SELECT invoice_date, invoice_number, amount, currency, amount_eur FROM "${t}" WHERE vendor_name = 'Nimbus Cloud Services, Inc.' ORDER BY invoice_date`],
+  ["SPEND_TOPIC", "The ten largest invoices", "an ordered scan",
+   t => `SELECT vendor_name, department, invoice_date, amount_eur FROM "${t}" ORDER BY amount_eur DESC LIMIT 10`],
+  ["VENDORS_TOPIC", "Top vendors, as of now", "the upsert table: the latest total per vendor",
+   t => `SELECT vendor_name, amount_eur, invoices, last_invoice_date FROM "${t}" ORDER BY amount_eur DESC LIMIT 10`],
+  ["MONTHLY_TOPIC", "Marketing, month by month", "a range of keys from the monthly report",
+   t => `SELECT "month", category, amount_eur, invoices FROM "${t}" WHERE department = 'Marketing' ORDER BY "month"`],
+];
+let lqLoaded = false;
+async function loadLightning() {
+  let st; try { st = await getJSON("/api/lightning"); } catch (e) { return; }
+  const topics = Object.entries(st.topics);
+  const ready = st.configured && st.global_key;
+  $("lq-status").innerHTML = (ready ? `<div class="src"><b>● ready</b> — MCP endpoint configured with a global API key</div>`
+      : `<div class="err">Not available yet: ${st.configured ? "the engine's MCP endpoint takes a <b>global</b> API key — GLOBAL_KEY=&quot;yes&quot; in .env and ./account.sh apply, or create one in the console (Global access, owner = the pipeline's service account) and set RTCE_API_KEY / RTCE_API_SECRET in .env" : esc(st.error || "not configured")}.</div>`) +
+    `<div class="uses">${topics.map(([t, ph]) => `<span class="badge ${ph === "ACTIVE" ? "converted" : ""}">${ph === "ACTIVE" ? "⚡ " : ""}${esc(t.replace(/^[^.]+\.ex04\./, ""))} · ${esc(ph.toLowerCase())}</span>`).join("")}</div>` +
+    (topics.some(([, ph]) => ph === "OFF") ? `<div class="hint" style="margin-top:6px">Off for some tables: <code>./setup.sh context-engine on</code>, then a few minutes of provisioning.</div>` : "");
+  if (lqLoaded) return;
+  lqLoaded = true;
+  $("lq-topic").innerHTML = topics.map(([t]) => `<option value="${esc(t)}">${esc(t)}</option>`).join("");
+  const names = state && state.names ? state.names : {};
+  $("lq-presets").innerHTML = PRESETS.map(([v, title, sub], i) => `<button class="preset" data-preset="${i}">${esc(title)}<small>${esc(sub)}</small></button>`).join("");
+  const topicOf = v => topics.map(([t]) => t).find(t => t.endsWith("." + ({INVOICES_TOPIC: "invoices", SPEND_TOPIC: "spend", VENDORS_TOPIC: "spend.vendors", MONTHLY_TOPIC: "spend.monthly"})[v]));
+  $("lq-presets").onclick = e => {
+    const b = e.target.closest("[data-preset]"); if (!b) return;
+    const [v, , , sql] = PRESETS[+b.dataset.preset], t = topicOf(v);
+    $("lq-topic").value = t; $("lq-sql").value = sql(t); runLightning();
+  };
+  const [v0, , , sql0] = PRESETS[0]; $("lq-topic").value = topicOf(v0); $("lq-sql").value = sql0(topicOf(v0));
+}
+async function runLightning() {
+  $("lq-ms").textContent = "running…"; $("lq-result").innerHTML = "";
+  const r = await fetch("/api/lightning/query", {method: "POST", headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({topic: $("lq-topic").value, sql: $("lq-sql").value, max_rows: +$("lq-rows").value || 50})});
+  const body = await r.json().catch(() => ({}));
+  if (!r.ok) { $("lq-ms").textContent = ""; $("lq-result").innerHTML = `<p class="err">${esc(body.detail || r.status)}</p>`; return; }
+  $("lq-ms").innerHTML = `<span class="ms">⚡ ${body.ms} ms</span> round trip from this app · ${body.rows.length} row(s)`;
+  const cols = [...new Set(body.rows.flatMap(r => Object.keys(r)))];
+  $("lq-result").innerHTML = (body.rows.length ? `<table><tr>${cols.map(c => `<th>${esc(c)}</th>`).join("")}</tr>${body.rows.map(r =>
+      `<tr>${cols.map(c => `<td>${esc(typeof r[c] === "object" ? JSON.stringify(r[c]) : r[c])}</td>`).join("")}</tr>`).join("")}</table>`
+      : `<div class="empty">No rows.</div>`) +
+    `<details><summary>The response as the engine returned it</summary><pre class="code">${jsonHtml(body.result)}</pre></details>`;
+}
+$("lq-run").onclick = runLightning;
+
+// --- polling ------------------------------------------------------------------------
+// --- the push channel ---------------------------------------------------------------
+// No polling: one Server-Sent Events stream from the control app, which sends
+// `state` whenever its Kafka consumer applies a record or the clock moves, and
+// `pipeline` when a statement's phase, or the engine's status, changes.
+// EventSource reconnects by itself; the page says so only while it is.
+function connect() {
+  const es = new EventSource("/api/events");
+  es.onopen = () => { $("live").textContent = ""; $("errors").textContent = ""; };
+  es.onerror = () => { $("live").textContent = "◌ connection to the control app lost — reconnecting…"; };
+  es.addEventListener("state", e => {
+    const d = JSON.parse(e.data);
+    latestInputs = d.inputs;
+    render(d);
+    if (pipe) { pipe.topics_live = d.topics; if (activeTab === "pipe") drawDiagram(); }
+    if (activeTab === "inputs") renderInputs(d.inputs);
+    // A traced invoice is fetched again only when its stage has moved on.
+    if (traced) {
+      const row = d.inputs.submissions.find(r => r.key === traced);
+      if (row && row.stage !== tracedStage) loadTrace(traced);
+    }
+  });
+  es.addEventListener("pipeline", e => {
+    const d = JSON.parse(e.data);
+    if (!pipe) return;
+    for (const [name, o] of Object.entries(d.objects)) pipe.objects[name] = {...pipe.objects[name], ...o};
+    pipe.rtce = d.rtce;
+    if (activeTab === "pipe") { drawDiagram(); showDetail(selected); }
+  });
+}
+// The SQL texts and the graph do not change while the page is open: fetched once.
+(async () => { await loadCalendar(); await loadPipeline(); connect(); })();
+</script>
+</body>
+</html>

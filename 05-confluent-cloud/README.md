@@ -31,7 +31,7 @@ in them.
 |---|---|
 | [01 — Docling outside](examples/01-docling-outside/) | Docling converts documents outside of Confluent Cloud and writes document chunks to a topic. |
 | [02 — URLs](examples/02-docling-in-flink-urls/) | You write URLs to a topic and Flink calls Docling for IBM watsonx on each one. |
-| [03 — S3 bucket](examples/03-docling-in-flink-s3/) | You upload files to a private S3 bucket and a managed Confluent connector consumes from the bucket. |
+| [03 — S3 bucket](examples/03-docling-in-flink-s3/) | You upload files to a private S3 bucket. A managed Confluent connector turns each upload notification into a record, and Flink calls Docling for IBM watsonx on each file. |
 | [04 — Invoices](examples/04-invoice-extraction/) | Six months of invoices on a simulated clock: extract vendor, total and line items, convert to EUR, watch a live spend dashboard. [▶ 1-min demo](examples/04-invoice-extraction/video/ex04-docling-confluent.mp4) |
 | [05 — SEC filings](examples/05-xbrl/) | 10-K and 10-Q filings stream in from SEC EDGAR as they are published; Docling converts each report, and Flink reads its headline figures and flags what changed (net income turning negative, cash falling sharply, …). |
 
@@ -102,7 +102,8 @@ What the scripts delete — always by exact name, always under your `NS`:
 `./setup.sh info` lists every name an example touches.
 
 ## Cleaning up
-Be sure to clean your examples from the clusters to save on usage costs.
+
+Clean up your examples when you finish, to save on usage costs.
 
 | command | removes | cost of undoing it |
 |---|---|---|
@@ -162,8 +163,3 @@ Change them with `PARTITIONS` and `RETENTION` in `.env`. (Example 04 keeps its
 own: one partition, infinite retention.)
 
 </details>
-
-
-## Where this came from
-
-The enrichment logic is based on [LAB-2775 from IBM/txc2026-docling](https://github.com/IBM/txc2026-docling/tree/main/lab-2775) (Apache 2.0).

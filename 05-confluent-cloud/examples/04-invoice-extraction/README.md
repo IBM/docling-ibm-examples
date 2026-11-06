@@ -20,7 +20,7 @@ when you release it:
 - **Synthetic** — a Python UDF answers from the invoice's known contents, in
   the same format as Docling. Free and instant; good for trying the pipeline.
 
-> **Field extraction is experimental and not yet available in general.**
+> **Field extraction is experimental and not yet generally available.**
 
 ## Run it
 

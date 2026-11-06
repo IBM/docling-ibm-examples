@@ -11,7 +11,7 @@ Everyone is welcome to help in other ways:
 
 ## For collaborators
 
-### How the repository is organised
+### How the repository is organized
 
 Each example lives in a numbered folder with a language-neutral `README.md`, and each implementation sits in a subfolder named after its language or tool (`python/`, `curl/`, `java/`, ...). See [Repository layout](README.md#repository-layout).
 

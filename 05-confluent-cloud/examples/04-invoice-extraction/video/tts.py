@@ -5,7 +5,11 @@ and assets/timing.js with their durations, which video.html and render.py lay th
 
 Model files (kokoro-v1.0.onnx, voices-v1.0.bin) from github.com/thewh1teagle/kokoro-onnx/releases, in $KOKORO_DIR.
 """
-import argparse, json, os, pathlib
+import argparse
+import json
+import os
+import pathlib
+
 import soundfile as sf
 from kokoro_onnx import Kokoro
 

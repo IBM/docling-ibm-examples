@@ -239,7 +239,7 @@ notification entry is removed from it.
 
 ## For production
 
-The script optimises for one command and a clean teardown. In production:
+The script optimizes for one command and a clean teardown. In production:
 
 - **Connector auth through an IAM role** instead of an access key: Confluent's
   *provider integration* (`authentication.method = IAM Roles`,

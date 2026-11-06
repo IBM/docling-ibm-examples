@@ -1,12 +1,13 @@
 # What the managed service will and will not run
 
 Confluent Cloud for Apache Flink is not Flink with a hosted control plane. It
-is a narrower product, and most of the shape of this repo is a consequence of
-that. This file is the list — with, where it matters, how each item was
+is a narrower product, and most of the shape of these examples is a consequence
+of that. This file is the list — with, where it matters, how each item was
 established rather than merely asserted.
 
 Everything below was checked against a live account in `aws/us-east-1` in
-September 2026. Confluent moves; re-check before you plan around a "no".
+September and October 2026. Confluent moves; re-check before you plan around a
+"no".
 
 ## The one fact everything follows from
 
@@ -52,7 +53,8 @@ under limitations: *"Flink supports external connectivity only for Java
 stateless scalar and table functions."*
 
 **So: anything that calls out is a Java UDF.** That is why `common/udf-java/`
-exists and why it contains exactly one class.
+exists. Its `S3Presign` calls nothing, but reading a connection's credential is
+Java-only too.
 
 ## What a UDF may do
 
@@ -128,7 +130,7 @@ the request itself.
 
 ### …and an async UDF gets about a minute, per call
 
-*Added 2026-10-05, example 04.* The way around the batch timeout is an
+The way around the batch timeout (measured while building example 04, October 2026) is an
 `AsyncScalarFunction` (Confluent documents it for external calls): Flink keeps
 several calls in flight and the timeout becomes per call. Measured, not
 documented:
@@ -145,9 +147,10 @@ documented:
 
 So the function has to enforce its own deadline, from the moment it is handed
 the record, and answer before that minute with a value — see
-`common/udf-java/…/DoclingExtract.java` and `DoclingConvert.java` (45 s each). And a backlog (a table deployed onto a
-topic that already has hundreds of records) is the worst case: the records
-queue for the function's workers, and the queueing counts.
+`common/udf-java/…/DoclingExtract.java` and `DoclingConvert.java` (45 s each).
+A backlog (a table deployed onto a topic that already has hundreds of records)
+is the worst case: the records queue for the function's workers, and the
+queueing counts.
 
 ### A materialized table pins its artifact version
 
@@ -196,7 +199,7 @@ record could still arrive with an earlier timestamp — so it waits for the
 watermark to pass. On an idle topic the watermark does not move, and rows sit
 in the operator.
 
-What that looks like, and it is exactly what happened while writing this:
+What that looks like:
 
 - produce five chunks, once;
 - the **quarantine** and **rejected** branches emit immediately, because

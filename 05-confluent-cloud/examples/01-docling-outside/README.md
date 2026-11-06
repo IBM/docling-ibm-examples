@@ -30,11 +30,11 @@ uv run --project ../.. scripts/produce_chunks.py --sample
 uv run --project ../.. ../../common/drain_topic.py --topic <NS>.ex01.chunks.enriched
 ```
 
-**Run the scripts a second time if the first run returns 0 records.** The dedup only
+**Run both commands a second time if the first run returns 0 records.** The dedup only
 emits once Flink's clock (the watermark) moves past a chunk, and the clock only
 moves when new records arrive. The second batch pushes the first one through.
 [`docs/05-confluent-cloud/LIMITS.md`](../../../docs/05-confluent-cloud/LIMITS.md#the-dedup-holds-rows-until-the-watermark-moves)
-explains why, and how to trade this away. Quarantine shows its record at an instant.
+explains why. The quarantine topic shows its record immediately.
 
 | command | |
 |---|---|

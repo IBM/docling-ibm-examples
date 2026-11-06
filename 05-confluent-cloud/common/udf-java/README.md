@@ -1,7 +1,7 @@
 # docling-flink-udf
 
-The Java UDF artifact: the only code in this repo that calls something outside
-Confluent Cloud.
+The Java UDF artifact shared by examples 02 to 04: the code that calls Docling
+(and signs S3 links) from inside Confluent Cloud. Example 05 has its own.
 
 | class | SQL function | used by | what it does |
 |---|---|---|---|

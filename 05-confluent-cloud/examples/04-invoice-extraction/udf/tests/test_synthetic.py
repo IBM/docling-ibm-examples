@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """The synthetic extraction speaks Docling's extraction contract — shape first, then content."""
 
 from __future__ import annotations

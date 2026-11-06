@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """Lightning queries: millisecond reads of a topic's current contents.
 
 The Real-Time Context Engine (Confluent Intelligence) keeps a materialized

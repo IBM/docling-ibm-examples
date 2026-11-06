@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """Schema Registry client helper for example 05.
 
 Provides schema registry encoding and decoding for Confluent Cloud framed JSON

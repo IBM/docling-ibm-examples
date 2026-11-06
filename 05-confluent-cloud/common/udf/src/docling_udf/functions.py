@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """The UDF entry points Confluent Cloud registers with ``CREATE FUNCTION``.
 
 Every one of them takes a JSON string and returns a JSON string, which is not

@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """RAG over your documents with Docling for IBM watsonx and watsonx.ai.
 
 Script version of rag.ipynb:

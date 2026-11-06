@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """Schema Registry, the little this example needs of it.
 
 Every value in this example's topics is JSON *registered* in Schema Registry

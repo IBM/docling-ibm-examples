@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """Seven invoice layouts, drawn with ReportLab.
 
 Not seven colour schemes over one template: the layouts differ where real

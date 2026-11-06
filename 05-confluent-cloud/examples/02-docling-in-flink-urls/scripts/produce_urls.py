@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """Put documents-to-convert on the URL topic, so the convert statement has work.
 
     uv run scripts/produce_urls.py --sample

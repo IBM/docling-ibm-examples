@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 # Everything that happens once, before this example's pipeline can be deployed.
 # The AWS side comes first and is not this script's: scripts/aws.sh, AWS.md.
 # It is Terraform's — terraform/main.tf, beside this file, on

@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 # Build the uploadable Java artifact — one shaded JAR.
 #
 # Needs a JDK and nothing else: if `mvn` is not on your PATH this downloads a

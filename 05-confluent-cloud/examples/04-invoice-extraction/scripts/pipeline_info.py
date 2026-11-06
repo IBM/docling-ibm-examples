@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """The pipeline as Flink runs it, for the dashboard's SQL views and diagram.
 
 Three sources, and the page says which one it is showing:

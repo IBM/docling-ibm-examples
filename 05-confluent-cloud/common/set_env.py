@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """Write values into a .env file in place, without disturbing anything else.
 
     common/set_env.py CC_ENVIRONMENT_ID=env-abc123 CC_CLUSTER_ID=lkc-xyz

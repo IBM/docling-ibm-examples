@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """Draw example 05's picture diagrams, in the style of docs/05-confluent-cloud/diagrams/draw.py.
 
     python3 docs/05-confluent-cloud/diagrams/draw_ex05.py

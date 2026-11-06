@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """An extraction result, as one invoice record.
 
 Docling answers page by page; the business wants one row per invoice. This is

@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """The simulation's clock: what has been released, and releasing more of it.
 
 Time in this example is not wall-clock time. It is a date, January 5 to June

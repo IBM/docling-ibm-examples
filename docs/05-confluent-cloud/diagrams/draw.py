@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """Draw the picture diagrams in docs/05-confluent-cloud/diagrams/ — one script, one palette.
 
     python3 docs/05-confluent-cloud/diagrams/draw.py

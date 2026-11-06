@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """Where each object is: announced, converted, chunked, enriched — read from the topics.
 
     uv run --project ../.. scripts/report.py

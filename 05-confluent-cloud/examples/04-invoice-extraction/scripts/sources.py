@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """Where an invoice's PDF is fetched from: the URL a submission carries.
 
 A real extraction is a URL handed to Docling, and Docling fetches it — so the

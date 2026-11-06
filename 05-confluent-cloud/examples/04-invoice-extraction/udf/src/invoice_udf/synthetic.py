@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """A stand-in for Docling's structured extraction, with the real wire contract.
 
 The real thing is `docling-project/docling#4218`: you send an

@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """The fictional world the invoices come from.
 
 One buyer — Lumen Analytics GmbH, a ~40-person data company in Munich that

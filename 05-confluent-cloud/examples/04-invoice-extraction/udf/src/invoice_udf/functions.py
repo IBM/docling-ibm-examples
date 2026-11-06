@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """The entry points ``CREATE FUNCTION`` registers.
 
 Two, and the split between them is the design:

@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """Voiceover with Kokoro (open-weights neural TTS, runs locally): vo/s<N>.wav per line of vo/script.txt,
 and assets/timing.js with their durations, which video.html and render.py lay the scenes out from.
 

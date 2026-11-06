@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """Put chunk records on the chunk topic, so the pipeline has something to do.
 
     uv run scripts/produce_chunks.py --sample

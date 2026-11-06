@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """Convert a document with Docling for IBM watsonx and save Markdown and DocLang.
 
     uv run convert.py                        # the Docling technical report

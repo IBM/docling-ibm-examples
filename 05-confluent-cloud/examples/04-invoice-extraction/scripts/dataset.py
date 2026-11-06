@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """The invoices as an evaluation dataset, in the Hugging Face bucket.
 
     uv run --project ../.. --group extract scripts/dataset.py build      # -> data/dataset/, to look at

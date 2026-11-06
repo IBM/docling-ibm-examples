@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """What the dashboard shows, read from the topics.
 
 A background consumer reads every topic of the example from the beginning —

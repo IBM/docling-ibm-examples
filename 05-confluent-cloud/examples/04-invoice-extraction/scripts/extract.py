@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """Run the extraction from the laptop, and score it against the ground truth.
 
     uv run --project ../.. --group extract scripts/extract.py upload

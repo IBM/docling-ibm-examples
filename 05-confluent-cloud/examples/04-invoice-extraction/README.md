@@ -20,7 +20,15 @@ when you release it:
 - **Synthetic** — a Python UDF answers from the invoice's known contents, in
   the same format as Docling. Free and instant; good for trying the pipeline.
 
-> **Field extraction is experimental and not yet generally available.**
+> [!WARNING]
+> **Field extraction is experimental and not yet generally available.** It
+> follows the extraction API of an unmerged Docling pull request,
+> [docling-project/docling#4218](https://github.com/docling-project/docling/pull/4218),
+> and the scripts that run it from your machine (`--group extract`) install the
+> Docling client from that pull request's branch. Until it is merged and
+> released, the API can change and the branch can change or disappear, which
+> would stop `--group extract` from installing. The *synthetic* mode and the
+> rest of the pipeline don't depend on the client.
 
 ## Run it
 

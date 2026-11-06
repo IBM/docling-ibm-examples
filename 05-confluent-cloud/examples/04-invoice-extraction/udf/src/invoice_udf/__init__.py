@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """Example 04's UDFs: invoice extraction in Confluent Cloud Flink.
 
 ``invoice_udf.functions`` holds the registered functions. Beside it:

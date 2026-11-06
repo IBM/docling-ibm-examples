@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """Docling chunk enrichment as Confluent Cloud Flink Python UDFs.
 
 ``docling_udf.functions`` holds the registered functions. The modules beside it

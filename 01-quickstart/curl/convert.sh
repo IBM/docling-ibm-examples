@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 # Convert a document with the Docling for IBM watsonx REST API, using only curl and jq.
 #
 #   ./convert.sh                                  # converts the Docling technical report

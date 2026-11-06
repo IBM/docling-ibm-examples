@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """Just enough JSON Schema to validate an extraction against its target.
 
 Docling validates every extracted item against ``ExtractionTarget.output_schema``

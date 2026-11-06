@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """The pipeline's diagram, generated from the SQL it describes.
 
     python3 scripts/diagram.py            rewrite the diagram in README.md

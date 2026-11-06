@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 # Build the uploadable artifact — the same shape as common/udf/build.sh (a zip
 # holding the sdist tarball), with one step in front: compile the manifest into
 # the package, because that is what the fake extraction answers from.

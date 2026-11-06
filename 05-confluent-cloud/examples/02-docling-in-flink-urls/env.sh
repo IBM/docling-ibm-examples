@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 # Example 02 — every name it creates, all derived from NS.
 #
 # Read env.sh in example 01 first: the layering and the reasoning are the same,

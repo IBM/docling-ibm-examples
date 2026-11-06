@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """What `./pipeline.sh deploy` would submit: one JSON line per long-running statement.
 
     {"name": "dol-ex02-convert", "fingerprint": "3f9c…", "file": "…/31_convert.sql",

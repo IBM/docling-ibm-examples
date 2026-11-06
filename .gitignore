@@ -33,6 +33,12 @@ converted/
 /05-confluent-cloud/examples/04-invoice-extraction/udf/src/invoice_udf/_truth.py
 /05-confluent-cloud/examples/04-invoice-extraction/data/extractions/
 /05-confluent-cloud/examples/04-invoice-extraction/data/dataset/
+# Example 05: scripts/download_xbrl.py saves sample XBRL ZIPs and files under
+# data/<ticker>/. They are large and the pipeline doesn't use them, so they stay
+# out of git. data/queue/ holds the recorded filing records that --replay sends,
+# and is committed.
+/05-confluent-cloud/examples/05-xbrl/data/*
+!/05-confluent-cloud/examples/05-xbrl/data/queue/
 
 # Binary media and documents, in example 05 and the top-level docs. The invoice
 # PDFs are in a public Hugging Face bucket: see the README in

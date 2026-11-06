@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 660" width="1200" height="660" role="img" aria-labelledby="t d">
+  <title id="t">What the shared enrichment does to five chunks</title>
+  <desc id="d">Example 01&#x27;s sample document, chunk by chunk. 0: ordinary prose passes every step into enriched. 1: a soft hyphen across a line break is normalized; enriched with normalized=true. 2: byte-identical to chunk 0, dropped by dedup. 3: an e-mail and a card number are redacted in enriched, and the unredacted original goes to quarantine. 4: &#x27;Table 4&#x27; is too short; flagged keep=false, and rejected when DROP_LOW_QUALITY is TRUE.</desc>
+  <!-- drawn by docs/05-confluent-cloud/diagrams/draw.py — edit that, not this -->
+  <defs>
+    <style>
+    text { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; fill: #1f1e1c; font-size: 13px; }
+    .bg { fill: #fbfaf8; stroke: #e6e4df; }
+    .title { font-size: 21px; font-weight: 700; letter-spacing: -0.2px; }
+    .lede { font-size: 14px; fill: #6b6964; }
+    .h { font-size: 15px; font-weight: 650; }
+    .m { font-size: 12.5px; fill: #6b6964; }
+    .s { font-size: 11.5px; fill: #6b6964; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }
+    .num { font-size: 12px; font-weight: 700; fill: #fff; }
+    .lbl { font-size: 11.5px; fill: #6b6964; font-style: italic;
+            paint-order: stroke; stroke: #fbfaf8; stroke-width: 5px; stroke-linejoin: round; }
+    .region-t { font-size: 12px; font-weight: 700; letter-spacing: 1.2px; }
+    .edge { fill: none; stroke: #6b6964; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .dash { stroke-dasharray: 6 5; }
+    .ah { fill: #6b6964; }
+    .card { stroke-width: 1.4; }
+    .region { stroke-width: 1.4; stroke-dasharray: 7 5; }
+    .ico { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .hl { fill-opacity: .75; }
+    .f-topic{fill:#e8f1fc;stroke:#2a78d6} .s-topic{stroke:#2a78d6} .c-topic{color:#2a78d6} .t-topic{fill:#0b3d75} .d-topic{fill:#2a78d6} .l-topic{fill:#e8f1fc} .f-flink{fill:#fff3e8;stroke:#eb6834} .s-flink{stroke:#eb6834} .c-flink{color:#eb6834} .t-flink{fill:#a8401a} .d-flink{fill:#eb6834} .l-flink{fill:#fff3e8} .f-docling{fill:#f1ecfe;stroke:#7a5af8} .s-docling{stroke:#7a5af8} .c-docling{color:#7a5af8} .t-docling{fill:#4a2fb8} .d-docling{fill:#7a5af8} .l-docling{fill:#f1ecfe} .f-ok{fill:#e8f6ee;stroke:#1f9d55} .s-ok{stroke:#1f9d55} .c-ok{color:#1f9d55} .t-ok{fill:#11653a} .d-ok{fill:#1f9d55} .l-ok{fill:#e8f6ee} .f-warn{fill:#fff5e0;stroke:#d69211} .s-warn{stroke:#d69211} .c-warn{color:#d69211} .t-warn{fill:#7a4e00} .d-warn{fill:#d69211} .l-warn{fill:#fff5e0} .f-bad{fill:#fdecea;stroke:#d1453b} .s-bad{stroke:#d1453b} .c-bad{color:#d1453b} .t-bad{fill:#8f1f17} .d-bad{fill:#d1453b} .l-bad{fill:#fdecea} .f-aws{fill:#fdf6ec;stroke:#b07a2a} .s-aws{stroke:#b07a2a} .c-aws{color:#b07a2a} .t-aws{fill:#6b4510} .d-aws{fill:#b07a2a} .l-aws{fill:#fdf6ec} .f-ext{fill:#ffffff;stroke:#9a9892} .s-ext{stroke:#9a9892} .c-ext{color:#9a9892} .t-ext{fill:#2f2e2b} .d-ext{fill:#9a9892} .l-ext{fill:#ffffff} .f-mute{fill:#f3f2ef;stroke:#c4c2bc} .s-mute{stroke:#c4c2bc} .c-mute{color:#c4c2bc} .t-mute{fill:#6b6964} .d-mute{fill:#c4c2bc} .l-mute{fill:#f3f2ef}
+    @media (prefers-color-scheme: dark) {
+      text { fill: #ecebe8; }
+      .bg { fill: #18181a; stroke: #333336; }
+      .lede, .m, .s { fill: #a3a19c; }
+      .lbl { fill: #a3a19c; stroke: #18181a; }
+      .edge { stroke: #a3a19c; }
+      .ah { fill: #a3a19c; }
+      .shadow { filter: none; }
+      .f-topic{fill:#13243a;stroke:#5a9be6} .s-topic{stroke:#5a9be6} .c-topic{color:#5a9be6} .t-topic{fill:#cfe3fb} .d-topic{fill:#5a9be6} .l-topic{fill:#13243a} .f-flink{fill:#2a1e14;stroke:#eb6834} .s-flink{stroke:#eb6834} .c-flink{color:#eb6834} .t-flink{fill:#f5a274} .d-flink{fill:#eb6834} .l-flink{fill:#2a1e14} .f-docling{fill:#211a38;stroke:#9b85fb} .s-docling{stroke:#9b85fb} .c-docling{color:#9b85fb} .t-docling{fill:#d9cffe} .d-docling{fill:#9b85fb} .l-docling{fill:#211a38} .f-ok{fill:#12261b;stroke:#3fbf77} .s-ok{stroke:#3fbf77} .c-ok{color:#3fbf77} .t-ok{fill:#bfead2} .d-ok{fill:#3fbf77} .l-ok{fill:#12261b} .f-warn{fill:#2b2312;stroke:#e0a83a} .s-warn{stroke:#e0a83a} .c-warn{color:#e0a83a} .t-warn{fill:#f6dca4} .d-warn{fill:#e0a83a} .l-warn{fill:#2b2312} .f-bad{fill:#2e1716;stroke:#e8736a} .s-bad{stroke:#e8736a} .c-bad{color:#e8736a} .t-bad{fill:#f6c4bf} .d-bad{fill:#e8736a} .l-bad{fill:#2e1716} .f-aws{fill:#2a2116;stroke:#d19a4a} .s-aws{stroke:#d19a4a} .c-aws{color:#d19a4a} .t-aws{fill:#f0d3a6} .d-aws{fill:#d19a4a} .l-aws{fill:#2a2116} .f-ext{fill:#232325;stroke:#8f8d88} .s-ext{stroke:#8f8d88} .c-ext{color:#8f8d88} .t-ext{fill:#ecebe8} .d-ext{fill:#8f8d88} .l-ext{fill:#232325} .f-mute{fill:#29292b;stroke:#55544f} .s-mute{stroke:#55544f} .c-mute{color:#55544f} .t-mute{fill:#a3a19c} .d-mute{fill:#55544f} .l-mute{fill:#29292b}
+    }
+    </style>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="140%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="2.2" flood-color="#000" flood-opacity=".10"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7.5" markerHeight="7.5" orient="auto-start-reverse">
+      <path class="ah" d="M0,0.5 L10,5 L0,9.5 z"/>
+    </marker>
+    <symbol id="i-doc" viewBox="0 0 24 24"><g class="ico"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 12h6M9 15h6M9 18h4"/></g></symbol>
+    <symbol id="i-docs" viewBox="0 0 24 24"><g class="ico"><path d="M8 3h7l4 4v11H8z"/><path d="M15 3v4h4"/><path d="M5 7v14h11"/></g></symbol>
+    <symbol id="i-laptop" viewBox="0 0 24 24"><g class="ico"><rect x="4" y="5" width="16" height="11" rx="1.5"/><path d="M2 19.5h20"/></g></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><g class="ico"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></g></symbol>
+    <symbol id="i-bucket" viewBox="0 0 24 24"><g class="ico"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6l2 13c.3 1.5 2.9 2.5 6 2.5s5.7-1 6-2.5L20 6"/></g></symbol>
+    <symbol id="i-queue" viewBox="0 0 24 24"><g class="ico"><rect x="3" y="4" width="18" height="4.5" rx="1"/><rect x="3" y="10" width="18" height="4.5" rx="1"/><rect x="3" y="16" width="18" height="4.5" rx="1"/></g></symbol>
+    <symbol id="i-plug" viewBox="0 0 24 24"><g class="ico"><path d="M9 2v5M15 2v5"/><path d="M6 7h12v4a6 6 0 0 1-12 0z"/><path d="M12 17v5"/></g></symbol>
+    <symbol id="i-stream" viewBox="0 0 24 24"><g class="ico"><path d="M3 7c3-3 6 3 9 0s6 3 9 0"/><path d="M3 12c3-3 6 3 9 0s6 3 9 0"/><path d="M3 17c3-3 6 3 9 0s6 3 9 0"/></g></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><g class="ico"><path d="M11 3l1.9 5.6L18.5 10.5l-5.6 1.9L11 18l-1.9-5.6L3.5 10.5l5.6-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></g></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><g class="ico"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.5"/></g></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><g class="ico"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></g></symbol>
+    <symbol id="i-xcircle" viewBox="0 0 24 24"><g class="ico"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></g></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><g class="ico"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></g></symbol>
+    <symbol id="i-receipt" viewBox="0 0 24 24"><g class="ico"><path d="M6 3h12v18l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5L6 21z"/><path d="M9 8h6M9 12h6M9 16h3"/></g></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><g class="ico"><path d="M4 20h16"/><path d="M7 17v-5M12 17V7M17 17v-8"/></g></symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24"><g class="ico"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></g></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24"><g class="ico"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3M14.5 8.5l2 2"/></g></symbol>
+    <symbol id="i-euro" viewBox="0 0 24 24"><g class="ico"><path d="M17.5 6.5a7 7 0 1 0 0 11"/><path d="M4 10h9M4 14h9"/></g></symbol>
+    <symbol id="i-cloud" viewBox="0 0 24 24"><g class="ico"><path d="M7 18.5a5 5 0 0 1-.7-9.9A6.5 6.5 0 0 1 18.4 9.6 4.5 4.5 0 0 1 17.5 18.5z"/></g></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><g class="ico"><path d="M12 15V4M7 9l5-5 5 5"/><path d="M4 15v5h16v-5"/></g></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><g class="ico"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></g></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><g class="ico"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></g></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24"><g class="ico"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></g></symbol>
+    <symbol id="i-gauge" viewBox="0 0 24 24"><g class="ico"><path d="M4 17a8 8 0 0 1 16 0"/><path d="M12 17l4-5"/></g></symbol>
+    <symbol id="i-archive" viewBox="0 0 24 24"><g class="ico"><rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v11h14V9"/><path d="M10 13h4"/></g></symbol>
+    <symbol id="i-scissors" viewBox="0 0 24 24"><g class="ico"><circle cx="6" cy="7" r="3"/><circle cx="6" cy="17" r="3"/><path d="M8.5 8.5L20 19M8.5 15.5L20 5"/></g></symbol>
+    <symbol id="i-merge" viewBox="0 0 24 24"><g class="ico"><path d="M6 4v4a6 6 0 0 0 6 6h0a6 6 0 0 1 6 6"/><path d="M18 4v4a6 6 0 0 1-6 6"/></g></symbol>
+    <symbol id="i-dashboard" viewBox="0 0 24 24"><g class="ico"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M7 17v-4M11 17v-6M15 17v-3"/></g></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><g class="ico"><path d="M4 7h16M10 11v6M14 11v6"/><path d="M6 7l1 13h10l1-13"/><path d="M9 7V4h6v3"/></g></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><g class="ico"><path d="M20 11a8 8 0 0 0-14.6-4.5M4 13a8 8 0 0 0 14.6 4.5"/><path d="M5 3v4h4M19 21v-4h-4"/></g></symbol>
+  </defs>
+  <rect class="bg" x="0.5" y="0.5" width="1199" height="659" rx="18"/>
+  <text x="36" y="48" class="title">Five chunks in, and where each one lands</text>
+  <text x="36" y="74" class="lede">Example 01&#x27;s sample document. Every example from the chunk topic on runs these same steps.</text>
+  <text x="40" y="122" class="region-t t-topic">CHUNK IN</text>
+  <text x="522" y="122" class="region-t t-flink">STEP THAT DECIDES</text>
+  <text x="780" y="122" class="region-t t-ok">WHERE IT LANDS</text>
+  <rect class="card f-ext shadow" filter="url(#shadow)" x="40" y="138" width="420" height="78" rx="12"/>
+  <circle cx="64" cy="177" r="13" class="d-topic"/>
+  <text x="64" y="181.3" class="num" text-anchor="middle">0</text>
+  <text x="88" y="171" class="mono" xml:space="preserve">Retrieval quality is decided long before the</text>
+  <text x="88" y="190" class="mono" xml:space="preserve">vector store. The chunk boundary, the …</text>
+  <rect class="card f-ext shadow" filter="url(#shadow)" x="40" y="238" width="420" height="78" rx="12"/>
+  <circle cx="64" cy="277" r="13" class="d-topic"/>
+  <text x="64" y="281.3" class="num" text-anchor="middle">1</text>
+  <text x="88" y="271" class="mono" xml:space="preserve">The inter<tspan class="t-warn">‐⏎</tspan>national standard applies to</text>
+  <text x="88" y="290" class="mono" xml:space="preserve">every member state, and the transition …</text>
+  <text x="448" y="308" class="s" text-anchor="end">soft hyphen + line break</text>
+  <rect class="card f-ext shadow" filter="url(#shadow)" x="40" y="338" width="420" height="78" rx="12"/>
+  <circle cx="64" cy="377" r="13" class="d-topic"/>
+  <text x="64" y="381.3" class="num" text-anchor="middle">2</text>
+  <text x="88" y="371" class="mono" xml:space="preserve">Retrieval quality is decided long before the</text>
+  <text x="88" y="390" class="mono" xml:space="preserve">vector store. The chunk boundary, the …</text>
+  <text x="448" y="408" class="s" text-anchor="end">byte-identical to 0</text>
+  <rect class="card f-ext shadow" filter="url(#shadow)" x="40" y="438" width="420" height="78" rx="12"/>
+  <circle cx="64" cy="477" r="13" class="d-topic"/>
+  <text x="64" y="481.3" class="num" text-anchor="middle">3</text>
+  <text x="88" y="471" class="mono" xml:space="preserve">For renewals write to <tspan class="t-bad">alice.smith@example.com</tspan></text>
+  <text x="88" y="490" class="mono" xml:space="preserve">quoting the card ending <tspan class="t-bad">4111 1111 1111 1111</tspan> …</text>
+  <rect class="card f-ext shadow" filter="url(#shadow)" x="40" y="538" width="420" height="78" rx="12"/>
+  <circle cx="64" cy="577" r="13" class="d-topic"/>
+  <text x="64" y="581.3" class="num" text-anchor="middle">4</text>
+  <text x="88" y="582" class="mono" xml:space="preserve">Table 4</text>
+  <text x="448" y="608" class="s" text-anchor="end">too short to be useful</text>
+  <path class="edge" d="M460,177 H517" marker-end="url(#arrow)"/>
+  <rect class="card f-flink" x="520" y="162" width="200" height="30" rx="15.0"/>
+  <use href="#i-check" x="529" y="169.0" width="16" height="16" class="c-flink"/>
+  <text x="551" y="181.5" class="m t-flink">passes every step</text>
+  <path class="edge" d="M460,277 H517" marker-end="url(#arrow)"/>
+  <rect class="card f-flink" x="520" y="262" width="200" height="30" rx="15.0"/>
+  <use href="#i-sliders" x="529" y="269.0" width="16" height="16" class="c-flink"/>
+  <text x="551" y="281.5" class="m t-flink">normalize</text>
+  <path class="edge" d="M460,377 H517" marker-end="url(#arrow)"/>
+  <rect class="card f-flink" x="520" y="362" width="200" height="30" rx="15.0"/>
+  <use href="#i-copy" x="529" y="369.0" width="16" height="16" class="c-flink"/>
+  <text x="551" y="381.5" class="m t-flink">dedup</text>
+  <path class="edge" d="M460,477 H517" marker-end="url(#arrow)"/>
+  <rect class="card f-flink" x="520" y="462" width="200" height="30" rx="15.0"/>
+  <use href="#i-shield" x="529" y="469.0" width="16" height="16" class="c-flink"/>
+  <text x="551" y="481.5" class="m t-flink">PII guard</text>
+  <path class="edge" d="M460,577 H517" marker-end="url(#arrow)"/>
+  <rect class="card f-flink" x="520" y="562" width="200" height="30" rx="15.0"/>
+  <use href="#i-gauge" x="529" y="569.0" width="16" height="16" class="c-flink"/>
+  <text x="551" y="581.5" class="m t-flink">quality gate</text>
+  <path class="edge" d="M720,177 H777" marker-end="url(#arrow)"/>
+  <path class="edge" d="M720,277 H777" marker-end="url(#arrow)"/>
+  <path class="edge" d="M720,377 H777" marker-end="url(#arrow)"/>
+  <path class="edge" d="M720,577 H777" marker-end="url(#arrow)"/>
+  <rect class="card f-ok shadow" filter="url(#shadow)" x="780" y="138" width="380" height="78" rx="12"/>
+  <circle cx="814" cy="177.0" r="18" class="l-ok"/>
+  <use href="#i-check" x="803.65" y="166.65" width="20.7" height="20.7" class="c-ok"/>
+  <text x="842" y="172.5" class="h t-ok">chunks.enriched</text>
+  <text x="842" y="191.5" class="m">as it came, with derived fields</text>
+  <rect class="card f-ok shadow" filter="url(#shadow)" x="780" y="238" width="380" height="78" rx="12"/>
+  <circle cx="814" cy="277.0" r="18" class="l-ok"/>
+  <use href="#i-check" x="803.65" y="266.65" width="20.7" height="20.7" class="c-ok"/>
+  <text x="842" y="272.5" class="h t-ok">chunks.enriched</text>
+  <text x="842" y="291.5" class="m">“international” · normalized=true, raw_text kept</text>
+  <rect class="card f-mute shadow" filter="url(#shadow)" x="780" y="338" width="380" height="78" rx="12"/>
+  <circle cx="814" cy="377.0" r="18" class="l-mute"/>
+  <use href="#i-trash" x="803.65" y="366.65" width="20.7" height="20.7" class="c-mute"/>
+  <text x="842" y="372.5" class="h t-mute">dropped</text>
+  <text x="842" y="391.5" class="m">same fingerprint as chunk 0</text>
+  <path class="edge" d="M720,477 C750,477 750,456 777,456" marker-end="url(#arrow)"/>
+  <path class="edge" d="M720,477 C750,477 750,498 777,498" marker-end="url(#arrow)"/>
+  <rect class="card f-ok shadow" filter="url(#shadow)" x="780" y="432" width="380" height="38" rx="10"/>
+  <use href="#i-check" x="792" y="441" width="20" height="20" class="c-ok"/>
+  <text x="820" y="456" class="" xml:space="preserve"><tspan class="h t-ok">enriched  </tspan><tspan class="s">write to </tspan><tspan class="mono t-ok">[REDACTED:EMAIL]</tspan></text>
+  <rect class="card f-warn shadow" filter="url(#shadow)" x="780" y="482" width="380" height="38" rx="10"/>
+  <use href="#i-lock" x="792" y="491" width="20" height="20" class="c-warn"/>
+  <text x="820" y="506" class="" xml:space="preserve"><tspan class="h t-warn">pii.quarantine  </tspan><tspan class="s">the original, unredacted</tspan></text>
+  <rect class="card f-bad shadow" filter="url(#shadow)" x="780" y="538" width="380" height="78" rx="12"/>
+  <circle cx="814" cy="577.0" r="18" class="l-bad"/>
+  <use href="#i-xcircle" x="803.65" y="566.65" width="20.7" height="20.7" class="c-bad"/>
+  <text x="842" y="572.5" class="h t-bad">quality.rejected</text>
+  <text x="842" y="591.5" class="m">keep=false · dropped when DROP_LOW_QUALITY</text>
+</svg>

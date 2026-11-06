@@ -1,0 +1,220 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1480 712" width="1480" height="712" role="img" aria-labelledby="t d">
+  <title id="t">Example 03 — Docling in Flink, from a private S3 bucket</title>
+  <desc id="d">Uploads to a private S3 bucket notify an SQS queue, which a backfill script also fills for objects already there. Confluent's managed SQS Source connector writes each message to an objects topic. A Flink statement decodes each event, presigns the object, has Docling for IBM watsonx fetch and convert it, keeps the result on a conversions topic and chunks it onto a chunk topic, which a second statement prepares, PII-guards and deduplicates into enriched, quarantine and rejected topics.</desc>
+  <defs>
+    <style>
+      .bg      { fill: #fbfaf8; stroke: #e6e4df; }
+      .topic   { fill: #e8f1fc; stroke: #2a78d6; stroke-width: 1.5; }
+      .stmt    { fill: #fff6ec; stroke: #eb6834; stroke-width: 1.5; }
+      .box     { fill: #ffffff; stroke: #f0b48f; stroke-width: 1.2; }
+      .conn    { fill: #ecf6ef; stroke: #2f8f4e; stroke-width: 1.5; }
+      .ext     { fill: #ffffff; stroke: #898781; stroke-width: 1.3; stroke-dasharray: 5 4; }
+      .aws     { fill: #ffffff; stroke: #898781; stroke-width: 1.3; }
+      .zone    { fill: #f3f2ef; stroke: #d9d7d2; stroke-width: 1; }
+      .opt     { fill: none;    stroke: #898781; stroke-width: 1.3; stroke-dasharray: 5 4; }
+      .edge    { fill: none; stroke: #52514e; stroke-width: 1.6; }
+      .dash    { stroke-dasharray: 6 5; }
+      .ah      { fill: #52514e; }
+      text     { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; fill: #1f1e1c; font-size: 13px; }
+      .h       { font-weight: 650; font-size: 15px; }
+      .hs      { font-weight: 650; font-size: 14px; }
+      .m       { fill: #6b6964; font-size: 12px; }
+      .code    { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }
+      .tt      { fill: #0b3d75; }
+      .st      { fill: #b4471b; }
+      .ct      { fill: #1f6b39; }
+      .lbl     { fill: #6b6964; font-size: 11.5px; font-style: italic; }
+      @media (prefers-color-scheme: dark) {
+        .bg    { fill: #1c1c1e; stroke: #333336; }
+        .topic { fill: #13243a; stroke: #5a9be6; }
+        .stmt  { fill: #2a1e14; stroke: #eb6834; }
+        .box   { fill: #232325; stroke: #8a5a3c; }
+        .conn  { fill: #15281b; stroke: #4fb36f; }
+        .ext, .aws { fill: #232325; stroke: #8f8d88; }
+        .zone  { fill: #212123; stroke: #3a3a3d; }
+        .opt   { stroke: #8f8d88; }
+        .edge  { stroke: #bdbbb6; }
+        .ah    { fill: #bdbbb6; }
+        text   { fill: #ecebe8; }
+        .m, .lbl { fill: #a3a19c; }
+        .tt    { fill: #cfe3fb; }
+        .st    { fill: #f5a274; }
+        .ct    { fill: #a6e0b7; }
+      }
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path class="ah" d="M0,0 L10,5 L0,10 z"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0.5" y="0.5" width="1479" height="711" rx="16"/>
+
+  <!-- ===== AWS ===== -->
+  <rect class="zone" x="20" y="88" width="220" height="420" rx="12"/>
+  <text x="36" y="110" class="hs">your AWS account</text>
+  <text x="36" y="126" class="m">scripts/aws.sh · AWS.md</text>
+
+  <rect class="ext" x="38" y="140" width="184" height="46" rx="8"/>
+  <text x="130" y="160" text-anchor="middle">you, or any uploader</text>
+  <text x="130" y="177" text-anchor="middle" class="code">aws.sh samples</text>
+  <path class="edge" d="M130,186 V211" marker-end="url(#arrow)"/>
+
+  <rect class="aws" x="38" y="214" width="184" height="58" rx="8"/>
+  <text x="130" y="238" text-anchor="middle" class="hs">S3 bucket</text>
+  <text x="130" y="257" text-anchor="middle" class="m">private · prefix inbox/</text>
+
+  <path class="edge" d="M130,272 V313" marker-end="url(#arrow)"/>
+  <text x="138" y="297" class="lbl">ObjectCreated</text>
+
+  <rect class="aws" x="38" y="316" width="184" height="56" rx="8"/>
+  <text x="130" y="340" text-anchor="middle" class="hs">SQS queue</text>
+  <text x="130" y="358" text-anchor="middle" class="m">one message per object</text>
+
+  <rect class="ext" x="38" y="434" width="184" height="56" rx="8"/>
+  <text x="130" y="457" text-anchor="middle" class="code">aws.sh backfill</text>
+  <text x="130" y="475" text-anchor="middle" class="m">objects already there</text>
+  <path class="edge" d="M130,434 V375" marker-end="url(#arrow)"/>
+  <text x="138" y="410" class="lbl">same event shape</text>
+
+  <!-- ===== connector → objects ===== -->
+  <path class="edge" d="M222,344 H267" marker-end="url(#arrow)"/>
+  <rect class="conn" x="270" y="316" width="160" height="56" rx="8"/>
+  <text x="350" y="340" text-anchor="middle" class="hs ct">SQS Source</text>
+  <text x="350" y="358" text-anchor="middle" class="m">managed connector</text>
+
+  <path class="edge" d="M350,372 V407" marker-end="url(#arrow)"/>
+  <rect class="topic" x="270" y="410" width="160" height="54" rx="27"/>
+  <text x="350" y="433" text-anchor="middle" class="hs tt">objects</text>
+  <text x="350" y="451" text-anchor="middle" class="code tt">{Body: S3 event}</text>
+
+  <path class="edge" d="M430,437 H446 V248 H477" marker-end="url(#arrow)"/>
+
+  <!-- ===== Docling ===== -->
+  <rect class="ext" x="600" y="30" width="300" height="80" rx="10"/>
+  <text x="617" y="56" class="h">Docling for IBM watsonx</text>
+  <text x="617" y="76" class="code">convert/source/async · poll · result</text>
+  <text x="617" y="94" class="m">fetches the object itself, by the URL</text>
+
+  <path class="edge dash" d="M600,62 H252 V243 H225" marker-end="url(#arrow)"/>
+  <text x="268" y="54" class="lbl">GET, presigned — the only read of the bucket</text>
+
+  <!-- ===== statement: convert ===== -->
+  <rect class="stmt" x="460" y="150" width="380" height="470" rx="14"/>
+  <text x="480" y="178" class="h st">${NS}-ex03-convert</text>
+  <text x="480" y="196" class="m">statement set · flink/31_convert.sql</text>
+
+  <path class="edge" d="M760,320 V113" marker-end="url(#arrow)"/>
+  <path class="edge" d="M805,113 V317" marker-end="url(#arrow)"/>
+  <text x="753" y="135" class="lbl" text-anchor="end">presigned URL</text>
+  <text x="812" y="135" class="lbl">Markdown</text>
+
+  <rect class="box" x="480" y="212" width="240" height="72" rx="8"/>
+  <text x="495" y="235" class="hs">objects</text>
+  <text x="495" y="255" class="code">URL_DECODE(key)</text>
+  <text x="495" y="273" class="m">TestEvent, folders dropped</text>
+
+  <path class="edge" d="M600,284 V317" marker-end="url(#arrow)"/>
+
+  <rect class="box" x="480" y="320" width="340" height="90" rx="8"/>
+  <text x="495" y="343" class="hs">converted</text>
+  <text x="495" y="363" class="code">dc_presign(key) → dc_convert(url)</text>
+  <text x="495" y="382" class="m">Java UDFs · SigV4, no AWS SDK · async</text>
+  <text x="495" y="399" class="m">3 CONNECTIONs · failures are rows</text>
+
+  <path class="edge" d="M650,410 V437" marker-end="url(#arrow)"/>
+
+  <rect class="box" x="480" y="440" width="340" height="56" rx="8"/>
+  <text x="495" y="463" class="hs">converted_all</text>
+  <text x="495" y="483" class="m">new conversions ∪ the topic's history</text>
+
+  <path class="edge" d="M650,496 V517" marker-end="url(#arrow)"/>
+
+  <rect class="box" x="480" y="520" width="340" height="72" rx="8"/>
+  <text x="495" y="543" class="hs">chunk</text>
+  <text x="495" y="563" class="code">dc_chunks(…) — Python UDF</text>
+  <text x="495" y="581" class="m">headings + paragraphs · CROSS JOIN UNNEST</text>
+
+  <!-- conversions -->
+  <path class="edge" d="M820,365 H867" marker-end="url(#arrow)"/>
+  <rect class="topic" x="870" y="338" width="160" height="56" rx="28"/>
+  <text x="950" y="362" text-anchor="middle" class="hs tt">conversions</text>
+  <text x="950" y="380" text-anchor="middle" class="m tt">typed · kept for good</text>
+
+  <path class="edge dash" d="M950,394 V468 H823" marker-end="url(#arrow)"/>
+  <text x="958" y="414" class="lbl">re-read on</text>
+  <text x="958" y="429" class="lbl">redeploy: chunks</text>
+  <text x="958" y="444" class="lbl">rebuilt, nothing</text>
+  <text x="958" y="459" class="lbl">converted twice</text>
+
+  <!-- chunks -->
+  <path class="edge" d="M820,556 H867" marker-end="url(#arrow)"/>
+  <rect class="topic" x="870" y="528" width="160" height="56" rx="28"/>
+  <text x="950" y="552" text-anchor="middle" class="hs tt">chunks</text>
+  <text x="950" y="570" text-anchor="middle" class="m tt">the seam · example 01's</text>
+
+  <path class="edge" d="M1030,556 H1046 V247 H1072" marker-end="url(#arrow)"/>
+
+  <!-- ===== statement: pipeline ===== -->
+  <rect class="stmt" x="1060" y="150" width="200" height="470" rx="14"/>
+  <text x="1076" y="178" class="h st">${NS}-ex03-pipeline</text>
+  <text x="1076" y="196" class="m">common/flink, as in 01 · 02</text>
+
+  <rect class="box" x="1075" y="215" width="170" height="64" rx="8"/>
+  <text x="1089" y="238" class="hs">prepare</text>
+  <text x="1089" y="258" class="code">dc_prepare</text>
+  <text x="1089" y="273" class="m">normalize, derive</text>
+
+  <path class="edge" d="M1160,279 V307" marker-end="url(#arrow)"/>
+
+  <rect class="box" x="1075" y="310" width="170" height="64" rx="8"/>
+  <text x="1089" y="333" class="hs">guard</text>
+  <text x="1089" y="353" class="code">dc_guard</text>
+  <text x="1089" y="368" class="m">PII · quality gate</text>
+
+  <path class="edge" d="M1160,374 V402" marker-end="url(#arrow)"/>
+
+  <rect class="box" x="1075" y="405" width="170" height="64" rx="8"/>
+  <text x="1089" y="428" class="hs">dedup</text>
+  <text x="1089" y="448" class="code">ROW_NUMBER() = 1</text>
+  <text x="1089" y="463" class="m">by content fingerprint</text>
+
+  <!-- outputs -->
+  <path class="edge" d="M1245,330 H1268 V267 H1287" marker-end="url(#arrow)"/>
+  <rect class="topic" x="1290" y="240" width="170" height="54" rx="27"/>
+  <text x="1375" y="263" text-anchor="middle" class="hs tt">quality.rejected</text>
+  <text x="1375" y="281" text-anchor="middle" class="m tt">dropped, kept visible</text>
+
+  <path class="edge" d="M1245,355 H1287" marker-end="url(#arrow)"/>
+  <rect class="topic" x="1290" y="328" width="170" height="54" rx="27"/>
+  <text x="1375" y="351" text-anchor="middle" class="hs tt">pii.quarantine</text>
+  <text x="1375" y="369" text-anchor="middle" class="m tt">the originals</text>
+
+  <path class="edge" d="M1245,437 H1287" marker-end="url(#arrow)"/>
+  <rect class="topic" x="1290" y="410" width="170" height="54" rx="27"/>
+  <text x="1375" y="433" text-anchor="middle" class="hs tt">chunks.enriched</text>
+  <text x="1375" y="451" text-anchor="middle" class="m tt">redacted · deduplicated</text>
+
+  <path class="edge dash" d="M1375,464 V495" marker-end="url(#arrow)"/>
+  <rect class="opt" x="1290" y="498" width="170" height="58" rx="8"/>
+  <text x="1375" y="521" text-anchor="middle" class="code">AI_EMBEDDING(text)</text>
+  <text x="1375" y="541" text-anchor="middle" class="m">optional · native in Flink SQL</text>
+
+  <!-- legend -->
+  <g transform="translate(20,642)">
+    <rect class="topic" x="0" y="0" width="34" height="18" rx="9"/>
+    <text x="42" y="13" class="m">Kafka topic</text>
+    <rect class="stmt" x="130" y="0" width="34" height="18" rx="4"/>
+    <text x="172" y="13" class="m">Flink statement</text>
+    <rect class="box" x="290" y="0" width="34" height="18" rx="4"/>
+    <text x="332" y="13" class="m">view · UDF</text>
+    <rect class="conn" x="420" y="0" width="34" height="18" rx="4"/>
+    <text x="462" y="13" class="m">managed connector</text>
+    <rect class="aws" x="590" y="0" width="34" height="18" rx="4"/>
+    <text x="632" y="13" class="m">AWS resource</text>
+    <rect class="ext" x="730" y="0" width="34" height="18" rx="4"/>
+    <text x="772" y="13" class="m">outside Confluent Cloud / optional</text>
+  </g>
+
+  <!-- footer -->
+  <text x="20" y="684" class="m">Example 02 from the objects view on: the presigned URL is an ordinary https:// URL to dc_convert. The bucket stays private; the reader key lives in two places, the connector and a CONNECTION.</text>
+</svg>

@@ -1,0 +1,18 @@
+-- Use this INSTEAD of `00_table_chunks.sql` when the chunk topic already
+-- exists — Docling created it, or you did.
+--
+-- Confluent Cloud infers a table for every topic it can see. A topic with no
+-- Schema Registry subject infers as `key BYTES, val BYTES`, which reads fine
+-- but hands every statement raw bytes. This re-declares the value format so
+-- the same statements work against it.
+--
+-- One statement per file everywhere else; this one is the exception, and
+-- `scripts/statement.sh` will refuse it. Run the two ALTERs by hand, in the
+-- Confluent Cloud SQL workspace or with `./pipeline.sh sql "<statement>"`:
+--
+--   ALTER TABLE `${CHUNKS_TOPIC}` SET ('value.format' = 'raw');
+--   ALTER TABLE `${CHUNKS_TOPIC}` SET ('scan.startup.mode' = 'earliest-offset');
+--
+-- The inferred value column is called `val`, which is also what a table created
+-- by this repo must call it, so CHUNKS_VALUE_COLUMN=val covers both. It stays a
+-- variable only for a topic someone declared with a different schema.

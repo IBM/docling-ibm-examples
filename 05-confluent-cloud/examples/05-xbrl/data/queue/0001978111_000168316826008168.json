@@ -1,0 +1,61 @@
+{
+  "doc_id": "0001978111_000168316826008168",
+  "company_name": "Naploy Corp.",
+  "cik": "0001978111",
+  "cik_short": "1978111",
+  "form": "10-K",
+  "accession_number": "0001683168-26-008168",
+  "accession_number_raw": "000168316826008168",
+  "filing_date": "2026-10-30",
+  "updated": "2026-10-30T07:45:46-04:00",
+  "size": "2 MB",
+  "filing_details_url": "https://www.sec.gov/Archives/edgar/data/1978111/000168316826008168/",
+  "filing_index_url": "https://www.sec.gov/Archives/edgar/data/1978111/000168316826008168/0001683168-26-008168-index.htm",
+  "filing_index_json_url": "https://www.sec.gov/Archives/edgar/data/1978111/000168316826008168/index.json",
+  "xbrl_zip_url": "https://www.sec.gov/Archives/edgar/data/1978111/000168316826008168/0001683168-26-008168-xbrl.zip",
+  "ixbrl_file": "naploy_i10k-073126.htm",
+  "ixbrl_url": "https://www.sec.gov/Archives/edgar/data/1978111/000168316826008168/naploy_i10k-073126.htm",
+  "ixbrl_size": 410095,
+  "xbrl_instance_file": "naploy_i10k-073126_htm.xml",
+  "xbrl_instance_url": "https://www.sec.gov/Archives/edgar/data/1978111/000168316826008168/naploy_i10k-073126_htm.xml",
+  "xbrl_instance_size": 152895,
+  "taxonomy_files": [
+    {
+      "name": "none-20260731.xsd",
+      "type": "schema",
+      "url": "https://www.sec.gov/Archives/edgar/data/1978111/000168316826008168/none-20260731.xsd",
+      "size": 15321
+    },
+    {
+      "name": "none-20260731_cal.xml",
+      "type": "calculation",
+      "url": "https://www.sec.gov/Archives/edgar/data/1978111/000168316826008168/none-20260731_cal.xml",
+      "size": 27293
+    },
+    {
+      "name": "none-20260731_def.xml",
+      "type": "definition",
+      "url": "https://www.sec.gov/Archives/edgar/data/1978111/000168316826008168/none-20260731_def.xml",
+      "size": 37179
+    },
+    {
+      "name": "none-20260731_lab.xml",
+      "type": "label",
+      "url": "https://www.sec.gov/Archives/edgar/data/1978111/000168316826008168/none-20260731_lab.xml",
+      "size": 195805
+    },
+    {
+      "name": "none-20260731_pre.xml",
+      "type": "presentation",
+      "url": "https://www.sec.gov/Archives/edgar/data/1978111/000168316826008168/none-20260731_pre.xml",
+      "size": 152179
+    }
+  ],
+  "taxonomy_urls": [
+    "https://www.sec.gov/Archives/edgar/data/1978111/000168316826008168/none-20260731.xsd",
+    "https://www.sec.gov/Archives/edgar/data/1978111/000168316826008168/none-20260731_cal.xml",
+    "https://www.sec.gov/Archives/edgar/data/1978111/000168316826008168/none-20260731_def.xml",
+    "https://www.sec.gov/Archives/edgar/data/1978111/000168316826008168/none-20260731_lab.xml",
+    "https://www.sec.gov/Archives/edgar/data/1978111/000168316826008168/none-20260731_pre.xml"
+  ]
+}

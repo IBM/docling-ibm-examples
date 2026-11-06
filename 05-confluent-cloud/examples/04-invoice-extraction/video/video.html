@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Ex04 video</title>
+<script src="assets/data.js"></script>
+<script src="assets/timing.js"></script>
+<style>
+  :root {
+    --bg: #070a10; --ink: #f4f3ef; --ink-2: #b9b8b0; --muted: #7d7c76; --line: rgba(255,255,255,.12);
+    --kafka: #3987e5; --flink: #eb6834; --docling: #ffc83d; --good: #1baf7a;
+    --mono: "SF Mono", Menlo, ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--bg); }
+  body { font-family: -apple-system, "SF Pro Display", system-ui, sans-serif; color: var(--ink); }
+  #stage { position: absolute; inset: 0;
+           background: radial-gradient(1400px 900px at 30% 20%, #131b2b 0%, #070a10 60%); }
+  .scene { position: absolute; inset: 0; opacity: 0; }
+  .abs { position: absolute; }
+  .eyebrow { font-size: 22px; letter-spacing: .18em; text-transform: uppercase; font-weight: 600; color: var(--ink-2); }
+  .eyebrow b { color: var(--docling); font-weight: 700; }
+  .mono { font-family: var(--mono); }
+  .chip { display: inline-block; padding: 10px 22px; border-radius: 999px; border: 1.5px solid var(--line);
+          background: rgba(255,255,255,.05); font-size: 28px; color: var(--ink); margin: 0 8px; }
+
+  /* scene 1 */
+  .thumb { position: absolute; width: 270px; border-radius: 6px; box-shadow: 0 20px 50px rgba(0,0,0,.6); }
+  #s1 .veil { position: absolute; inset: 0; background: radial-gradient(1500px 900px at 50% 55%, rgba(7,10,16,.95) 55%, rgba(7,10,16,.5)); }
+  #s1 h1 { position: absolute; left: 0; right: 0; top: 360px; text-align: center; font-size: 104px; line-height: 1.05;
+           margin: 0; font-weight: 800; letter-spacing: -.02em; }
+  #s1 h1 em { font-style: normal; color: var(--docling); }
+  #s1 h1 { top: 250px; }
+  #s1 .logos { position: absolute; left: 0; right: 0; top: 500px; display: flex; justify-content: center; align-items: center; gap: 44px; }
+  #s1 .logos .x { font-size: 64px; color: var(--muted); font-weight: 300; }
+  #s1 .sub { position: absolute; left: 0; right: 0; top: 650px; text-align: center; font-size: 32px; color: var(--ink-2); }
+  #s1 .chips { position: absolute; left: 0; right: 0; top: 730px; text-align: center; }
+  .stack { position: absolute; left: 0; right: 0; display: flex; justify-content: center; align-items: center; gap: 56px;
+           font-size: 26px; color: var(--ink-2); }
+  .stack span { display: flex; align-items: center; gap: 14px; }
+
+  /* scene 2 */
+  .stat { position: absolute; width: 330px; }
+  .stat .n { font-size: 110px; font-weight: 800; line-height: 1; letter-spacing: -.03em; }
+  .stat .l { font-size: 28px; color: var(--ink-2); margin-top: 6px; }
+  .card { position: absolute; border-radius: 22px; background: rgba(255,255,255,.045); border: 1.5px solid var(--line); }
+  .bar { position: absolute; bottom: 0; width: 4px; background: var(--kafka); border-radius: 2px 2px 0 0; }
+  .rec { position: absolute; left: 28px; right: 28px; height: 52px; border-radius: 10px; background: rgba(57,135,229,.12);
+         border: 1px solid rgba(57,135,229,.45); font: 21px/52px var(--mono); padding: 0 18px; white-space: nowrap; overflow: hidden; }
+  .rec span { color: var(--ink-2); }
+  .tag { display: inline-block; font-size: 20px; padding: 4px 14px; border-radius: 8px; font-weight: 600; }
+  .tag.kafka { background: rgba(57,135,229,.18); color: #8dbdf5; border: 1px solid rgba(57,135,229,.5); }
+  .tag.flink { background: rgba(235,104,52,.16); color: #f6a582; border: 1px solid rgba(235,104,52,.5); }
+  .tag.docling { background: rgba(255,200,61,.16); color: var(--docling); border: 1px solid rgba(255,200,61,.5); }
+
+  /* scene 3 */
+  #pdf { position: absolute; left: 110px; top: 120px; width: 640px; border-radius: 6px; overflow: hidden;
+         box-shadow: 0 30px 80px rgba(0,0,0,.6); }
+  #pdf img { display: block; width: 640px; }
+  #scanline { position: absolute; left: 0; right: 0; height: 120px;
+              background: linear-gradient(to bottom, rgba(255,200,61,0), rgba(255,200,61,.35) 85%, rgba(255,200,61,.95)); }
+  .hl { position: absolute; border: 3px solid var(--docling); border-radius: 5px; background: rgba(255,200,61,.18); }
+  #scan { position: absolute; left: 70px; top: 640px; width: 300px; transform-origin: 50% 50%; }
+  #scan img { width: 300px; display: block; border-radius: 5px; box-shadow: 0 20px 60px rgba(0,0,0,.7); }
+  #scan .lbl { margin-top: 10px; text-align: center; font-size: 22px; color: var(--docling); }
+  #docling { position: absolute; left: 790px; top: 400px; width: 230px; height: 230px; border-radius: 50%;
+             display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+             background: radial-gradient(circle at 50% 40%, #3a2f0c, #16130a); border: 3px solid var(--docling); }
+  #docling .name { font-size: 46px; font-weight: 800; color: var(--docling); }
+  #docling .what { font-size: 17px; color: var(--ink-2); margin-top: 4px; line-height: 1.25; }
+  #json { position: absolute; left: 1070px; top: 120px; width: 760px; height: 560px; padding: 26px 30px;
+          font: 21px/31px var(--mono); white-space: pre; overflow: hidden; }
+  #json .k { color: #8dbdf5; } #json .s { color: #f6a582; } #json .n { color: #7ee2b8; } #json .p { color: var(--muted); }
+  #json .line { opacity: 0; }
+  #json .line.hot { background: rgba(255,200,61,.14); border-radius: 4px; }
+  #rows { position: absolute; left: 1070px; top: 712px; width: 760px; height: 300px; padding: 20px 24px; overflow: hidden; }
+  .row { position: absolute; left: 24px; right: 24px; height: 46px; display: grid;
+         grid-template-columns: 64px 1fr 150px 56px 140px; gap: 12px; align-items: center; font: 20px var(--mono);
+         border-radius: 8px; padding: 0 12px; background: rgba(57,135,229,.10); border: 1px solid rgba(57,135,229,.35); }
+  .row.head { background: none; border: none; color: var(--muted); font-size: 17px; }
+  .row .r { text-align: right; }
+  .row div { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* scene 4 */
+  #cc { position: absolute; left: 80px; top: 140px; width: 1760px; height: 850px; border-radius: 28px;
+        border: 2px dashed rgba(57,135,229,.45); background: rgba(57,135,229,.035); }
+  #cc .ttl { position: absolute; left: 30px; top: -24px; padding: 6px 18px; background: #0b1220; font-size: 26px; font-weight: 700; color: #8dbdf5; }
+  .node { position: absolute; transform: translate(-50%, -50%); padding: 14px 26px; font-size: 27px; font-weight: 600;
+          white-space: nowrap; text-align: center; line-height: 1.15; }
+  .node small { display: block; font-size: 18px; font-weight: 400; color: var(--ink-2); margin-top: 3px; }
+  .node.topic { border-radius: 999px; background: #0f2440; border: 2.5px solid var(--kafka); }
+  .node.stmt { border-radius: 14px; background: #2a160c; border: 2.5px solid var(--flink); }
+  .node.dl { border-color: var(--docling); background: #2a2208; }
+  .note { position: absolute; font-size: 21px; color: var(--ink-2); white-space: nowrap; transform: translateY(-50%); }
+  #sql { position: absolute; left: 130px; top: 728px; width: 860px; padding: 18px 22px; font: 19px/28px var(--mono); white-space: pre; }
+  #sql .kw { color: #8dbdf5; } #sql .fn { color: #f6a582; }
+
+  /* scene 5 */
+  #win { position: absolute; left: 110px; top: 70px; width: 1700px; height: 950px; border-radius: 16px; overflow: hidden;
+         background: #f9f9f7; color: #0b0b0b; box-shadow: 0 40px 120px rgba(0,0,0,.7); }
+  #win .chrome { height: 46px; background: #e9e8e3; display: flex; align-items: center; padding: 0 18px; gap: 9px; }
+  #win .chrome i { width: 14px; height: 14px; border-radius: 50%; background: #d0cfc8; display: inline-block; }
+  #win .chrome .url { margin-left: 18px; background: #fff; border-radius: 8px; padding: 5px 16px; font-size: 17px; color: #52514e; }
+  #win .demo { background: #fff4d6; border-bottom: 2px solid #fab219; text-align: center; font-size: 15px; padding: 5px; }
+  #win .body { position: absolute; left: 0; right: 0; top: 80px; bottom: 0; padding: 22px 30px; }
+  #win h3 { margin: 0; font-size: 30px; }
+  #win .lede { color: #52514e; font-size: 18px; margin-top: 2px; }
+  .kpi { position: absolute; top: 100px; width: 260px; height: 112px; background: #fcfcfb; border: 1px solid rgba(11,11,11,.1);
+         border-radius: 12px; padding: 14px 20px; }
+  .kpi .l { font-size: 16px; color: #52514e; } .kpi .v { font-size: 44px; font-weight: 750; margin-top: 4px; letter-spacing: -.01em; }
+  .panel { position: absolute; background: #fcfcfb; border: 1px solid rgba(11,11,11,.1); border-radius: 12px; padding: 16px 20px; }
+  .panel h4 { margin: 0; font-size: 19px; } .panel .sub2 { font-size: 15px; color: #898781; margin-top: 2px; }
+  .seg { position: absolute; }
+  .vrow { position: absolute; left: 20px; right: 20px; height: 44px; }
+  .vrow .vn { position: absolute; left: 0; top: 0; font-size: 17px; white-space: nowrap; }
+  .vrow .vb { position: absolute; left: 0; top: 24px; height: 14px; border-radius: 3px; background: #2a78d6; }
+  .vrow .vv { position: absolute; right: 0; top: 0; font-size: 17px; font-variant-numeric: tabular-nums; color: #52514e; }
+  #lq { position: absolute; left: 30px; right: 30px; bottom: 26px; height: 120px; background: #0d0d0d; color: #f4f3ef;
+        border-radius: 12px; padding: 18px 24px; font: 21px/32px var(--mono); }
+  #lq .ms { position: absolute; right: 24px; top: 18px; font-family: -apple-system, sans-serif; font-size: 30px; font-weight: 800; color: #ffc83d; }
+  .legend { position: absolute; font-size: 15px; color: #52514e; }
+  .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin: 0 6px 0 14px; vertical-align: -1px; }
+
+  /* scene 6 */
+  #s6 .big { position: absolute; left: 0; right: 0; top: 330px; text-align: center; font-size: 120px; font-weight: 800; letter-spacing: -.02em; }
+  #s6 .tl { position: absolute; left: 0; right: 0; top: 530px; text-align: center; font-size: 46px; color: var(--ink-2); }
+  #s6 .flow { position: absolute; left: 0; right: 0; top: 660px; text-align: center; font-size: 30px; }
+  #s6 .flow span.a { color: var(--muted); margin: 0 18px; }
+  #s6 .foot { position: absolute; left: 0; right: 0; top: 900px; text-align: center; font-size: 24px; color: var(--muted); }
+
+  #progress { position: absolute; left: 0; bottom: 0; height: 5px; background: linear-gradient(90deg, var(--docling), var(--flink), var(--kafka)); }
+  #wm { position: absolute; right: 36px; top: 28px; font-size: 20px; color: var(--muted); letter-spacing: .04em; }
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- 1 · hook -->
+  <div class="scene" id="s1">
+    <div id="thumbs"></div>
+    <div class="veil" id="veil"></div>
+    <h1 id="t1">Invoices in.<br><em>Live dashboard</em> out.</h1>
+    <div class="logos" id="t1l"><img src="assets/docling-banner-white.svg" style="height:110px"><span class="x">×</span><img src="assets/confluent-white.svg" style="height:62px"></div>
+    <div class="sub" id="t1s">Example 04 · invoice extraction</div>
+    <div class="chips" id="chips">
+      <span class="chip">PDFs &amp; scans</span><span class="chip">7 layouts</span><span class="chip">EUR · USD · GBP · CHF</span><span class="chip">multi-page</span>
+    </div>
+  </div>
+
+  <!-- 2 · scenario -->
+  <div class="scene" id="s2">
+    <div class="abs eyebrow" style="left:120px; top:110px">The scenario</div>
+    <div class="abs" id="s2h" style="left:120px; top:150px; font-size:66px; font-weight:800; letter-spacing:-.02em">Lumen Analytics GmbH</div>
+    <div class="abs" id="s2s" style="left:122px; top:250px; font-size:28px; color:var(--ink-2)">A fictional Munich startup · first half of 2026</div>
+    <div class="stat" id="st0" style="left:120px; top:360px"><div class="n">174</div><div class="l">supplier invoices</div></div>
+    <div class="stat" id="st1" style="left:470px; top:360px"><div class="n">17</div><div class="l">suppliers, 7 invoice layouts</div></div>
+    <div class="stat" id="st2" style="left:120px; top:580px"><div class="n">6</div><div class="l">departments</div></div>
+    <div class="stat" id="st3" style="left:470px; top:580px"><div class="n">6</div><div class="l">months, replayed</div></div>
+    <div class="abs" id="s2demo" style="left:122px; top:830px; font-size:22px; color:var(--muted)">Every company, supplier and invoice is generated demo data.</div>
+
+    <div class="card" id="clock" style="left:900px; top:110px; width:900px; height:420px">
+      <div class="abs eyebrow" style="left:36px; top:30px; font-size:19px">Simulated clock</div>
+      <div class="abs" id="date" style="left:36px; top:62px; font-size:68px; font-weight:800; font-variant-numeric: tabular-nums">Mon 5 Jan 2026</div>
+      <div class="abs" id="cnt" style="left:38px; top:150px; font-size:26px; color:var(--ink-2)">0 invoices submitted</div>
+      <div class="abs" id="hist" style="left:36px; right:36px; top:200px; height:180px; border-bottom:1.5px solid var(--line)"></div>
+      <div class="abs" style="left:36px; top:388px; font-size:18px; color:var(--muted)">Jan</div>
+      <div class="abs" style="right:36px; top:388px; font-size:18px; color:var(--muted)">Jun</div>
+    </div>
+    <div class="card" id="topic" style="left:900px; top:560px; width:900px; height:420px">
+      <div class="abs" style="left:28px; top:24px"><span class="tag kafka">Kafka topic</span>
+        <span class="mono" style="font-size:26px; margin-left:10px">submissions</span></div>
+      <div class="abs" style="right:28px; top:28px; font-size:22px; color:#8dbdf5; font-weight:600">Confluent Cloud</div>
+      <div id="recs" class="abs" style="left:0; right:0; top:84px; bottom:20px; overflow:hidden"></div>
+    </div>
+  </div>
+
+  <!-- 3 · docling -->
+  <div class="scene" id="s3">
+    <div class="abs eyebrow" style="left:110px; top:52px">Step 1 · <b>Docling</b> turns documents into data</div>
+    <div id="pdf"><img src="assets/inv-0001.jpg"><div id="scanline"></div><div id="hls"></div></div>
+    <div id="scan"><img src="assets/inv-0005.jpg"><div class="lbl">scanned · tilted · no text layer</div></div>
+    <svg class="abs" width="1920" height="1080" style="left:0; top:0">
+      <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="#ffc83d"/></marker></defs>
+      <path id="a1" d="M760 515 L780 515" stroke="#ffc83d" stroke-width="4" fill="none" marker-end="url(#ah)"/>
+      <path id="a2" d="M1030 515 L1062 515" stroke="#ffc83d" stroke-width="4" fill="none" marker-end="url(#ah)"/>
+    </svg>
+    <div id="docling"><img src="assets/docling.svg" style="width:118px; height:118px; margin-top:-6px"><div class="what"><b style="color:var(--docling)">Docling</b> extraction<br><span style="color:#f6a582">in a Flink UDF</span></div></div>
+    <div class="card" id="json"></div>
+    <div class="card" id="rows"></div>
+  </div>
+
+  <!-- 4 · pipeline -->
+  <div class="scene" id="s4">
+    <div class="abs eyebrow" style="left:110px; top:52px">Step 2 · <span style="color:#f6a582">Flink SQL</span> on <span style="color:#8dbdf5">Confluent Cloud</span></div>
+    <div id="cc"><div class="ttl"><img src="assets/confluent-white.svg" style="height:46px; display:block"></div></div>
+    <svg id="edges" class="abs" width="1920" height="1080" style="left:0; top:0"></svg>
+    <div id="nodes"></div>
+    <div class="card" id="sql"></div>
+  </div>
+
+  <!-- 5 · dashboard -->
+  <div class="scene" id="s5">
+    <div id="win">
+      <div class="chrome"><i></i><i></i><i></i><span class="url">localhost:8004 · Lumen Spend Live</span></div>
+      <div class="demo"><b>DEMO</b> · fictional company and invoices</div>
+      <div class="body">
+        <h3>Lumen Spend Live</h3>
+        <div class="lede" id="through">submitted through Mon 5 Jan · every number computed by Flink</div>
+        <div class="kpi" style="left:30px"><div class="l">Invoices in the charts</div><div class="v" id="k1">0</div></div>
+        <div class="kpi" style="left:310px"><div class="l">Spend, EUR</div><div class="v" id="k2">€0</div></div>
+        <div class="kpi" style="left:590px"><div class="l">Vendors</div><div class="v" id="k3">0</div></div>
+        <div class="panel" style="left:30px; top:232px; width:830px; height:500px">
+          <h4>Spend by month and department</h4><div class="sub2">spend.monthly · EUR</div>
+          <div id="months" class="abs" style="left:40px; right:20px; top:90px; height:330px; border-bottom:1px solid #c3c2b7"></div>
+          <div id="legend" class="legend" style="left:6px; bottom:16px"></div>
+        </div>
+        <div class="panel" style="left:880px; top:100px; width:780px; height:632px">
+          <h4>Top vendors</h4><div class="sub2">spend.vendors · by name as extracted</div>
+          <div id="vendors" class="abs" style="left:0; right:0; top:84px; bottom:10px"></div>
+        </div>
+        <div id="lq"><div style="color:#898781; font-size:17px; line-height:24px">⚡ LIGHTNING QUERY · Real-Time Context Engine</div>
+          <div id="lqsql"></div><div class="ms" id="lqms"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6 · outro -->
+  <div class="scene" id="s6">
+    <div class="big" id="o1" style="display:flex; justify-content:center; align-items:center; gap:70px; top:300px">
+      <img src="assets/docling-banner-white.svg" style="height:190px"><span style="color:var(--muted); font-weight:300">+</span>
+      <img src="assets/confluent-white.svg" style="height:104px"></div>
+    <div class="tl" id="o2">From unstructured documents to live insight.</div>
+    <div class="flow" id="o3">
+      <span class="tag" style="font-size:28px; border:1px solid var(--line)">PDF</span><span class="a">→</span>
+      <span class="tag docling" style="font-size:28px">Docling</span><span class="a">→</span>
+      <span class="tag flink" style="font-size:28px">Flink SQL</span><span class="a">→</span>
+      <span class="tag kafka" style="font-size:28px">Kafka topics</span><span class="a">→</span>
+      <span class="tag" style="font-size:28px; border:1px solid var(--line)">live dashboard</span>
+    </div>
+    <div class="flow" id="o5" style="top:760px; font-size:26px; color:var(--ink-2)">served live by the Real-Time Context Engine
+      <span class="tag docling" style="font-size:28px; margin-left:14px">⚡ Lightning queries</span></div>
+    <div class="foot" id="o4">docling-ibm-examples · 05-confluent-cloud</div>
+  </div>
+
+  <div id="wm">Docling × Confluent Cloud · ex04</div>
+  <div id="progress"></div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const easeOut = x => 1 - Math.pow(1 - x, 3);
+const easeInOut = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const p = (t, a, b) => easeOut(clamp((t - a) / (b - a)));          // eased progress of t over [a, b]
+const lin = (t, a, b) => clamp((t - a) / (b - a));
+const fadeUp = (el, t, a, d = .6, dy = 30) => { const k = p(t, a, a + d); el.style.opacity = k; el.style.transform = `translateY(${(1 - k) * dy}px)`; };
+const eur = (v, short) => short && v >= 1000 ? '€' + (v / 1000).toFixed(v >= 100000 ? 0 : 1) + 'k' : '€' + Math.round(v).toLocaleString('en-US');
+
+// Scene boundaries, from the voiceover durations (assets/timing.js, written by tts.py):
+// each scene is its line plus LEAD before and TAIL after; the last one lingers.
+const LEAD = .2, TAIL = .1, END = .7;
+const SCENES = []; { let at = 0;
+  VO.forEach((d, i) => { const len = LEAD + d + TAIL + (i === VO.length - 1 ? END : 0); SCENES.push(['s' + (i + 1), at, at + len]); at += len; }); }
+const TOTAL = SCENES[SCENES.length - 1][2];
+const XF = .45;   // crossfade
+
+const DEPTS = ['Engineering', 'Marketing', 'Sales', 'Operations', 'People', 'Finance'];
+const DCOL = ['#2a78d6', '#eb6834', '#1baf7a', '#eda100', '#e87ba4', '#4a3aa7'];
+const day0 = Date.UTC(2026, 0, 5), day1 = Date.UTC(2026, 5, 29);
+const DAY = 864e5;
+const fmtDay = ms => new Date(ms).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+const fmtDayShort = ms => new Date(ms).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' });
+const INVS = INV.map(r => ({ ...r, ms: Date.parse(r.at) }));
+
+/* ---------- build: scene 1 ---------- */
+const TH = [['0001', 120, 90, -9], ['0002', 1540, 70, 8], ['0006', 420, 620, 6], ['0045', 1230, 610, -7],
+            ['0003', 760, -60, 3], ['0007', 1720, 560, -4], ['0008', -60, 520, 10], ['0005', 960, 760, -3]];
+TH.forEach(([id, x, y, r], i) => {
+  const im = document.createElement('img'); im.className = 'thumb'; im.src = `assets/inv-${id}.jpg`; im.id = 'th' + i;
+  im.dataset.x = x; im.dataset.y = y; im.dataset.r = r; $('thumbs').appendChild(im);
+});
+
+/* ---------- build: scene 2 ---------- */
+const nDays = Math.round((day1 - day0) / DAY) + 1;
+const perDay = new Array(nDays).fill(0);
+INVS.forEach(r => perDay[Math.floor((r.ms - day0) / DAY)]++);
+const maxDay = Math.max(...perDay);
+perDay.forEach((c, i) => {
+  const b = document.createElement('div'); b.className = 'bar'; b.id = 'hb' + i;
+  b.style.left = (i / nDays * 100) + '%'; b.style.height = (c / maxDay * 100) + '%'; $('hist').appendChild(b);
+});
+
+/* ---------- build: scene 3 ---------- */
+const J = [
+  ['p', '{'],
+  ['f', '"vendor_name"', 's', '"KESTREL & FINCH LLP"', 'vendor'],
+  ['f', '"invoice_number"', 's', '"KF/2025/0351"', 'number'],
+  ['f', '"invoice_date"', 's', '"30 December 2025"', 'date'],
+  ['f', '"currency"', 's', '"GBP"', 'cur'],
+  ['f', '"subtotal"', 'n', '7510.5', 'sub'],
+  ['f', '"tax_amount"', 'n', '0.0', 'tax'],
+  ['f', '"total_amount"', 'n', '7510.5', 'total'],
+  ['o', '"line_items": ['],
+  ['i', '"Review of reseller agreement (No…"', '2488.5', 'li1'],
+  ['i', '"Review of customer master servic…"', '2790.0', 'li2'],
+  ['i', '"Drafting of subscription and sha…"', '2232.0', 'li3'],
+  ['p', '  ]'],
+  ['p', '}'],
+];
+const HL = {   // boxes on the 952×1347 page render, scaled to 640 px
+  vendor: [322, 70, 632, 110], number: [540, 238, 866, 260], date: [540, 260, 866, 282], cur: [770, 525, 866, 548],
+  sub: [470, 732, 866, 754], tax: [470, 757, 866, 779], total: [470, 784, 866, 814],
+  li1: [88, 552, 866, 596], li2: [88, 600, 866, 657], li3: [88, 662, 866, 704],
+};
+const K = 640 / 952;
+J.forEach((l, i) => {
+  const d = document.createElement('div'); d.className = 'line'; d.id = 'jl' + i;
+  if (l[0] === 'p') d.innerHTML = `<span class="p">${l[1]}</span>`;
+  else if (l[0] === 'o') d.innerHTML = `  <span class="k">"line_items"</span><span class="p">: [</span>`;
+  else if (l[0] === 'f') d.innerHTML = `  <span class="k">${l[1]}</span><span class="p">: </span><span class="${l[2]}">${l[3].replace(/&/g, '&amp;')}</span><span class="p">,</span>`;
+  else d.innerHTML = `    <span class="p">{ </span><span class="k">"description"</span><span class="p">: </span><span class="s">${l[1]}</span><span class="p">, … </span><span class="k">"amount"</span><span class="p">: </span><span class="n">${l[2]}</span><span class="p"> }</span>`;
+  $('json').appendChild(d);
+  const key = l[0] === 'f' ? l[4] : l[0] === 'i' ? l[3] : null;
+  if (key) {
+    const [x0, y0, x1, y1] = HL[key], h = document.createElement('div');
+    h.className = 'hl'; h.id = 'hl' + i;
+    Object.assign(h.style, { left: x0 * K - 4 + 'px', top: y0 * K - 3 + 'px', width: (x1 - x0) * K + 8 + 'px', height: (y1 - y0) * K + 6 + 'px', opacity: 0 });
+    $('hls').appendChild(h);
+  }
+});
+$('rows').innerHTML = `<div class="abs" style="left:24px; top:18px"><span class="tag kafka">Kafka topic</span>
+  <span class="mono" style="font-size:24px; margin-left:8px">invoices</span>
+  <span style="font-size:20px; color:var(--ink-2); margin-left:10px">typed rows, one per invoice</span></div>`;
+const ROWS = [['id', 'vendor', 'date', 'cur', 'total']].concat(
+  INVS.slice(0, 4).map(r => [r.id, r.vendor.replace(/,? (GmbH|LLP|Inc\.|AG|Ltd|S\.A\.)$/, ''), r.date, r.cur, r.total.toLocaleString('en-US', { minimumFractionDigits: 2 })]));
+ROWS.forEach((r, i) => {
+  const d = document.createElement('div'); d.className = 'row' + (i ? '' : ' head'); d.id = 'rw' + i;
+  d.innerHTML = r.map((c, j) => `<div class="${j === 4 ? 'r' : ''}">${c}</div>`).join('');
+  $('rows').appendChild(d);
+});
+
+/* ---------- build: scene 4 ---------- */
+const N = {
+  sub: ['topic', 220, 400, 'submissions', 'PDF links'],
+  fx: ['topic', 220, 640, 'fx.rates', 'per currency, per day'],
+  ext: ['stmt dl', 500, 400, '<img src="assets/docling.svg" style="height:36px; vertical-align:-9px; margin-right:8px"><span style="color:#ffc83d">extract()</span>', 'Docling UDF'],
+  exs: ['topic', 760, 400, 'extractions', 'JSON per invoice'],
+  pip: ['stmt', 1090, 520, 'pipeline', 'invoice() · JOIN · GROUP BY'],
+  inv: ['topic', 1480, 250, 'invoices'],
+  spd: ['topic', 1480, 385, 'spend'],
+  day: ['topic', 1480, 520, 'spend.daily'],
+  mon: ['topic', 1480, 655, 'spend.monthly'],
+  ven: ['topic', 1480, 790, 'spend.vendors'],
+};
+const NOTES = { inv: 'checked · ok / review', spd: 'converted to EUR', day: 'per day × dept', mon: 'per month × dept', ven: 'per vendor' };
+const E = [['sub', 'ext'], ['ext', 'exs'], ['exs', 'pip'], ['fx', 'pip'], ['pip', 'inv'], ['pip', 'spd'], ['pip', 'day'], ['pip', 'mon'], ['pip', 'ven']];
+const NODE_T = { sub: .3, fx: .5, ext: 1.0, exs: 1.6, pip: 2.4, inv: 3.4, spd: 5.4, day: 7.6, mon: 8.1, ven: 8.6 };
+Object.entries(N).forEach(([k, [cls, x, y, name, sub]]) => {
+  const d = document.createElement('div'); d.className = 'node ' + cls; d.id = 'n_' + k;
+  d.style.left = x + 'px'; d.style.top = y + 'px';
+  d.innerHTML = name + (sub ? `<small>${sub}</small>` : ''); $('nodes').appendChild(d);
+  if (NOTES[k]) { const n = document.createElement('div'); n.className = 'note'; n.id = 'nt_' + k; n.textContent = NOTES[k];
+                  n.style.top = y + 'px'; $('nodes').appendChild(n); n.style.left = x + d.offsetWidth / 2 + 20 + 'px'; }
+});
+const svgNS = 'http://www.w3.org/2000/svg';
+const EP = E.map(([a, b], i) => {
+  const [, x0, y0] = N[a], [, x1, y1] = N[b];
+  const sx = x0 + $('n_' + a).offsetWidth / 2 + 4, ex = x1 - $('n_' + b).offsetWidth / 2 - 6;
+  const mx = (sx + ex) / 2;
+  const path = document.createElementNS(svgNS, 'path');
+  path.setAttribute('d', `M${sx} ${y0} C${mx} ${y0}, ${mx} ${y1}, ${ex} ${y1}`);
+  path.setAttribute('fill', 'none'); path.setAttribute('stroke', b === 'ext' || a === 'ext' ? '#ffc83d' : '#6b7a92');
+  path.setAttribute('stroke-width', 3); $('edges').appendChild(path);
+  const len = path.getTotalLength(); path.style.strokeDasharray = len;
+  const dots = [0, 1, 2].map(() => { const c = document.createElementNS(svgNS, 'circle'); c.setAttribute('r', 7);
+    c.setAttribute('fill', a === 'ext' || b === 'ext' ? '#ffc83d' : a === 'fx' ? '#8dbdf5' : '#f6a582'); $('edges').appendChild(c); return c; });
+  return { path, len, dots, a, b };
+});
+$('sql').innerHTML = `<span style="color:#898781">-- the euro conversion, in the pipeline</span>
+<span class="kw">SELECT</span> i.doc_id, i.vendor_name, i.currency,
+       <span class="fn">ROUND</span>(i.total_amount / r.rate, 2) <span class="kw">AS</span> amount_eur
+<span class="kw">FROM</span> invoiced <span class="kw">AS</span> i
+<span class="kw">JOIN</span> fx_rates <span class="kw">AS</span> r
+  <span class="kw">ON</span> i.currency = r.currency <span class="kw">AND</span> i.invoice_date = r.rate_date
+<span class="kw">WHERE</span> i.status = <span class="fn">'ok'</span>`;
+
+/* ---------- build: scene 5 ---------- */
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+const monthTotals = MONTHS.map((_, m) => INVS.filter(r => new Date(r.ms).getUTCMonth() === m).reduce((s, r) => s + r.eur, 0));
+const maxMonth = Math.max(...monthTotals) * 1.08;
+MONTHS.forEach((mn, m) => {
+  DEPTS.forEach((dp, j) => { const s = document.createElement('div'); s.className = 'seg'; s.id = `sg${m}_${j}`;
+    s.style.background = DCOL[j]; s.style.left = (m * 16.66 + 2.5) + '%'; s.style.width = '11.5%'; $('months').appendChild(s); });
+  const l = document.createElement('div'); l.className = 'abs'; l.textContent = mn;
+  Object.assign(l.style, { left: (m * 16.66 + 2.5) + '%', width: '11.5%', textAlign: 'center', bottom: '-30px', fontSize: '16px', color: '#52514e' });
+  $('months').appendChild(l);
+  const v = document.createElement('div'); v.className = 'abs'; v.id = 'mv' + m;
+  Object.assign(v.style, { left: (m * 16.66 + 2.5) + '%', width: '11.5%', textAlign: 'center', fontSize: '14px', color: '#52514e' });
+  $('months').appendChild(v);
+});
+$('legend').innerHTML = DEPTS.map((d, j) => `<i style="background:${DCOL[j]}"></i>${d}`).join('');
+const VENDORS = [...new Set(INVS.map(r => r.vendor))];
+VENDORS.forEach((v, i) => { const d = document.createElement('div'); d.className = 'vrow'; d.id = 'vr' + i;
+  d.innerHTML = `<div class="vn">${v}</div><div class="vb"></div><div class="vv"></div>`; $('vendors').appendChild(d); });
+const LQ = `SELECT doc_id, vendor_name, total_amount FROM invoices WHERE status = 'review'`;
+
+/* ---------- render(t): everything is a pure function of t ---------- */
+function render(t) {
+  for (const [id, a, b] of SCENES) {
+    const o = Math.min(lin(t, a - (a ? XF : 0), a + .001), 1 - lin(t, b - .001, b + (b < TOTAL ? XF : 0)));
+    const el = $(id); el.style.opacity = a === 0 && t < XF ? 1 : clamp(o); el.style.visibility = o > 0 || (a === 0 && t < XF) ? 'visible' : 'hidden';
+  }
+  $('progress').style.width = (t / TOTAL * 100) + '%';
+  $('wm').style.opacity = t > 54.5 ? 1 - lin(t, 54.5, 55) : lin(t, 6.5, 7.2);
+  const S = id => t - SCENES.find(s => s[0] === id)[1];
+
+  // 1 · hook
+  { const lt = S('s1');
+    TH.forEach((_, i) => { const el = $('th' + i), k = p(lt, .1 + i * .13, 1.2 + i * .13);
+      const x = +el.dataset.x, y = +el.dataset.y, r = +el.dataset.r;
+      el.style.opacity = k; el.style.transform = `translate(${x + lt * 6 * (i % 2 ? 1 : -1)}px, ${y + (1 - k) * 500 - lt * 4}px) rotate(${r * (1.6 - .6 * k)}deg) scale(${1.04 + lt * .01})`; });
+    $('veil').style.opacity = p(lt, .9, 1.8);
+    fadeUp($('t1'), lt, 1.0, .8, 40); fadeUp($('t1l'), lt, 1.7, .7); fadeUp($('t1s'), lt, 2.3, .7); fadeUp($('chips'), lt, 3.4, .7); }
+
+  // 2 · scenario
+  { const lt = S('s2');
+    fadeUp($('s2h'), lt, .1); fadeUp($('s2s'), lt, .4);
+    [0, 1, 2, 3].forEach(i => fadeUp($('st' + i), lt, .9 + i * .35));
+    const tgt = [174, 17, 6, 6]; [0, 1, 2, 3].forEach(i => $('st' + i).querySelector('.n').textContent = Math.round(tgt[i] * p(lt, .9 + i * .35, 2.2 + i * .35)));
+    fadeUp($('s2demo'), lt, 2.6); fadeUp($('clock'), lt, .5, .7); fadeUp($('topic'), lt, 1.0, .7);
+    const clk = day0 + (day1 - day0) * easeInOut(lin(lt, 3.0, 9.6));
+    $('date').textContent = fmtDay(clk);
+    const done = INVS.filter(r => r.ms <= clk + DAY - 1);
+    $('cnt').textContent = `${lt < 3 ? 0 : done.length} invoices submitted`;
+    const dIdx = (clk - day0) / DAY;
+    perDay.forEach((_, i) => $('hb' + i).style.opacity = lt >= 3 && i <= dIdx ? 1 : .12);
+    const shown = lt < 3 ? [] : done.slice(-6);
+    $('recs').innerHTML = shown.reverse().map((r, i) => `<div class="rec" style="top:${i * 62 + 6}px; opacity:${1 - i * .14}">`
+      + `{<span>"doc_id":</span> "lumen-inv-${r.id}", <span>"department":</span> "${r.dept}", <span>"submitted_at":</span> "${r.at.slice(0, 16)}"}</div>`).join(''); }
+
+  // 3 · docling
+  { const lt = S('s3');
+    const pk = p(lt, 0, .8); $('pdf').style.opacity = pk; $('pdf').style.transform = `translateX(${(1 - pk) * -60}px)`;
+    const sl = lin(lt, .9, 3.6); $('scanline').style.top = (-120 + sl * 1050) + 'px'; $('scanline').style.opacity = sl > 0 && sl < 1 ? 1 : 0;
+    const dk = p(lt, .6, 1.4); $('docling').style.opacity = dk;
+    $('docling').style.transform = `scale(${.7 + .3 * dk + .03 * Math.sin(lt * 5) * (lt < 12 ? 1 : 0)})`;
+    $('docling').style.boxShadow = `0 0 ${40 + 30 * Math.sin(lt * 5) ** 2}px rgba(255,200,61,.45)`;
+    $('a1').style.opacity = p(lt, 1.2, 1.6); $('a2').style.opacity = p(lt, 6.6, 7.0);
+    const sc = p(lt, 4.6, 5.3) * (1 - p(lt, 7.6, 8.1));
+    $('scan').style.opacity = sc; $('scan').style.transform = `rotate(${-2.5 + sc * 1.5}deg) scale(${.85 + .15 * sc})`;
+    fadeUp($('json'), lt, 6.4, .5);
+    const T0 = 7.0, step = .42;
+    J.forEach((l, i) => { const at = T0 + i * step, el = $('jl' + i);
+      el.style.opacity = p(lt, at, at + .25);
+      const hot = lt >= at && lt < at + step * 2.2 && l[0] !== 'p' && l[0] !== 'o';
+      el.classList.toggle('hot', hot);
+      const h = $('hl' + i); if (h) h.style.opacity = hot ? 1 : lt >= at ? .35 * (1 - p(lt, 12.0, 12.6)) : 0; });
+    fadeUp($('rows'), lt, 12.0, .5);
+    ROWS.forEach((_, i) => { const el = $('rw' + i), at = 12.3 + i * .45, k = p(lt, at, at + .35);
+      el.style.top = (62 + i * 46 + (1 - k) * 30) + 'px'; el.style.opacity = k;
+      if (i === 1) el.style.boxShadow = lt > at ? `0 0 0 2px rgba(255,200,61,${.9 * (1 - lin(lt, 14.5, 15.5))})` : 'none'; }); }
+
+  // 4 · pipeline
+  { const lt = S('s4');
+    $('cc').style.opacity = p(lt, 0, .6);
+    Object.entries(NODE_T).forEach(([k, at]) => { const el = $('n_' + k), q = p(lt, at, at + .45);
+      el.style.opacity = q; el.style.transform = `translate(-50%,-50%) scale(${.8 + .2 * q})`;
+      const nt = $('nt_' + k); if (nt) nt.style.opacity = q; });
+    // what the voice is talking about glows
+    const glow = (k, a, b) => { const g = lin(t - SCENES[3][1], a, a + .3) * (1 - lin(lt, b, b + .4));
+      $('n_' + k).style.boxShadow = `0 0 ${36 * g}px rgba(255,255,255,${.5 * g})`;
+      const nt = $('nt_' + k); if (nt) nt.style.color = g > .5 ? '#fff' : ''; };
+    glow('inv', 3.4, 5.2); glow('spd', 5.4, 7.4); glow('fx', 5.4, 7.4);
+    glow('day', 7.6, 10.0); glow('mon', 8.1, 10.0); glow('ven', 8.6, 10.0);
+    EP.forEach((e, i) => { const at = Math.max(NODE_T[e.a], NODE_T[e.b] - .5), k = p(lt, at, at + .6);
+      e.path.style.strokeDashoffset = e.len * (1 - k);
+      e.dots.forEach((c, j) => { const f = ((lt * .42 + j / 3 + i * .17) % 1);
+        const pt = e.path.getPointAtLength(f * e.len); c.setAttribute('cx', pt.x); c.setAttribute('cy', pt.y);
+        c.style.opacity = k >= 1 ? Math.min(1, lin(lt, at + .6, at + 1.1)) * Math.sin(f * Math.PI) : 0; }); });
+    fadeUp($('sql'), lt, 5.6, .6); $('sql').style.opacity *= 1 - p(lt, 10.4, 11.0);
+    // finale: every topic pulses — each one a Kafka topic
+    ['inv', 'spd', 'day', 'mon', 'ven', 'exs'].forEach((k, i) => { if (lt > 9.9) { const g = Math.sin(clamp((lt - 9.9 - i * .1) / .7) * Math.PI);
+      $('n_' + k).style.boxShadow = `0 0 ${40 * g}px rgba(57,135,229,${.9 * g})`; } }); }
+
+  // 5 · dashboard
+  { const lt = S('s5');
+    const wk = p(lt, 0, .7); $('win').style.opacity = wk; $('win').style.transform = `translateY(${(1 - wk) * 60}px) scale(${.97 + .03 * wk})`;
+    const clk = day0 + (day1 - day0) * easeInOut(lin(lt, .4, 7.4));
+    $('through').textContent = `submitted through ${fmtDayShort(clk)} · Flink processed through ${fmtDayShort(clk - DAY * (lt < 7.4 ? 1 : 0))} · every number computed by Flink`;
+    const seen = INVS.filter(r => r.ms <= clk - (lt < 7.4 ? DAY : 0));
+    $('k1').textContent = seen.length; $('k2').textContent = eur(seen.reduce((s, r) => s + r.eur, 0));
+    $('k3').textContent = new Set(seen.map(r => r.vendor)).size;
+    MONTHS.forEach((_, m) => { let acc = 0, tot = 0;
+      DEPTS.forEach((dp, j) => { const v = seen.filter(r => new Date(r.ms).getUTCMonth() === m && r.dept === dp).reduce((s, r) => s + r.eur, 0);
+        const el = $(`sg${m}_${j}`); el.style.bottom = (acc / maxMonth * 100) + '%'; el.style.height = (v / maxMonth * 100) + '%'; acc += v; tot += v; });
+      const mv = $('mv' + m); mv.style.bottom = `calc(${acc / maxMonth * 100}% + 4px)`; mv.textContent = tot ? eur(tot, true) : ''; });
+    const vt = VENDORS.map((v, i) => ({ i, v: seen.filter(r => r.vendor === v).reduce((s, r) => s + r.eur, 0) })).sort((a, b) => b.v - a.v || a.i - b.i);
+    const vmax = Math.max(1, vt[0].v);
+    vt.forEach((o, rank) => { const el = $('vr' + o.i); el.style.top = (rank * 54) + 'px'; el.style.opacity = rank < 10 && o.v > 0 ? 1 : 0;
+      el.querySelector('.vb').style.width = (o.v / vmax * 78) + '%'; el.querySelector('.vv').textContent = eur(o.v); });
+    const qk = lin(lt, 4.6, 5.9), n = Math.round(LQ.length * qk);
+    $('lqsql').innerHTML = LQ.slice(0, n).replace(/(SELECT|FROM|WHERE)/g, '<span style="color:#6da7ec">$1</span>') + (qk < 1 && lt > 4.6 && Math.floor(lt * 4) % 2 ? '▍' : '');
+    $('lqms').textContent = lt > 6.1 ? '⚡ 38 ms' : ''; $('lqms').style.opacity = p(lt, 6.1, 6.4); }
+
+  // 6 · outro
+  { const lt = S('s6');
+    fadeUp($('o1'), lt, .1, .7, 40); fadeUp($('o2'), lt, .7, .7); fadeUp($('o3'), lt, 1.4, .7); fadeUp($('o5'), lt, 2.0, .7); fadeUp($('o4'), lt, 2.5, .7); }
+}
+window.render = render;
+window.TOTAL = TOTAL;
+window.VO_AT = SCENES.map(sc => sc[1] + LEAD);
+render(0);
+</script>
+</body>
+</html>

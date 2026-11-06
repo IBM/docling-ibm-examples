@@ -89,6 +89,7 @@ with DoclingServiceClient(
 
 ## Documentation
 
+- **In this repository:** [docs/](docs/README.md): an index of the examples and their reference material
 - **Product page:** [ibm.com/products/docling](https://www.ibm.com/products/docling)
 - **Docling for IBM watsonx documentation:** [developer.dcls.saas.ibm.com](https://developer.dcls.saas.ibm.com/): guides, [API reference](https://developer.dcls.saas.ibm.com/api), [connectors](https://developer.dcls.saas.ibm.com/connectors) and the [tutorials](https://developer.dcls.saas.ibm.com/tutorials) that go with these examples
 - **Open-source Docling:** [github.com/docling-project/docling](https://github.com/docling-project/docling)

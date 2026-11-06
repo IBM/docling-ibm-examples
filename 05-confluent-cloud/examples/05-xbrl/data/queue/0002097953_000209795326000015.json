@@ -1,0 +1,61 @@
+{
+  "doc_id": "0002097953_000209795326000015",
+  "company_name": "Mira Qon Corp",
+  "cik": "0002097953",
+  "cik_short": "2097953",
+  "form": "10-K",
+  "accession_number": "0002097953-26-000015",
+  "accession_number_raw": "000209795326000015",
+  "filing_date": "2026-10-30",
+  "updated": "2026-10-30T13:26:57-04:00",
+  "size": "2 MB",
+  "filing_details_url": "https://www.sec.gov/Archives/edgar/data/2097953/000209795326000015/",
+  "filing_index_url": "https://www.sec.gov/Archives/edgar/data/2097953/000209795326000015/0002097953-26-000015-index.htm",
+  "filing_index_json_url": "https://www.sec.gov/Archives/edgar/data/2097953/000209795326000015/index.json",
+  "xbrl_zip_url": "https://www.sec.gov/Archives/edgar/data/2097953/000209795326000015/0002097953-26-000015-xbrl.zip",
+  "ixbrl_file": "mira10k_august312026.htm",
+  "ixbrl_url": "https://www.sec.gov/Archives/edgar/data/2097953/000209795326000015/mira10k_august312026.htm",
+  "ixbrl_size": 375311,
+  "xbrl_instance_file": "mira10k_august312026_htm.xml",
+  "xbrl_instance_url": "https://www.sec.gov/Archives/edgar/data/2097953/000209795326000015/mira10k_august312026_htm.xml",
+  "xbrl_instance_size": 192149,
+  "taxonomy_files": [
+    {
+      "name": "none-20260831.xsd",
+      "type": "schema",
+      "url": "https://www.sec.gov/Archives/edgar/data/2097953/000209795326000015/none-20260831.xsd",
+      "size": 15799
+    },
+    {
+      "name": "none-20260831_cal.xml",
+      "type": "calculation",
+      "url": "https://www.sec.gov/Archives/edgar/data/2097953/000209795326000015/none-20260831_cal.xml",
+      "size": 24283
+    },
+    {
+      "name": "none-20260831_def.xml",
+      "type": "definition",
+      "url": "https://www.sec.gov/Archives/edgar/data/2097953/000209795326000015/none-20260831_def.xml",
+      "size": 15710
+    },
+    {
+      "name": "none-20260831_lab.xml",
+      "type": "label",
+      "url": "https://www.sec.gov/Archives/edgar/data/2097953/000209795326000015/none-20260831_lab.xml",
+      "size": 122624
+    },
+    {
+      "name": "none-20260831_pre.xml",
+      "type": "presentation",
+      "url": "https://www.sec.gov/Archives/edgar/data/2097953/000209795326000015/none-20260831_pre.xml",
+      "size": 89266
+    }
+  ],
+  "taxonomy_urls": [
+    "https://www.sec.gov/Archives/edgar/data/2097953/000209795326000015/none-20260831.xsd",
+    "https://www.sec.gov/Archives/edgar/data/2097953/000209795326000015/none-20260831_cal.xml",
+    "https://www.sec.gov/Archives/edgar/data/2097953/000209795326000015/none-20260831_def.xml",
+    "https://www.sec.gov/Archives/edgar/data/2097953/000209795326000015/none-20260831_lab.xml",
+    "https://www.sec.gov/Archives/edgar/data/2097953/000209795326000015/none-20260831_pre.xml"
+  ]
+}

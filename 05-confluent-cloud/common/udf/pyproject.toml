@@ -1,0 +1,61 @@
+# The Python UDF artifact Confluent Cloud runs.
+#
+#   ./build.sh          -> dist/docling-udf-0.1.0.zip, ready to upload
+#   uv run pytest       -> the logic, without a cluster
+#
+# The constraints below are not ours to choose: Confluent Cloud's Python UDF
+# runtime pins them, and a wheel resolved outside them fails at CREATE FUNCTION
+# rather than at build time. They are copied from
+# github.com/confluentinc/flink-udf-python-examples, which is where Confluent
+# publishes the list.
+[project]
+name = "docling-udf"
+version = "0.1.0"
+description = "Docling chunk enrichment as Confluent Cloud Flink Python UDFs"
+readme = "README.md"
+# 3.10-3.11 is the whole supported range for Confluent Cloud Python UDFs.
+requires-python = ">=3.10,<3.12"
+# Only pyflink, because only pyflink is needed: the enrichment is stdlib `re`,
+# `unicodedata` and `hashlib`, and the embedding call that would have needed
+# `requests` does not happen in a UDF at all (see docs/05-confluent-cloud/LIMITS.md).
+dependencies = [
+    "apache-flink==2.0.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.8.9,<0.12.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "ruff>=0.14",
+]
+
+[tool.uv]
+constraint-dependencies = [
+    "apache-flink==2.0.0",
+    "click>=8.2.0",
+    "confluent-function-runtime-core>=0.181.0",
+    "grpc-interceptor>=0.15.0",
+    "grpcio-health-checking>=1.65.0",
+    "grpcio-reflection>=1.65.0",
+    "grpcio>=1.65.0",
+    "protobuf>=5.29.1",
+    "psutil>=5.9.0",
+    "pyparsing>=3.2.5",
+    "typing_extensions>=4.4.0",
+]
+
+# apache-beam 2.61.0 has no arm64 macOS wheel, so uv builds it from the sdist —
+# whose setup.py uses pkg_resources without declaring setuptools as a build
+# dependency. Only bites on Apple Silicon; harmless everywhere else.
+[tool.uv.extra-build-dependencies]
+apache-beam = ["setuptools<78"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+src = ["src", "tests"]

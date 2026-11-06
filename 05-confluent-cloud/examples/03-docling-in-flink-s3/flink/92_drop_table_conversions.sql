@@ -1,0 +1,12 @@
+-- Deletes the topic `${CONVERSIONS_TOPIC}` AND EVERYTHING IN IT.
+--
+-- Worth a second thought, unlike the others: this topic is the only place the
+-- *paid* work of this example survives. Docling charges per page and takes
+-- seconds to minutes per document; every other topic here can be rebuilt from
+-- this one for free. Dropping it means converting everything again.
+--
+-- In Confluent Cloud a Flink table is a Kafka topic, so DROP TABLE is not a
+-- metadata operation — the data goes with it, and it does not come back. Run
+-- only through `./setup.sh destroy --topics`, which says what it is about to
+-- delete and makes you type the words.
+DROP TABLE IF EXISTS `${CONVERSIONS_TOPIC}`;

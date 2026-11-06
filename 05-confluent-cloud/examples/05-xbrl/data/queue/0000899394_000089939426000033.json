@@ -1,0 +1,61 @@
+{
+  "doc_id": "0000899394_000089939426000033",
+  "company_name": "HARBOR DIVERSIFIED, INC.",
+  "cik": "0000899394",
+  "cik_short": "899394",
+  "form": "10-K",
+  "accession_number": "0000899394-26-000033",
+  "accession_number_raw": "000089939426000033",
+  "filing_date": "2026-10-09",
+  "updated": "2026-10-09T16:54:13-04:00",
+  "size": "9 MB",
+  "filing_details_url": "https://www.sec.gov/Archives/edgar/data/899394/000089939426000033/",
+  "filing_index_url": "https://www.sec.gov/Archives/edgar/data/899394/000089939426000033/0000899394-26-000033-index.htm",
+  "filing_index_json_url": "https://www.sec.gov/Archives/edgar/data/899394/000089939426000033/index.json",
+  "ixbrl_file": "hrbr-20251231.htm",
+  "ixbrl_url": "https://www.sec.gov/Archives/edgar/data/899394/000089939426000033/hrbr-20251231.htm",
+  "ixbrl_size": 1696275,
+  "xbrl_instance_file": "hrbr-20251231_htm.xml",
+  "xbrl_instance_url": "https://www.sec.gov/Archives/edgar/data/899394/000089939426000033/hrbr-20251231_htm.xml",
+  "xbrl_instance_size": 1039840,
+  "taxonomy_files": [
+    {
+      "name": "hrbr-20251231.xsd",
+      "type": "schema",
+      "url": "https://www.sec.gov/Archives/edgar/data/899394/000089939426000033/hrbr-20251231.xsd",
+      "size": 77683
+    },
+    {
+      "name": "hrbr-20251231_cal.xml",
+      "type": "calculation",
+      "url": "https://www.sec.gov/Archives/edgar/data/899394/000089939426000033/hrbr-20251231_cal.xml",
+      "size": 114450
+    },
+    {
+      "name": "hrbr-20251231_def.xml",
+      "type": "definition",
+      "url": "https://www.sec.gov/Archives/edgar/data/899394/000089939426000033/hrbr-20251231_def.xml",
+      "size": 309754
+    },
+    {
+      "name": "hrbr-20251231_lab.xml",
+      "type": "label",
+      "url": "https://www.sec.gov/Archives/edgar/data/899394/000089939426000033/hrbr-20251231_lab.xml",
+      "size": 823092
+    },
+    {
+      "name": "hrbr-20251231_pre.xml",
+      "type": "presentation",
+      "url": "https://www.sec.gov/Archives/edgar/data/899394/000089939426000033/hrbr-20251231_pre.xml",
+      "size": 606677
+    }
+  ],
+  "taxonomy_urls": [
+    "https://www.sec.gov/Archives/edgar/data/899394/000089939426000033/hrbr-20251231.xsd",
+    "https://www.sec.gov/Archives/edgar/data/899394/000089939426000033/hrbr-20251231_cal.xml",
+    "https://www.sec.gov/Archives/edgar/data/899394/000089939426000033/hrbr-20251231_def.xml",
+    "https://www.sec.gov/Archives/edgar/data/899394/000089939426000033/hrbr-20251231_lab.xml",
+    "https://www.sec.gov/Archives/edgar/data/899394/000089939426000033/hrbr-20251231_pre.xml"
+  ],
+  "xbrl_zip_url": "https://www.sec.gov/Archives/edgar/data/899394/000089939426000033/0000899394-26-000033-xbrl.zip"
+}

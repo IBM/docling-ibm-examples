@@ -1,0 +1,61 @@
+{
+  "doc_id": "0001006028_000149315226049272",
+  "company_name": "PURE BIOSCIENCE, INC.",
+  "cik": "0001006028",
+  "cik_short": "1006028",
+  "form": "10-K",
+  "accession_number": "0001493152-26-049272",
+  "accession_number_raw": "000149315226049272",
+  "filing_date": "2026-10-29",
+  "updated": "2026-10-29T16:10:52-04:00",
+  "size": "6 MB",
+  "filing_details_url": "https://www.sec.gov/Archives/edgar/data/1006028/000149315226049272/",
+  "filing_index_url": "https://www.sec.gov/Archives/edgar/data/1006028/000149315226049272/0001493152-26-049272-index.htm",
+  "filing_index_json_url": "https://www.sec.gov/Archives/edgar/data/1006028/000149315226049272/index.json",
+  "xbrl_zip_url": "https://www.sec.gov/Archives/edgar/data/1006028/000149315226049272/0001493152-26-049272-xbrl.zip",
+  "ixbrl_file": "form10-k.htm",
+  "ixbrl_url": "https://www.sec.gov/Archives/edgar/data/1006028/000149315226049272/form10-k.htm",
+  "ixbrl_size": 1383852,
+  "xbrl_instance_file": "form10-k_htm.xml",
+  "xbrl_instance_url": "https://www.sec.gov/Archives/edgar/data/1006028/000149315226049272/form10-k_htm.xml",
+  "xbrl_instance_size": 754174,
+  "taxonomy_files": [
+    {
+      "name": "pure-20260731.xsd",
+      "type": "schema",
+      "url": "https://www.sec.gov/Archives/edgar/data/1006028/000149315226049272/pure-20260731.xsd",
+      "size": 38270
+    },
+    {
+      "name": "pure-20260731_cal.xml",
+      "type": "calculation",
+      "url": "https://www.sec.gov/Archives/edgar/data/1006028/000149315226049272/pure-20260731_cal.xml",
+      "size": 53568
+    },
+    {
+      "name": "pure-20260731_def.xml",
+      "type": "definition",
+      "url": "https://www.sec.gov/Archives/edgar/data/1006028/000149315226049272/pure-20260731_def.xml",
+      "size": 193742
+    },
+    {
+      "name": "pure-20260731_lab.xml",
+      "type": "label",
+      "url": "https://www.sec.gov/Archives/edgar/data/1006028/000149315226049272/pure-20260731_lab.xml",
+      "size": 395916
+    },
+    {
+      "name": "pure-20260731_pre.xml",
+      "type": "presentation",
+      "url": "https://www.sec.gov/Archives/edgar/data/1006028/000149315226049272/pure-20260731_pre.xml",
+      "size": 331849
+    }
+  ],
+  "taxonomy_urls": [
+    "https://www.sec.gov/Archives/edgar/data/1006028/000149315226049272/pure-20260731.xsd",
+    "https://www.sec.gov/Archives/edgar/data/1006028/000149315226049272/pure-20260731_cal.xml",
+    "https://www.sec.gov/Archives/edgar/data/1006028/000149315226049272/pure-20260731_def.xml",
+    "https://www.sec.gov/Archives/edgar/data/1006028/000149315226049272/pure-20260731_lab.xml",
+    "https://www.sec.gov/Archives/edgar/data/1006028/000149315226049272/pure-20260731_pre.xml"
+  ]
+}

@@ -1,0 +1,6 @@
+Every company runs on documents. Invoices arrive as PDFs and scans, in seven layouts and four currencies.
+Meet Lumen Analytics, a fictional Munich startup. Six months of invoices from seventeen suppliers are replayed on a simulated clock, straight into Kafka on Confluent Cloud.
+Here is where Docling comes in. Called from a Flink function, it reads every page, even a tilted scan, and returns structured JSON: vendor, number, date, currency, totals, and every line item. Unstructured documents become typed rows on a stream.
+From there, it is plain Flink SQL. Continuous statements check each invoice, convert it to euros, and keep spend reports by day, month and vendor, each one a Kafka topic.
+That streamhouse powers a live dashboard. Charts move as invoices land, and the Real-Time Context Engine answers lightning queries in milliseconds.
+Docling plus Confluent Cloud: from unstructured documents to live insight.

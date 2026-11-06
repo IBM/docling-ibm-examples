@@ -1,0 +1,61 @@
+{
+  "doc_id": "0000006955_000000695526000109",
+  "company_name": "ENERPAC TOOL GROUP CORP",
+  "cik": "0000006955",
+  "cik_short": "6955",
+  "form": "10-K",
+  "accession_number": "0000006955-26-000109",
+  "accession_number_raw": "000000695526000109",
+  "filing_date": "2026-10-29",
+  "updated": "2026-10-29T17:06:16-04:00",
+  "size": "28 MB",
+  "filing_details_url": "https://www.sec.gov/Archives/edgar/data/6955/000000695526000109/",
+  "filing_index_url": "https://www.sec.gov/Archives/edgar/data/6955/000000695526000109/0000006955-26-000109-index.htm",
+  "filing_index_json_url": "https://www.sec.gov/Archives/edgar/data/6955/000000695526000109/index.json",
+  "xbrl_zip_url": "https://www.sec.gov/Archives/edgar/data/6955/000000695526000109/0000006955-26-000109-xbrl.zip",
+  "ixbrl_file": "epac-20260831.htm",
+  "ixbrl_url": "https://www.sec.gov/Archives/edgar/data/6955/000000695526000109/epac-20260831.htm",
+  "ixbrl_size": 2008686,
+  "xbrl_instance_file": "epac-20260831_htm.xml",
+  "xbrl_instance_url": "https://www.sec.gov/Archives/edgar/data/6955/000000695526000109/epac-20260831_htm.xml",
+  "xbrl_instance_size": 1764608,
+  "taxonomy_files": [
+    {
+      "name": "epac-20260831.xsd",
+      "type": "schema",
+      "url": "https://www.sec.gov/Archives/edgar/data/6955/000000695526000109/epac-20260831.xsd",
+      "size": 87324
+    },
+    {
+      "name": "epac-20260831_cal.xml",
+      "type": "calculation",
+      "url": "https://www.sec.gov/Archives/edgar/data/6955/000000695526000109/epac-20260831_cal.xml",
+      "size": 87173
+    },
+    {
+      "name": "epac-20260831_def.xml",
+      "type": "definition",
+      "url": "https://www.sec.gov/Archives/edgar/data/6955/000000695526000109/epac-20260831_def.xml",
+      "size": 641189
+    },
+    {
+      "name": "epac-20260831_lab.xml",
+      "type": "label",
+      "url": "https://www.sec.gov/Archives/edgar/data/6955/000000695526000109/epac-20260831_lab.xml",
+      "size": 1050127
+    },
+    {
+      "name": "epac-20260831_pre.xml",
+      "type": "presentation",
+      "url": "https://www.sec.gov/Archives/edgar/data/6955/000000695526000109/epac-20260831_pre.xml",
+      "size": 887340
+    }
+  ],
+  "taxonomy_urls": [
+    "https://www.sec.gov/Archives/edgar/data/6955/000000695526000109/epac-20260831.xsd",
+    "https://www.sec.gov/Archives/edgar/data/6955/000000695526000109/epac-20260831_cal.xml",
+    "https://www.sec.gov/Archives/edgar/data/6955/000000695526000109/epac-20260831_def.xml",
+    "https://www.sec.gov/Archives/edgar/data/6955/000000695526000109/epac-20260831_lab.xml",
+    "https://www.sec.gov/Archives/edgar/data/6955/000000695526000109/epac-20260831_pre.xml"
+  ]
+}

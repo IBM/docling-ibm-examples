@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 # Build the uploadable artifact.
 #
 # Confluent Cloud takes a Python UDF as a **zip containing the sdist tarball** —

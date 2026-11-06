@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """Where each filing is: waiting, or which figures were read — from the topics.
 
     uv run --project ../.. scripts/report.py

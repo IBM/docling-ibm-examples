@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """A Docling conversion, as chunk records.
 
 This is the seam between examples. Example 01 gets its chunk topic from Docling

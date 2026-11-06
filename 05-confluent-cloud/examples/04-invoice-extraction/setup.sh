@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 # Everything that happens once, before this example's pipeline can be deployed.
 # It is Terraform's — terraform/main.tf, beside this file, on
 # ../../terraform/modules/example — and this script is how it is run:

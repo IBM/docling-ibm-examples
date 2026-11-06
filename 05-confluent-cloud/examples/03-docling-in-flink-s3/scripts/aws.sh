@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 # The AWS side of example 03 — everything outside Confluent Cloud. AWS.md is
 # the long version of what this does and why; this is the short way to do it.
 #

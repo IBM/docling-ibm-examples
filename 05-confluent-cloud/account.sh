@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 # Your Confluent Cloud account, once — before any example can run.
 #
 #   ./account.sh init       fill in .env: asks for each value and says where to get it

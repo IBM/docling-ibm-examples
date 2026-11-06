@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """Fill ``${NAME}`` placeholders in a SQL file from the environment.
 
 Strictly, and that is the entire reason this is 30 lines of Python instead of

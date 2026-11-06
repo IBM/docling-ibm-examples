@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 # Example 05 — every name it creates, all derived from NS.
 #
 # Sourced by ./setup.sh and ./pipeline.sh, after 05-confluent-cloud/.env (which is

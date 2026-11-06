@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """Pure helpers for chunk records: normalization, and the derived fields.
 
 No Flink and no network here, so everything is unit-testable and behaves

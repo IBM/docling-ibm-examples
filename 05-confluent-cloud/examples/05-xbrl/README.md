@@ -287,7 +287,7 @@ Every topic has a registered JSON Schema; Flink creates them all with
 | `flink/22_view_extracted.sql`, `flink/31_metrics.sql` | the view that calls it, and the statement that unnests its figures into the metrics topic |
 | `flink/23_view_financials.sql`, `flink/32_events.sql` | one row per filing with its ratios, and the statement that detects the events from it |
 | `udf/` | the Java artifact: `dc_metrics` and the Docling calls behind it, with tests (`./build.sh test`) |
-| `scripts/sec_producer.py` | polls SEC EDGAR Atom feed (once, `--watch`, or `--replay`); produces filing records to Kafka or `data/queue/` |
+| `scripts/sec_producer.py` | polls the SEC EDGAR Atom feed (once or with `--watch`), or replays saved records with `--replay`; produces filing records to Kafka or `data/queue/` |
 | `scripts/report.py` | one line per filing: waiting, ok, failed or no figures; `--events` lists the events instead |
 | `scripts/sr.py` | Schema Registry framing for the topics |
 | `scripts/download_xbrl.py` | downloads sample XBRL ZIPs into `data/<ticker>/`, which are not committed; the pipeline does not use them |

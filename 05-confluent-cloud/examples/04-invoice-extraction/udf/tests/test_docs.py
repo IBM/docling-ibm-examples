@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """The README's pipeline diagram matches the SQL in flink/.
 
 The diagram is generated (``scripts/diagram.py``) rather than drawn, and this

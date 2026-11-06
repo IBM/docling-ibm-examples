@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """Fixtures from the example's own files, so the tests check what is deployed.
 
 The extraction target is read out of ``flink/20_view_submitted.sql`` rather

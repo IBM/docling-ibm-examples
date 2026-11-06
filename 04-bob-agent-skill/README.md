@@ -32,7 +32,7 @@ cd docling-ibm-examples/04-bob-agent-skill
 
 uv venv
 source .venv/bin/activate
-uv pip install docling-client dclq      # or: uv sync
+uv pip install docling-client dclq
 
 cp ../.env.example .env                 # fill in DOCLING_SERVICE_URL and DOCLING_SERVICE_API_KEY
 ```
@@ -49,13 +49,13 @@ head -20 converted/regulatory_guidelines_2026.md
 
 | You see | Cause |
 |---|---|
-| Exit code 2, `No service URL` | `.env` is missing, not in the current folder, or a variable name is misspelt |
+| Exit code 2, `No service URL` | `.env` is missing, not in the current folder, or a variable name is misspelled |
 | `401` or `403` | The API key is wrong or has been regenerated |
 | `Cannot reach service` | The Service URL is wrong, or outbound HTTPS is blocked |
 
 ## Run
 
-1. Open **this folder** (`bob-agent-skill/`) in IBM Bob as the workspace. Bob loads the
+1. Open **this folder** (`04-bob-agent-skill/`) in IBM Bob as the workspace. Bob loads the
    skill from `.bob/skills/` when it opens the workspace; reload the window if you add or
    change the skill later.
 2. Send the prompts from [`prompts.md`](prompts.md) one at a time.

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """Generate the demo's invoices: PDFs, and the manifest that describes them.
 
     uv run --project ../.. --group invoices scripts/generate.py

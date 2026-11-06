@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """The objects already in the bucket, sent to the queue as if S3 had just announced them.
 
     scripts/aws.sh backfill --dry-run            what it would send

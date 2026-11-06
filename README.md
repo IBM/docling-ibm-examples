@@ -23,6 +23,8 @@ NN-example-name/
   typescript/      # (future)
 ```
 
+Example 05 is an exception: it is a set of five integration examples that share an account setup, so it has its own structure. See its [README](05-confluent-cloud/README.md#repository-structure).
+
 Each example lives in a numbered folder, ordered from the first steps to complete
 integrations. Its README describes the scenario once, and every implementation sits in a
 subfolder named after its language or tool, so new languages can be added side by side.
@@ -35,7 +37,7 @@ sit directly in the example folder or in a folder named after what they are, suc
 | 02 RAG in a notebook | `python/` |
 | 03 Vector database ingestion | `python/` |
 | 04 Docling in IBM Bob | agent skill (Markdown) |
-| 05 Confluent Cloud | Flink SQL, `python/` (optional sender) |
+| 05 Confluent Cloud | Flink SQL, Java and Python UDFs, Terraform, and Python scripts to send and inspect documents |
 
 A new language goes in a folder next to `python/`, linked from the example README.
 Pull requests are accepted from the repository collaborators only; everyone is welcome
@@ -57,7 +59,7 @@ cd docling-ibm-examples
 cp .env.example .env      # then edit .env
 ```
 
-All examples read the same variables:
+Examples 01 to 04 read the same variables:
 
 | Variable | Used for |
 |---|---|
@@ -66,6 +68,8 @@ All examples read the same variables:
 | `WATSONX_URL`, `WATSONX_APIKEY`, `WATSONX_PROJECT_ID` | Embeddings and chat in the RAG examples |
 
 `.env` is git-ignored. Never commit credentials.
+
+Example 05 has its own `.env` in `05-confluent-cloud/`, with partly different variable names (for example `DOCLING_API_KEY`). See its [account setup](docs/05-confluent-cloud/ACCOUNT.md).
 
 ## The Python SDK in one minute
 

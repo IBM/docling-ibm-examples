@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """The seam: a Docling conversion turned into example 01's chunk records.
 
 What is worth testing here is not the chunk sizes — those are a judgement call

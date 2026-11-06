@@ -23,7 +23,7 @@ three.
 | `docs/q3_audit_summary.docx` | Word | Internal audit summary with findings, observations and a sign-off |
 | `docs/regulatory_guidelines_2026.epub` | EPUB | Regulatory guidelines in seven chapters |
 
-All organisations, people, identifiers and figures in these documents are fictional and
+All organizations, people, identifiers and figures in these documents are fictional and
 were generated for this example.
 
 Two fields appear in two documents. Comparing them is part of the exercise: check

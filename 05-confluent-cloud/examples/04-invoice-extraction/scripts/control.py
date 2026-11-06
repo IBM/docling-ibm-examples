@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """The control layer: a simulated clock with a slider, and the live dashboard.
 
     uv run --project ../.. --group control scripts/control.py serve      # http://localhost:8004

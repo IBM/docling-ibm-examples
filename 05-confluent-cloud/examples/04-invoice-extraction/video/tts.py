@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """Voiceover with Kokoro (open-weights neural TTS, runs locally): vo/s<N>.wav per line of vo/script.txt,
 and assets/timing.js with their durations, which video.html and render.py lay the scenes out from.
 
@@ -5,7 +7,11 @@ and assets/timing.js with their durations, which video.html and render.py lay th
 
 Model files (kokoro-v1.0.onnx, voices-v1.0.bin) from github.com/thewh1teagle/kokoro-onnx/releases, in $KOKORO_DIR.
 """
-import argparse, json, os, pathlib
+import argparse
+import json
+import os
+import pathlib
+
 import soundfile as sf
 from kokoro_onnx import Kokoro
 

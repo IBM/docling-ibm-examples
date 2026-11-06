@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """Convert, chunk and index documents into AstraDB with one Docling for IBM watsonx batch request.
 
 AstraDB embeds every chunk itself (vectorize). The script creates the collection if it

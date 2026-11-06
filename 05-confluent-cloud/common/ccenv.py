@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """``.env`` as a dict, the way the shell scripts see it.
 
 Every Python script in this repo needs the same three things — the bootstrap

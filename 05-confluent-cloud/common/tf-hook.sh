@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 # What Terraform cannot say in HCL: a DROP. Called by the provisioners in
 # terraform/modules/example — before a function or a connection is created, and
 # when one is destroyed — never by hand.

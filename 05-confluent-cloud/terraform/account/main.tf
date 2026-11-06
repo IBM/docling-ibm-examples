@@ -57,9 +57,9 @@ locals {
   name       = "${var.env.NS}-docling"
   global_key = lower(lookup(var.env, "GLOBAL_KEY", "no")) == "yes"
 
-  make_cluster     = lookup(var.env, "CC_CLUSTER_ID", "") == ""
-  make_pool        = lookup(var.env, "CC_COMPUTE_POOL_ID", "") == ""
-  make_principal   = lookup(var.env, "CC_PRINCIPAL_ID", "") == ""
+  make_cluster   = lookup(var.env, "CC_CLUSTER_ID", "") == ""
+  make_pool      = lookup(var.env, "CC_COMPUTE_POOL_ID", "") == ""
+  make_principal = lookup(var.env, "CC_PRINCIPAL_ID", "") == ""
 }
 
 data "confluent_organization" "this" {}

@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 # The pipeline itself.
 #
 #   ./pipeline.sh deploy [--force] urls -> convert -> chunks -> prepare -> guard -> dedup -> 3 topics

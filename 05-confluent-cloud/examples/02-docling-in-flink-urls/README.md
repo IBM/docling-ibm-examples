@@ -77,9 +77,10 @@ Cloud can't open an HTTPS connection. It is asynchronous and answers within
 statement when a call takes more than about a minute. A conversion usually
 takes 1–4 s.
 
-**Two connections.** A UDF can only reach a host that has been whitelisted as a Confluent Connection.
-Docling for IBM watsonx returns conversion results (Markdown) as a download link on S3, which requires one Connection.
-However, the service itself has to first be called on its own domain as well, which requires a second Connection.
+**Two connections.** A UDF can only reach a host that has a Confluent connection.
+Docling for IBM watsonx returns the conversion result (Markdown) as a download link on S3,
+so that host needs one connection. The UDF must also call the service on its own domain,
+which needs a second connection.
 
 **The chunking happens on Confluent.** Docling for IBM watsonx has no chunking endpoint, so
 a Python UDF splits the Markdown on headings and packs paragraphs up to 1,200

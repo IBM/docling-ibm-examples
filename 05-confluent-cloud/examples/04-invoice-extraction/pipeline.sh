@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 # The pipeline itself: one long-running statement, flink/30_pipeline.sql.
 #
 #   ./pipeline.sh deploy           (re)start the statement if it changed, then the seed

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """Read a topic back, one record per block, with the derived fields called out.
 
     uv run common/drain_topic.py --topic dol.ex01.chunks.enriched

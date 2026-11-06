@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """Search the Docling chunks in AstraDB. AstraDB embeds the question ($vectorize).
 
     uv run query.py "How many pages does DocLayNet contain?"

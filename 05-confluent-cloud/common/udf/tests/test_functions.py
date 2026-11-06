@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """What can be checked without a cluster: the three UDF bodies.
 
 The `udf(...)`-wrapped names are Flink objects, so the tests call the bare

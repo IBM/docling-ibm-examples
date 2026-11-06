@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """Pages in, one invoice record out, with a status the SQL can route on."""
 
 from __future__ import annotations

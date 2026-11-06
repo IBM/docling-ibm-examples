@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """data/manifest.jsonl -> src/invoice_udf/_truth.py, for the fake extraction.
 
 A Python module rather than a data file next to the code, because a module is

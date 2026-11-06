@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 # The commands every example's setup.sh and pipeline.sh are built from.
 # Sourced by them, after lib.sh.
 #

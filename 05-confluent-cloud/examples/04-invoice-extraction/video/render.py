@@ -1,3 +1,5 @@
+# Copyright IBM Corp. 2026
+# SPDX-License-Identifier: Apache-2.0
 """Render video.html frame by frame and mux the voiceover.
 
     uv run --no-project --with playwright python render.py            # → ex04-docling-confluent.mp4

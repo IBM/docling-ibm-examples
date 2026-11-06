@@ -1,6 +1,6 @@
 # The Python UDF artifact Confluent Cloud runs.
 #
-#   ./build.sh          -> dist/docling-udf-0.1.0.zip, ready to upload
+#   ./build.sh          -> dist/docling_udf-0.1.0.zip, ready to upload
 #   uv run pytest       -> the logic, without a cluster
 #
 # The constraints below are not ours to choose: Confluent Cloud's Python UDF

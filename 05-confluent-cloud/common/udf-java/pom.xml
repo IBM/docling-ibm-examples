@@ -42,7 +42,7 @@
          portable, and `release` (not source/target) is what actually checks
          the API surface against that version. -->
     <maven.compiler.release>17</maven.compiler.release>
-    <flink.version>1.20.0</flink.version>
+    <flink.version>1.20.4</flink.version>
     <jackson.version>2.22.2</jackson.version>
   </properties>
 

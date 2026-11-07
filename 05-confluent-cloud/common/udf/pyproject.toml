@@ -19,7 +19,7 @@ requires-python = ">=3.10,<3.12"
 # `unicodedata` and `hashlib`, and the embedding call that would have needed
 # `requests` does not happen in a UDF at all (see docs/05-confluent-cloud/LIMITS.md).
 dependencies = [
-    "apache-flink==2.0.0",
+    "apache-flink==2.3.0",
 ]
 
 [build-system]

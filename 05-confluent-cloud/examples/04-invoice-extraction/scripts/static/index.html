@@ -440,7 +440,9 @@
 <script>
 const DEPTS = ["Engineering", "Marketing", "Sales", "Operations", "People", "Finance"];
 const color = d => `var(--s${DEPTS.indexOf(d) + 1 || 1})`;
-const $ = id => document.getElementById(id);
+// Not `$`: static analysis (CodeQL) reads `$` as jQuery, whose $()/.append()
+// parse HTML, and flags safe DOM calls as XSS.
+const byId = id => document.getElementById(id);
 const eur = (x, short) => {
   if (short && Math.abs(x) >= 1000) return "€" + (x / 1000).toFixed(Math.abs(x) >= 100000 ? 0 : 1) + "k";
   return "€" + Number(x || 0).toLocaleString("en-US", {minimumFractionDigits: short ? 0 : 2, maximumFractionDigits: short ? 0 : 2});
@@ -450,13 +452,27 @@ const fmtDay = iso => iso ? new Date(iso + "T00:00:00Z").toLocaleDateString("en-
 const getJSON = async url => { const r = await fetch(url); if (!r.ok) throw new Error(r.status); return r.json(); };
 
 // --- tooltip -----------------------------------------------------------------
-// One floating element for every chart. Anything with data-tip shows it; the
-// value is HTML, escaped once more when it is put in the attribute.
-const tip = $("tip");
+// One floating element for every chart. Anything with data-tip shows it. The
+// value is a markup of its own, <b>…</b> and <br> with esc()-ed text between,
+// escaped once more when it is put in the attribute. It is rendered as text
+// nodes, never parsed as HTML, so nothing in it can become any other element.
+const tip = byId("tip");
+const unesc = s => s.replace(/&(amp|lt|gt|quot);/g, (_, e) => ({amp: "&", lt: "<", gt: ">", quot: '"'}[e]));
+function renderTip(src) {
+  tip.replaceChildren();
+  src.split("<br>").forEach((line, i) => {
+    if (i) tip.append(document.createElement("br"));
+    for (const part of line.split(/(<b>.*?<\/b>)/)) {
+      const bold = /^<b>(.*)<\/b>$/.exec(part);
+      if (bold) tip.append(Object.assign(document.createElement("b"), {textContent: unesc(bold[1])}));
+      else if (part) tip.append(document.createTextNode(unesc(part)));
+    }
+  });
+}
 document.addEventListener("mousemove", e => {
   const t = e.target.closest && e.target.closest("[data-tip]");
   if (!t) { tip.style.display = "none"; return; }
-  tip.innerHTML = t.getAttribute("data-tip");
+  renderTip(t.getAttribute("data-tip"));
   tip.style.display = "block";
   tip.style.left = Math.min(e.clientX + 14, window.innerWidth - tip.offsetWidth - 8) + "px";
   tip.style.top = Math.min(e.clientY + 14, window.innerHeight - tip.offsetHeight - 8) + "px";
@@ -486,7 +502,7 @@ function selectTab(tab) {
   document.querySelectorAll('[role="tab"]').forEach(t => {
     const on = t === tab;
     t.setAttribute("aria-selected", on);
-    $(t.getAttribute("aria-controls")).hidden = !on;
+    document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
   });
   activeTab = tab.id.slice(4);
   if (activeTab === "pipe") { if (pipe) { drawDiagram(); showDetail(selected); } else loadPipeline(); }
@@ -502,8 +518,8 @@ const releasedIdx = () => state && state.clock.released_through ? days.indexOf(s
 async function loadCalendar() {
   const cal = await getJSON("/api/calendar");
   days = cal.days.map(d => d.day); counts = cal.days.map(d => d.count);
-  $("slider").max = days.length - 1;
-  $("s-start").textContent = fmtDay(days[0]); $("s-end").textContent = fmtDay(days[days.length - 1]);
+  byId("slider").max = days.length - 1;
+  byId("s-start").textContent = fmtDay(days[0]); byId("s-end").textContent = fmtDay(days[days.length - 1]);
 }
 // One bar per simulated day, laid out on the same axis as the slider below it:
 // released days in the accent colour, the picked-but-not-released ones lighter,
@@ -521,17 +537,17 @@ function drawHist() {
     bars += `<rect x="${i * bw}" y="0" width="${bw}" height="${H}" fill="transparent" data-i="${i}" data-tip="${tipText}"/>`;
     if (h) bars += `<rect x="${i * bw + bw * 0.12}" y="${H - h}" width="${bw * 0.76}" height="${h}" rx="1" fill="${fill}" data-i="${i}" data-tip="${tipText}"/>`;
   });
-  const hist = $("hist");
+  const hist = byId("hist");
   hist.setAttribute("viewBox", `0 0 ${W} ${H}`);
   hist.innerHTML = bars;
 }
-$("hist").addEventListener("click", e => {
+byId("hist").addEventListener("click", e => {
   const i = e.target.getAttribute && e.target.getAttribute("data-i");
-  if (i != null) { target = +i; $("slider").value = target; updateGo(); drawHist(); }
+  if (i != null) { target = +i; byId("slider").value = target; updateGo(); drawHist(); }
 });
-$("slider").addEventListener("input", () => { target = +$("slider").value; updateGo(); drawHist(); });
+byId("slider").addEventListener("input", () => { target = +byId("slider").value; updateGo(); drawHist(); });
 function updateGo() {
-  const rel = releasedIdx(), go = $("go");
+  const rel = releasedIdx(), go = byId("go");
   if (target == null || target <= rel) {
     go.disabled = true;
     go.textContent = rel >= days.length - 1 ? "All released — the simulation is at its end" : "Pick a later day on the slider";
@@ -545,19 +561,19 @@ function updateGo() {
 }
 async function post(path, body) {
   const r = await fetch(path, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body || {})});
-  if (r.ok) { $("errors").textContent = ""; render(await r.json()); return; }
+  if (r.ok) { byId("errors").textContent = ""; render(await r.json()); return; }
   let msg = `HTTP ${r.status}`;
   try { msg = (await r.json()).detail || msg; } catch (e) { /* not JSON */ }
-  $("errors").textContent = msg;
+  byId("errors").textContent = msg;
 }
 // Synthetic or real: the server holds the choice, so every open page shows the
 // same one, and Release / +1 day / Play use it.
-["synthetic", "real"].forEach(m => { $("mode-" + m).onclick = () => post("/api/mode", {mode: m}); });
-$("go").onclick = async () => { const t = days[target]; target = null; await post("/api/advance", {to: t}); };
-$("day").onclick = () => { target = null; post("/api/advance", {days: 1}); };
-$("week").onclick = () => { target = null; post("/api/advance", {days: 7}); };
-$("play").onclick = () => state && state.playing ? post("/api/pause") : (target = null, post("/api/play", {interval: +$("speed").value}));
-$("speed").onchange = () => state && state.playing && post("/api/play", {interval: +$("speed").value});
+["synthetic", "real"].forEach(m => { byId("mode-" + m).onclick = () => post("/api/mode", {mode: m}); });
+byId("go").onclick = async () => { const t = days[target]; target = null; await post("/api/advance", {to: t}); };
+byId("day").onclick = () => { target = null; post("/api/advance", {days: 1}); };
+byId("week").onclick = () => { target = null; post("/api/advance", {days: 7}); };
+byId("play").onclick = () => state && state.playing ? post("/api/pause") : (target = null, post("/api/play", {interval: +byId("speed").value}));
+byId("speed").onchange = () => state && state.playing && post("/api/play", {interval: +byId("speed").value});
 
 // --- charts ------------------------------------------------------------------
 function legend(el, present) {
@@ -618,17 +634,17 @@ let pipelineBusy = false;
 function render(s) {
   state = s;
   const c = s.clock;
-  $("clock").innerHTML = (c.released_through ? fmtDay(c.released_through) : "Not started") + "<small>simulated date — released through</small>";
-  if (target == null || target <= releasedIdx()) { target = null; $("slider").value = Math.max(0, releasedIdx()); }
+  byId("clock").innerHTML = (c.released_through ? fmtDay(c.released_through) : "Not started") + "<small>simulated date — released through</small>";
+  if (target == null || target <= releasedIdx()) { target = null; byId("slider").value = Math.max(0, releasedIdx()); }
   updateGo(); drawHist();
-  $("play").textContent = s.playing ? "❚❚ Pause" : "▶ Play";
-  $("play").disabled = !c.next_day && !s.playing;
-  $("day").disabled = $("week").disabled = !c.next_day;
-  ["synthetic", "real"].forEach(m => $("mode-" + m).setAttribute("aria-checked", String(s.mode === m)));
-  $("mode-real").disabled = !!s.real_unavailable;
-  if (s.real_unavailable) $("mode-real").title = "Real mode is unavailable: " + s.real_unavailable;
-  $("submitted").textContent = c.submitted; $("total").textContent = c.total;
-  $("processed").textContent = s.processed_through || "—";
+  byId("play").textContent = s.playing ? "❚❚ Pause" : "▶ Play";
+  byId("play").disabled = !c.next_day && !s.playing;
+  byId("day").disabled = byId("week").disabled = !c.next_day;
+  ["synthetic", "real"].forEach(m => byId("mode-" + m).setAttribute("aria-checked", String(s.mode === m)));
+  byId("mode-real").disabled = !!s.real_unavailable;
+  if (s.real_unavailable) byId("mode-real").title = "Real mode is unavailable: " + s.real_unavailable;
+  byId("submitted").textContent = c.submitted; byId("total").textContent = c.total;
+  byId("processed").textContent = s.processed_through || "—";
 
   // Where every submitted invoice is, stage by stage, counted on each table.
   // An invoice is done when it is in the charts — in both report tables — or
@@ -643,13 +659,13 @@ function render(s) {
   const waiting = {extracting: c.submitted - k.extracted, checking: k.extracted - checked,
                    converting: k.ok - k.converted, "updating the charts": k.converted - inReports};
   const flight = Math.max(0, c.submitted - k.review - inReports);
-  $("t-flight").textContent = flight;
-  $("t-flight-d").textContent = flight
+  byId("t-flight").textContent = flight;
+  byId("t-flight-d").textContent = flight
     ? Object.entries(waiting).filter(([, n]) => n > 0).map(([what, n]) => `${n} ${what}`).join(" · ")
     : (c.submitted ? "caught up — everything is in the charts" : "nothing submitted yet");
-  $("t-flight-card").classList.toggle("busy", flight > 0);
-  $("t-flight-card").title = "Each Flink table makes new rows visible when it commits, about once a minute — so an invoice takes a minute or more per step, and a few minutes to reach the charts.";
-  $("lag").innerHTML = c.submitted ? `<span class="strip">${steps.map(([label, n], i) =>
+  byId("t-flight-card").classList.toggle("busy", flight > 0);
+  byId("t-flight-card").title = "Each Flink table makes new rows visible when it commits, about once a minute — so an invoice takes a minute or more per step, and a few minutes to reach the charts.";
+  byId("lag").innerHTML = c.submitted ? `<span class="strip">${steps.map(([label, n], i) =>
       `<span class="${i && n < steps[i - 1][1] ? "behind" : ""}">${esc(label)} <b>${n}</b></span>`).join(" › ")}</span>` : "";
   // Report panels say when they do not include everything converted yet.
   const behind = {MONTHLY_TOPIC: k.converted - k.in_monthly, VENDORS_TOPIC: k.converted - k.in_vendors};
@@ -658,36 +674,36 @@ function render(s) {
     el.hidden = n <= 0;
     el.textContent = n > 0 ? `⟳ updating — ${n} converted invoice${n === 1 ? "" : "s"} not in this report yet; Flink commits about once a minute` : "";
   });
-  $("errors").textContent = (s.errors || []).slice(-1).join("");
-  $("names").textContent = s.names && s.names.NS ? `Namespace: ${s.names.NS}.` : "";
+  byId("errors").textContent = (s.errors || []).slice(-1).join("");
+  byId("names").textContent = s.names && s.names.NS ? `Namespace: ${s.names.NS}.` : "";
   pipelineBusy = flight > 0;
 
-  $("t-spend").textContent = eur(s.spend_total_eur, true);
-  $("t-spend-d").textContent = s.counts.converted ? `${s.counts.converted} invoices, EUR · USD · GBP · CHF in` : "";
-  $("t-ok").textContent = s.counts.ok;
-  $("t-review").textContent = s.counts.review;
-  $("t-vendors").textContent = s.vendors.length;
+  byId("t-spend").textContent = eur(s.spend_total_eur, true);
+  byId("t-spend-d").textContent = s.counts.converted ? `${s.counts.converted} invoices, EUR · USD · GBP · CHF in` : "";
+  byId("t-ok").textContent = s.counts.ok;
+  byId("t-review").textContent = s.counts.review;
+  byId("t-vendors").textContent = s.vendors.length;
 
   const months = Object.entries(s.monthly);
-  legend($("legend-m"), stacked($("monthly"), months, monthName));
-  $("monthly-table").innerHTML = months.length ? `<table><tr><th>Month</th>${DEPTS.map(d => `<th class="n">${d}</th>`).join("")}</tr>` +
+  legend(byId("legend-m"), stacked(byId("monthly"), months, monthName));
+  byId("monthly-table").innerHTML = months.length ? `<table><tr><th>Month</th>${DEPTS.map(d => `<th class="n">${d}</th>`).join("")}</tr>` +
     months.map(([m, v]) => `<tr><td>${monthName(m)}</td>${DEPTS.map(d => `<td class="n">${v[d] ? eur(v[d], true) : ""}</td>`).join("")}</tr>`).join("") + "</table>" : "";
-  legend($("legend-d"), stacked($("daily"), Object.entries(s.daily), (d, short) => short ? d.slice(5) : fmtDay(d), {height: 240}));
-  hbars($("dept"), DEPTS.filter(d => s.by_department[d]).map(d => [d, s.by_department[d]]).sort((a, b) => b[1] - a[1]), color);
-  hbars($("cat"), Object.entries(s.by_category).sort((a, b) => b[1] - a[1]), () => "var(--s1)");
+  legend(byId("legend-d"), stacked(byId("daily"), Object.entries(s.daily), (d, short) => short ? d.slice(5) : fmtDay(d), {height: 240}));
+  hbars(byId("dept"), DEPTS.filter(d => s.by_department[d]).map(d => [d, s.by_department[d]]).sort((a, b) => b[1] - a[1]), color);
+  hbars(byId("cat"), Object.entries(s.by_category).sort((a, b) => b[1] - a[1]), () => "var(--s1)");
 
   const vmax = Math.max(1, ...s.vendors.map(v => v.amount_eur));
-  $("vendors").innerHTML = s.vendors.length ? `<table><tr><th>Vendor</th><th class="n">EUR</th><th class="n">#</th></tr>` +
+  byId("vendors").innerHTML = s.vendors.length ? `<table><tr><th>Vendor</th><th class="n">EUR</th><th class="n">#</th></tr>` +
     s.vendors.slice(0, 9).map(v => `<tr data-tip="${esc(`<b>${esc(v.vendor_name)}</b><br>${eur(v.amount_eur)} over ${v.invoices} invoice(s)<br>last invoice ${esc(v.last_invoice_date)}`)}">
       <td>${esc(v.vendor_name)}<div class="bar" style="width:${(v.amount_eur / vmax * 100).toFixed(1)}%"></div></td>
       <td class="n">${eur(v.amount_eur, true)}</td><td class="n">${v.invoices}</td></tr>`).join("") + "</table>" : `<div class="empty">—</div>`;
 
-  $("review").innerHTML = s.review.length ? `<table><tr><th>Invoice</th><th>Vendor</th><th>Why</th></tr>` +
+  byId("review").innerHTML = s.review.length ? `<table><tr><th>Invoice</th><th>Vendor</th><th>Why</th></tr>` +
     s.review.map(r => `<tr><td><a href="#" data-trace="${esc(r.doc_id)}" title="Follow this invoice through the pipeline">${esc(r.doc_id)}</a>${r.mode === "real" ? ' <span class="badge real" title="extracted by Docling">real</span>' : ""}<br><span style="color:var(--muted)">${esc((r.submitted_at || "").slice(0, 10))} · ${esc(r.department)}</span></td>
       <td>${esc(r.vendor_name || "—")}</td><td>${(r.review_reasons || []).map(x => `<span class="reason">${esc(x)}</span>`).join("")}</td></tr>`).join("") + "</table>"
     : `<div class="empty">Nothing to review.</div>`;
 
-  $("feed").innerHTML = s.feed.length ? `<table><tr><th>Vendor</th><th>Department</th><th class="n">EUR</th></tr>` +
+  byId("feed").innerHTML = s.feed.length ? `<table><tr><th>Vendor</th><th>Department</th><th class="n">EUR</th></tr>` +
     s.feed.map(f => `<tr data-tip="${esc(`<b>${esc(f.invoice_number)}</b> · ${esc(f.invoice_date)}<br>${esc(f.category)}<br>${Number(f.amount).toLocaleString("en-US", {minimumFractionDigits: 2})} ${esc(f.currency)}${f.currency !== "EUR" ? ` @ ${f.fx_rate} (ECB ${esc(f.fx_date)})` : ""}`)}">
       <td><a href="#" data-trace="${esc(f.doc_id)}" title="Follow this invoice through the pipeline">${esc(f.vendor_name)}</a>${f.mode === "real" ? ' <span class="badge real" title="extracted by Docling">real</span>' : ""}<br><span style="color:var(--muted)">${esc(f.invoice_date)}</span></td>
       <td>${esc(f.department)}<br><span style="color:var(--muted)">${esc(f.category)}</span></td>
@@ -925,17 +941,17 @@ function drawDiagram() {
     lines.slice(0, 3).forEach(t => { ty += 16; svg += `<text class="${n.kind === "view" ? "" : "m"}" x="${p.x + 12}" y="${ty}">${esc(t)}</text>`; });
     svg += `</g>`;
   });
-  $("diagram").innerHTML = svg + "</svg>";
+  byId("diagram").innerHTML = svg + "</svg>";
   // Whichever redraw gets here first fills the detail panel; later ones leave the reader's choice alone.
-  if (!$("detail").innerHTML.trim()) showDetail(selected);
+  if (!byId("detail").innerHTML.trim()) showDetail(selected);
 }
 function pick(id) { selected = id; drawDiagram(); showDetail(id); }
-$("diagram").addEventListener("click", e => { const g = e.target.closest("[data-node]"); if (g) pick(g.dataset.node); });
-$("diagram").addEventListener("keydown", e => {
+byId("diagram").addEventListener("click", e => { const g = e.target.closest("[data-node]"); if (g) pick(g.dataset.node); });
+byId("diagram").addEventListener("keydown", e => {
   const g = e.target.closest && e.target.closest("[data-node]");
   if (g && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); pick(g.dataset.node); }
 });
-$("detail").addEventListener("click", e => { const b = e.target.closest("[data-goto]"); if (b) pick(b.dataset.goto); });
+byId("detail").addEventListener("click", e => { const b = e.target.closest("[data-goto]"); if (b) pick(b.dataset.goto); });
 
 // A statement's leading comment, as written in flink/: prose paragraphs are
 // re-flowed; a paragraph drawn with box characters keeps its spacing, in mono.
@@ -946,7 +962,7 @@ function commentHtml(text) {
 }
 function showDetail(id) {
   if (!pipe || !id) return;
-  const el = $("detail"), g = pipe.graph, node = g.nodes.find(n => n.id === id), o = pipe.objects[id];
+  const el = byId("detail"), g = pipe.graph, node = g.nodes.find(n => n.id === id), o = pipe.objects[id];
   const reads = g.edges.filter(([, b]) => b === id).map(([a]) => a), feeds = g.edges.filter(([a]) => a === id).map(([, b]) => b);
   const chips = (label, ids) => ids.length ? `<div class="uses"><span class="hint">${label}</span>${ids.map(i => `<button class="chip" data-goto="${esc(i)}">${esc((g.nodes.find(n => n.id === i) || {label: i}).label)}</button>`).join("")}</div>` : "";
   if (!node) {  // a function
@@ -985,15 +1001,15 @@ async function loadInputs() {
   try { renderInputs(await getJSON("/api/inputs")); } catch (e) { /* the stream will bring it */ }
 }
 function renderInputs(d) {
-  if (state && state.names) $("sub-topic").textContent = `${state.names.SUBMISSIONS_TOPIC} — newest first, as produced by the control app. Pick one to follow it through the pipeline.`;
-  $("in-subs").innerHTML = d.submissions.length ? `<table><tr><th>Key</th><th>Timestamp (simulated)</th><th>Value</th><th>Stage</th></tr>` +
+  if (state && state.names) byId("sub-topic").textContent = `${state.names.SUBMISSIONS_TOPIC} — newest first, as produced by the control app. Pick one to follow it through the pipeline.`;
+  byId("in-subs").innerHTML = d.submissions.length ? `<table><tr><th>Key</th><th>Timestamp (simulated)</th><th>Value</th><th>Stage</th></tr>` +
     d.submissions.map(s => `<tr class="pick" tabindex="0" data-trace="${esc(s.key)}" aria-selected="${s.key === traced}">
       <td><code>${esc(s.key)}</code></td><td class="n">${esc(s.timestamp.replace("T", " ").replace("Z", ""))}</td>
       <td>${esc(s.value.department)} · ${esc(s.value.category)}</td><td>${stageBadge(s.stage)}</td></tr>`).join("") + "</table>"
     : `<div class="empty">Nothing submitted yet — release a day.</div>`;
-  $("in-fx").innerHTML = d.fx.length ? `<pre class="code">${d.fx.slice(0, 4).map(f => `<span class="cm">// key ${esc(f.key)} · timestamp ${esc(f.timestamp)}</span>\n${jsonHtml(f.value)}`).join("\n")}</pre>` : `<div class="empty">—</div>`;
-  $("next-day").textContent = d.next.day ? `${fmtDay(d.next.day)}: ${d.next.fx.length} FX records, then ${d.next.submissions.length} submission(s)` : "the simulation is at its end";
-  $("in-next").innerHTML = d.next.submissions.length ? `<pre class="code">${d.next.submissions.map(s => `<span class="cm">// key ${esc(s.doc_id)} · timestamp ${esc(s.submitted_at)}</span>\n${jsonHtml(s)}`).join("\n")}</pre>`
+  byId("in-fx").innerHTML = d.fx.length ? `<pre class="code">${d.fx.slice(0, 4).map(f => `<span class="cm">// key ${esc(f.key)} · timestamp ${esc(f.timestamp)}</span>\n${jsonHtml(f.value)}`).join("\n")}</pre>` : `<div class="empty">—</div>`;
+  byId("next-day").textContent = d.next.day ? `${fmtDay(d.next.day)}: ${d.next.fx.length} FX records, then ${d.next.submissions.length} submission(s)` : "the simulation is at its end";
+  byId("in-next").innerHTML = d.next.submissions.length ? `<pre class="code">${d.next.submissions.map(s => `<span class="cm">// key ${esc(s.doc_id)} · timestamp ${esc(s.submitted_at)}</span>\n${jsonHtml(s)}`).join("\n")}</pre>`
     : (d.next.day ? `<div class="empty">No submissions that day — only FX rates.</div>` : "");
 }
 async function loadTrace(docId) {
@@ -1001,7 +1017,7 @@ async function loadTrace(docId) {
   tracedStage = t.stage;
   const s = t.submission, block = (num, title, sub, body) => `<div class="stage"><h3>${num} · ${title} <span class="t">${sub}</span></h3>${body}</div>`;
   const pending = what => `<div class="empty">${what}</div>`;
-  const keepPages = $("trace").querySelector(".pages");
+  const keepPages = byId("trace").querySelector(".pages");
   // The extraction table carries Docling's envelope as a JSON string, and the
   // invoice table its lists; parsed here so they read as structure, not text.
   const parse = v => { if (typeof v !== "string") return v; try { return JSON.parse(v); } catch (e) { return v; } };
@@ -1011,7 +1027,7 @@ async function loadTrace(docId) {
   const via = stage => t.source === "lightning" && t.timings && t.timings[stage] != null
     ? ` · <span class="ms">⚡ lightning query, ${t.timings[stage]} ms</span>` : " · from the dashboard's consumer";
   const pdfSrc = `/invoices/${encodeURIComponent(docId)}.pdf`;
-  $("trace").innerHTML = `<div class="card-head"><div><h2>${esc(docId)}</h2><p class="sub">one invoice, stage by stage — each block is the record on that topic</p></div>${stageBadge(t.stage)}</div>` +
+  byId("trace").innerHTML = `<div class="card-head"><div><h2>${esc(docId)}</h2><p class="sub">one invoice, stage by stage — each block is the record on that topic</p></div>${stageBadge(t.stage)}</div>` +
     block(1, "The submission", esc(state ? state.names.SUBMISSIONS_TOPIC : "submissions"),
       s ? `<pre class="code"><span class="cm">// key ${esc(s.key)} · timestamp ${esc(s.timestamp)}</span>\n${jsonHtml(s.value)}</pre>` : pending("not on the topic")) +
     block(2, "The document it points to", `${t.pages || "?"} page${t.pages === 1 ? "" : "s"} · <a class="link" href="${pdfSrc}" target="_blank" rel="noopener">open the PDF ↗</a>`, `<div id="pdf-slot"></div>`) +
@@ -1022,7 +1038,7 @@ async function loadTrace(docId) {
     (invoice && invoice.status === "review" ? "" : block(5, "In EUR", `spend — joined with the ECB rate of the invoice date${via("spend")}`,
       t.spend ? `<pre class="code">${jsonHtml(t.spend)}</pre>` : pending("not converted yet")));
   // Keep the same page images across refreshes of one trace, so they do not flicker every few seconds.
-  const slot = $("pdf-slot");
+  const slot = byId("pdf-slot");
   if (keepPages && keepPages.dataset.doc === docId) slot.replaceWith(keepPages);
   else slot.outerHTML = t.pages ? `<div class="pages" data-doc="${esc(docId)}">${Array.from({length: t.pages}, (_, i) =>
       `<img loading="lazy" alt="${esc(docId)}, page ${i + 1} of ${t.pages}" src="/preview/${encodeURIComponent(docId)}/${i + 1}.png">`).join("")}</div>`
@@ -1033,14 +1049,14 @@ function trace(docId) {
   document.querySelectorAll("#in-subs tr.pick").forEach(r => r.setAttribute("aria-selected", r.dataset.trace === docId));
   loadTrace(docId);
 }
-$("in-subs").addEventListener("click", e => { const r = e.target.closest("[data-trace]"); if (r) trace(r.dataset.trace); });
-$("in-subs").addEventListener("keydown", e => { if (e.key === "Enter") { const r = e.target.closest("[data-trace]"); if (r) trace(r.dataset.trace); } });
+byId("in-subs").addEventListener("click", e => { const r = e.target.closest("[data-trace]"); if (r) trace(r.dataset.trace); });
+byId("in-subs").addEventListener("keydown", e => { if (e.key === "Enter") { const r = e.target.closest("[data-trace]"); if (r) trace(r.dataset.trace); } });
 // Invoice links in the review queue and the feed jump to the Inputs tab, traced.
 document.addEventListener("click", e => {
   const a = e.target.closest("a[data-trace]");
   if (!a) return;
   e.preventDefault();
-  selectTab($("tab-inputs")); trace(a.dataset.trace);
+  selectTab(byId("tab-inputs")); trace(a.dataset.trace);
 });
 
 // --- about the data -----------------------------------------------------------------
@@ -1060,17 +1076,17 @@ async function loadAbout() {
   if (aboutLoaded) return;
   let c; try { c = await getJSON("/api/company"); } catch (e) { return; }
   aboutLoaded = true;
-  $("about-stats").innerHTML = [
+  byId("about-stats").innerHTML = [
     [c.invoices, "invoices"], [eur(c.eur, true), "total, in EUR"], [c.vendors, "suppliers"],
     [`${fmtDay(c.first)} – ${fmtDay(c.last)}`, "submitted"],
   ].map(([v, l]) => `<div><b>${esc(v)}</b>${esc(l)}</div>`).join("");
-  $("about-depts").innerHTML = c.departments.map(d => `<div class="card w4 dept-card" style="--dept:${color(d.name)}">
+  byId("about-depts").innerHTML = c.departments.map(d => `<div class="card w4 dept-card" style="--dept:${color(d.name)}">
       <h2><span>${esc(d.name)}</span><span class="total">${eur(d.eur, true)}</span></h2>
       <p class="what">${esc(DEPT_STORY[d.name] || "")}</p>
       <table>${d.vendors.slice(0, 3).map(v => `<tr><td>${esc(v.name)}</td><td class="n">${eur(v.eur, true)}</td></tr>`).join("")}</table>
     </div>`).join("");
 }
-$("about-link").addEventListener("click", e => { e.preventDefault(); selectTab($("tab-about")); $("panel-about").scrollIntoView({behavior: "smooth"}); });
+byId("about-link").addEventListener("click", e => { e.preventDefault(); selectTab(byId("tab-about")); byId("panel-about").scrollIntoView({behavior: "smooth"}); });
 
 // --- lightning queries ------------------------------------------------------------
 // Presets that show what the engine is for: lookups and small ordered scans of
@@ -1094,37 +1110,37 @@ async function loadLightning() {
   let st; try { st = await getJSON("/api/lightning"); } catch (e) { return; }
   const topics = Object.entries(st.topics);
   const ready = st.configured && st.global_key;
-  $("lq-status").innerHTML = (ready ? `<div class="src"><b>● ready</b> — MCP endpoint configured with a global API key</div>`
+  byId("lq-status").innerHTML = (ready ? `<div class="src"><b>● ready</b> — MCP endpoint configured with a global API key</div>`
       : `<div class="err">Not available yet: ${st.configured ? "the engine's MCP endpoint takes a <b>global</b> API key — GLOBAL_KEY=&quot;yes&quot; in .env and ./account.sh apply, or create one in the console (Global access, owner = the pipeline's service account) and set RTCE_API_KEY / RTCE_API_SECRET in .env" : esc(st.error || "not configured")}.</div>`) +
     `<div class="uses">${topics.map(([t, ph]) => `<span class="badge ${ph === "ACTIVE" ? "converted" : ""}">${ph === "ACTIVE" ? "⚡ " : ""}${esc(t.replace(/^[^.]+\.ex04\./, ""))} · ${esc(ph.toLowerCase())}</span>`).join("")}</div>` +
     (topics.some(([, ph]) => ph === "OFF") ? `<div class="hint" style="margin-top:6px">Off for some tables: <code>./setup.sh context-engine on</code>, then a few minutes of provisioning.</div>` : "");
   if (lqLoaded) return;
   lqLoaded = true;
-  $("lq-topic").innerHTML = topics.map(([t]) => `<option value="${esc(t)}">${esc(t)}</option>`).join("");
+  byId("lq-topic").innerHTML = topics.map(([t]) => `<option value="${esc(t)}">${esc(t)}</option>`).join("");
   const names = state && state.names ? state.names : {};
-  $("lq-presets").innerHTML = PRESETS.map(([v, title, sub], i) => `<button class="preset" data-preset="${i}">${esc(title)}<small>${esc(sub)}</small></button>`).join("");
+  byId("lq-presets").innerHTML = PRESETS.map(([v, title, sub], i) => `<button class="preset" data-preset="${i}">${esc(title)}<small>${esc(sub)}</small></button>`).join("");
   const topicOf = v => topics.map(([t]) => t).find(t => t.endsWith("." + ({INVOICES_TOPIC: "invoices", SPEND_TOPIC: "spend", VENDORS_TOPIC: "spend.vendors", MONTHLY_TOPIC: "spend.monthly"})[v]));
-  $("lq-presets").onclick = e => {
+  byId("lq-presets").onclick = e => {
     const b = e.target.closest("[data-preset]"); if (!b) return;
     const [v, , , sql] = PRESETS[+b.dataset.preset], t = topicOf(v);
-    $("lq-topic").value = t; $("lq-sql").value = sql(t); runLightning();
+    byId("lq-topic").value = t; byId("lq-sql").value = sql(t); runLightning();
   };
-  const [v0, , , sql0] = PRESETS[0]; $("lq-topic").value = topicOf(v0); $("lq-sql").value = sql0(topicOf(v0));
+  const [v0, , , sql0] = PRESETS[0]; byId("lq-topic").value = topicOf(v0); byId("lq-sql").value = sql0(topicOf(v0));
 }
 async function runLightning() {
-  $("lq-ms").textContent = "running…"; $("lq-result").innerHTML = "";
+  byId("lq-ms").textContent = "running…"; byId("lq-result").innerHTML = "";
   const r = await fetch("/api/lightning/query", {method: "POST", headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({topic: $("lq-topic").value, sql: $("lq-sql").value, max_rows: +$("lq-rows").value || 50})});
+    body: JSON.stringify({topic: byId("lq-topic").value, sql: byId("lq-sql").value, max_rows: +byId("lq-rows").value || 50})});
   const body = await r.json().catch(() => ({}));
-  if (!r.ok) { $("lq-ms").textContent = ""; $("lq-result").innerHTML = `<p class="err">${esc(body.detail || r.status)}</p>`; return; }
-  $("lq-ms").innerHTML = `<span class="ms">⚡ ${body.ms} ms</span> round trip from this app · ${body.rows.length} row(s)`;
+  if (!r.ok) { byId("lq-ms").textContent = ""; byId("lq-result").innerHTML = `<p class="err">${esc(body.detail || r.status)}</p>`; return; }
+  byId("lq-ms").innerHTML = `<span class="ms">⚡ ${body.ms} ms</span> round trip from this app · ${body.rows.length} row(s)`;
   const cols = [...new Set(body.rows.flatMap(r => Object.keys(r)))];
-  $("lq-result").innerHTML = (body.rows.length ? `<table><tr>${cols.map(c => `<th>${esc(c)}</th>`).join("")}</tr>${body.rows.map(r =>
+  byId("lq-result").innerHTML = (body.rows.length ? `<table><tr>${cols.map(c => `<th>${esc(c)}</th>`).join("")}</tr>${body.rows.map(r =>
       `<tr>${cols.map(c => `<td>${esc(typeof r[c] === "object" ? JSON.stringify(r[c]) : r[c])}</td>`).join("")}</tr>`).join("")}</table>`
       : `<div class="empty">No rows.</div>`) +
     `<details><summary>The response as the engine returned it</summary><pre class="code">${jsonHtml(body.result)}</pre></details>`;
 }
-$("lq-run").onclick = runLightning;
+byId("lq-run").onclick = runLightning;
 
 // --- polling ------------------------------------------------------------------------
 // --- the push channel ---------------------------------------------------------------
@@ -1134,8 +1150,8 @@ $("lq-run").onclick = runLightning;
 // EventSource reconnects by itself; the page says so only while it is.
 function connect() {
   const es = new EventSource("/api/events");
-  es.onopen = () => { $("live").textContent = ""; $("errors").textContent = ""; };
-  es.onerror = () => { $("live").textContent = "◌ connection to the control app lost — reconnecting…"; };
+  es.onopen = () => { byId("live").textContent = ""; byId("errors").textContent = ""; };
+  es.onerror = () => { byId("live").textContent = "◌ connection to the control app lost — reconnecting…"; };
   es.addEventListener("state", e => {
     const d = JSON.parse(e.data);
     latestInputs = d.inputs;

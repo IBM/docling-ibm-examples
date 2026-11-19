@@ -58,6 +58,36 @@ need() {
     fi
     die "$cmd is not installed$hint"
   done
+  for cmd in "$@"; do
+    case "$cmd" in
+      java) _need_jdk ;;
+      uv)   _need_uv_version ;;
+    esac
+  done
+}
+
+# On macOS /usr/bin/java is always there: a stub that only says no Java runtime
+# is installed. So `command -v java` proves nothing, and the check is whether it
+# runs.
+_need_jdk() {
+  java -version >/dev/null 2>&1 && return 0
+  die "no working JDK: \`java -version\` fails. The Java UDFs need JDK 17 or later; on macOS: brew install openjdk@21, then follow the symlink step it prints. Elsewhere: https://adoptium.net"
+}
+
+# The oldest uv that reads these projects: [tool.uv.extra-build-dependencies]
+# in the UDF projects is uv 0.8.4. An older uv only warns about the unknown
+# field, then fails later with an error that does not mention its version.
+# Keep in step with `required-version` in the pyproject.toml files.
+UV_MIN_VERSION="0.8.4"
+
+_need_uv_version() {
+  local have
+  have=$(uv --version 2>/dev/null | awk '{print $2}')
+  [ -n "$have" ] || die "uv is installed but \`uv --version\` fails"
+  # sort -V puts the smaller version first: if that is the minimum, uv is new
+  # enough.
+  [ "$(printf '%s\n%s\n' "$UV_MIN_VERSION" "$have" | sort -V | sed -n 1p)" = "$UV_MIN_VERSION" ] \
+    || die "uv $have is too old; these examples need uv $UV_MIN_VERSION or later. Upgrade: uv self update (or brew upgrade uv)"
 }
 
 # --- configuration --------------------------------------------------------

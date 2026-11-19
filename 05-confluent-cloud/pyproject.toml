@@ -31,10 +31,11 @@ control = [
     "uvicorn>=0.54.0",
 ]
 # The Docling Service Client with the extraction API: docling-project/docling#4218,
-# from its branch until it is released. huggingface_hub for the private bucket
-# the PDFs are fetched from.
+# until it is released. Pinned to a commit of its branch
+# (cau/extraction-api-service-models), so a push there cannot break this
+# example. huggingface_hub for the private bucket the PDFs are fetched from.
 extract = [
-    "docling-slim[service-client] @ git+https://github.com/docling-project/docling@cau/extraction-api-service-models",
+    "docling-slim[service-client] @ git+https://github.com/docling-project/docling@5686472c0a1cf959aa07d60a45e1afa9e016e4c7",
     "huggingface-hub>=1.0",
 ]
 dev = [
@@ -45,6 +46,11 @@ invoices = [
     "pypdfium2>=5.13.0",
     "reportlab>=5.0.1",
 ]
+
+# The oldest uv that reads these projects (the UDFs' extra-build-dependencies).
+# Keep in step with UV_MIN_VERSION in common/lib.sh.
+[tool.uv]
+required-version = ">=0.8.4"
 
 [tool.ruff]
 line-length = 120

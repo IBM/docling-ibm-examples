@@ -30,6 +30,9 @@ dev = [
 ]
 
 [tool.uv]
+# extra-build-dependencies, below, needs uv 0.8.4. Keep in step with
+# UV_MIN_VERSION in common/lib.sh.
+required-version = ">=0.8.4"
 constraint-dependencies = [
     "apache-flink==2.0.0",
     "click>=8.2.0",

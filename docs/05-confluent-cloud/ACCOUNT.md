@@ -17,8 +17,8 @@ that the other examples use.
 | Python 3 | `init` | [python.org](https://www.python.org/downloads/) |
 | [Terraform](https://developer.hashicorp.com/terraform/install) 1.5 or later | `plan`, `apply`, `destroy`, `tf` | On macOS: `brew tap hashicorp/tap && brew install hashicorp/tap/terraform` |
 | [jq](https://jqlang.org/download/) and curl | `check`, `plan`, `apply`, `destroy`, `tf` | Often already installed |
-| [uv](https://docs.astral.sh/uv/) | `check`, `topics`, and the examples | See its install page |
-| A [JDK](https://openjdk.org) | Building the examples' Java UDFs | See its install page |
+| [uv](https://docs.astral.sh/uv/) 0.8.4 or later | `check`, `topics`, and the examples | See its install page. To upgrade: `uv self update` |
+| A [JDK](https://openjdk.org) 17 or later | Building the examples' Java UDFs | On macOS: `brew install openjdk@21`. `/usr/bin/java` is only a placeholder until a JDK is installed |
 
 You also need a [Confluent Cloud](https://www.confluent.cloud) account and, for
 examples 02 to 05, a [Docling for IBM watsonx](https://www.ibm.com/products/docling)
@@ -263,6 +263,8 @@ current rates.
 | `NS is not set in .env` | Every name is built from `NS`, so it is required | Run `./account.sh init` |
 | `unset in .env / env.sh: ...` | A value that command needs is empty | Set the named values. Those marked `[auto]` in `.env.example` come from `./account.sh apply` |
 | `terraform is not installed` | Terraform isn't on your `PATH` | Install it, as in [step 1](#get-started) |
+| `uv ... is too old` | Your uv can't read these projects. Older versions show `unknown field extra-build-dependencies`, or a TOML error about `default-groups` | `uv self update`, or `brew upgrade uv` |
+| `no working JDK` | `java` is on your `PATH` but doesn't run. On macOS this is the placeholder `/usr/bin/java` | Install a JDK, as in [step 1](#get-started) |
 | Homebrew: `Your Command Line Tools are too outdated` | Homebrew won't install Terraform until they are updated. This can change the compiler your other projects use | Update them from Software Update in System Settings |
 | Homebrew: `A newer Command Line Tools release is available` | Only a warning, and the install still worked | Ignore it. **Don't run the `sudo rm -rf` it suggests**, which deletes your compiler |
 | `terraform init failed`, with `bad response code: 504` | GitHub failed to serve the provider download. This is usually temporary | Run the command again in a few minutes |

@@ -29,13 +29,23 @@ tf_dir() { printf '%s/terraform' "$EXAMPLE_DIR"; }
 # Every plan builds, because Terraform decides whether to upload from the
 # *sources* (terraform/modules/example), and the file it uploads has to be the
 # one those sources make. Unchanged sources: built, and not uploaded.
+#
+# Callers run it as `files=$(build_artifacts)`, and bash clears `set -e` inside
+# a command substitution. So a die() in _build exits only its own subshell, and
+# without the `|| exit 1` below this would print an empty path and let
+# Terraform carry on without the artifact. The exit here leaves this function's
+# subshell with a failure, which `set -e` in the caller then sees.
 build_artifacts() {
   need uv zip
   local py java=""
-  py=$(_build "$PY_UDF_DIR")
   if [ -n "${JAVA_UDF_DIR:-}" ]; then
+    # Before any build, so a missing JDK stops the run before the Python build
+    # spends a minute on something that will not be used.
     need java
-    java=$(_build "$JAVA_UDF_DIR")
+  fi
+  py=$(_build "$PY_UDF_DIR") || exit 1
+  if [ -n "${JAVA_UDF_DIR:-}" ]; then
+    java=$(_build "$JAVA_UDF_DIR") || exit 1
   fi
   jq -n --arg py "$py" --arg java "$java" '{python: $py} + (if $java == "" then {} else {java: $java} end)'
 }
@@ -47,7 +57,7 @@ _build() {
   step "Building $1" >&2
   # No `| head -1`: build.sh prints one line on stdout by contract, and piping
   # it into head closes the pipe and SIGPIPEs the build.
-  built=$("$dir/build.sh")
+  built=$("$dir/build.sh") || die "$1/build.sh failed (see above)"
   [ -f "$dir/$built" ] && built="$dir/$built"
   [ -f "$built" ] || die "$1/build.sh did not produce an artifact (got: ${built:-nothing})"
   say "    $built" >&2
@@ -64,7 +74,7 @@ tf_example() {
 cmd_plan() {
   need curl jq
   load_env
-  local files; files=$(build_artifacts)
+  local files; files=$(build_artifacts) || exit 1
   step "Plan for $EXAMPLE_TITLE"
   tf_example "$files" plan "$@"
 }
@@ -75,7 +85,7 @@ cmd_apply() {
   need curl jq
   load_env
   require_vars CC_ORG_ID FLINK_API_KEY CC_PRINCIPAL_ID
-  local files; files=$(build_artifacts)
+  local files; files=$(build_artifacts) || exit 1
   step "Applying $EXAMPLE_TITLE"
   tf_example "$files" apply "$@"
   write_back

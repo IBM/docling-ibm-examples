@@ -2,5 +2,46 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
+  ],
+  "ignorePaths": [
+    "**/node_modules/**",
+    "**/bower_components/**",
+    "**/vendor/**",
+    "**/__tests__/**",
+    "**/test/**",
+    "**/tests/**",
+    "**/__fixtures__/**"
+  ],
+  "packageRules": [
+    {
+      "description": "Confluent Cloud's Python UDF runtime supports Python 3.10-3.11 only (requires-python in the UDF pyproject.toml files).",
+      "matchManagers": ["pyenv"],
+      "matchFileNames": ["05-confluent-cloud/**"],
+      "enabled": false
+    },
+    {
+      "description": "apache-flink is pinned by Confluent Cloud's Python UDF runtime, not by us (see 05-confluent-cloud/common/udf/pyproject.toml).",
+      "matchPackageNames": ["apache-flink"],
+      "enabled": false
+    },
+    {
+      "description": "Jackson must stay on the line of Confluent's UDF runtime classpath: patch releases only (see common/udf-java/pom.xml).",
+      "matchPackageNames": ["com.fasterxml.jackson.core:**"],
+      "matchUpdateTypes": ["major", "minor"],
+      "enabled": false
+    },
+    {
+      "description": "flink-table-api-java is provided by Confluent Cloud's Flink 1.20 runtime: patch releases only.",
+      "matchPackageNames": ["org.apache.flink:**"],
+      "matchManagers": ["maven"],
+      "matchUpdateTypes": ["major", "minor"],
+      "enabled": false
+    },
+    {
+      "description": "Keep the Java UDF poms in step with each other.",
+      "matchManagers": ["maven"],
+      "matchFileNames": ["05-confluent-cloud/**/pom.xml"],
+      "groupName": "Java UDF dependencies"
+    }
   ]
 }

@@ -14,10 +14,11 @@
   else. `flink-table-api-java` and log4j are `provided` — the runtime has them,
   and bundling them is how you get NoSuchMethodError at the first call.
 
-  Jackson is pinned to 2.22.2 deliberately: Confluent's own UDF example bundles
-  exactly this version — which is the version on the runtime classpath. "The
-  runtime version takes precedence", so matching it is the difference between a
-  working UDF and a dependency conflict that only shows up in production.
+  Jackson is pinned to the 2.22 line deliberately: Confluent's own UDF example
+  bundles 2.22.2 — which is the version on the runtime classpath. "The runtime
+  version takes precedence", so matching it is the difference between a working
+  UDF and a dependency conflict that only shows up in production. Patch releases
+  (security fixes) are taken; a minor or major bump is not (see renovate.json).
 
   No HTTP client library: both functions speak the JDK's own java.net.http, so
   that every timeout can be capped by the function's deadline (see

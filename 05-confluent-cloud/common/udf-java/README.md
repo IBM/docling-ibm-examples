@@ -66,7 +66,7 @@ Few, and the two that matter are pinned on purpose:
 | | |
 |---|---|
 | `flink-table-api-java` | `provided`: the runtime has it, and bundling it causes `NoSuchMethodError` |
-| `jackson-databind` 2.22.2 | the version on Confluent's runtime classpath, which takes precedence. A different one works locally and conflicts only in production |
+| `jackson-databind` 2.22.x | the line on Confluent's runtime classpath (2.22.2), which takes precedence; patch releases only. A different one works locally and conflicts only in production |
 
 The shade plugin drops `module-info.class` and the signature files.
 

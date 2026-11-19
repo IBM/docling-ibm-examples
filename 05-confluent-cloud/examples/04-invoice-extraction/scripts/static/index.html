@@ -450,13 +450,27 @@ const fmtDay = iso => iso ? new Date(iso + "T00:00:00Z").toLocaleDateString("en-
 const getJSON = async url => { const r = await fetch(url); if (!r.ok) throw new Error(r.status); return r.json(); };
 
 // --- tooltip -----------------------------------------------------------------
-// One floating element for every chart. Anything with data-tip shows it; the
-// value is HTML, escaped once more when it is put in the attribute.
+// One floating element for every chart. Anything with data-tip shows it. The
+// value is a markup of its own, <b>…</b> and <br> with esc()-ed text between,
+// escaped once more when it is put in the attribute. It is rendered as text
+// nodes, never parsed as HTML, so nothing in it can become any other element.
 const tip = $("tip");
+const unesc = s => s.replace(/&(amp|lt|gt|quot);/g, (_, e) => ({amp: "&", lt: "<", gt: ">", quot: '"'}[e]));
+function renderTip(src) {
+  tip.replaceChildren();
+  src.split("<br>").forEach((line, i) => {
+    if (i) tip.append(document.createElement("br"));
+    for (const part of line.split(/(<b>.*?<\/b>)/)) {
+      const bold = /^<b>(.*)<\/b>$/.exec(part);
+      if (bold) tip.append(Object.assign(document.createElement("b"), {textContent: unesc(bold[1])}));
+      else if (part) tip.append(unesc(part));
+    }
+  });
+}
 document.addEventListener("mousemove", e => {
   const t = e.target.closest && e.target.closest("[data-tip]");
   if (!t) { tip.style.display = "none"; return; }
-  tip.innerHTML = t.getAttribute("data-tip");
+  renderTip(t.getAttribute("data-tip"));
   tip.style.display = "block";
   tip.style.left = Math.min(e.clientX + 14, window.innerWidth - tip.offsetWidth - 8) + "px";
   tip.style.top = Math.min(e.clientY + 14, window.innerHeight - tip.offsetHeight - 8) + "px";
@@ -486,7 +500,7 @@ function selectTab(tab) {
   document.querySelectorAll('[role="tab"]').forEach(t => {
     const on = t === tab;
     t.setAttribute("aria-selected", on);
-    $(t.getAttribute("aria-controls")).hidden = !on;
+    document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
   });
   activeTab = tab.id.slice(4);
   if (activeTab === "pipe") { if (pipe) { drawDiagram(); showDetail(selected); } else loadPipeline(); }

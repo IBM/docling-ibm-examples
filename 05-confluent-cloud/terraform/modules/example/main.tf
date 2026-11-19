@@ -238,7 +238,24 @@ resource "confluent_flink_statement" "connection" {
 
   depends_on = [terraform_data.connection]
   lifecycle {
-    replace_triggered_by = [terraform_data.connection[each.key]]
+    # Confluent Cloud does not return a CREATE CONNECTION as it was sent: it
+    # strips the comments, sorts the options and masks the token. The refreshed
+    # `statement` therefore never matches the file, and without this every plan
+    # after the first replaces the statement. That replacement deletes the
+    # statement but not the connection, and the drop beside it does not run, so
+    # the new CREATE fails with "Connection ... already exists" (issue #26).
+    #
+    # A real change to the SQL is still seen: it changes the hash in
+    # statement_name, which forces a new statement, and it replaces
+    # terraform_data.connection, whose provisioner drops the old connection
+    # first.
+    #
+    # The trigger is the `.id`, which changes only when terraform_data.connection
+    # is replaced, which is also the only time its drop runs. The whole resource
+    # would also fire on an in-place update of its input (the repository moved,
+    # so example_dir changed) and replace the statement without the drop.
+    ignore_changes       = [statement]
+    replace_triggered_by = [terraform_data.connection[each.key].id]
     precondition {
       condition = (
         !can(regex("connection_docling", each.key)) ||
@@ -314,6 +331,7 @@ resource "confluent_flink_statement" "function" {
 
   depends_on = [terraform_data.function]
   lifecycle {
-    replace_triggered_by = [terraform_data.function[each.key]]
+    # `.id`, as for the connections: only a replacement runs the drop.
+    replace_triggered_by = [terraform_data.function[each.key].id]
   }
 }
